@@ -6,8 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     public string playerName;
     public bool isMoving = false;
-    public float moveSpeed = 3f;
+    private float moveSpeed = .2f;
+    private float fallSpeed = 2f;
 
+    public Vector3 myPosition;
     public Vector2Int moveTo;
 
     // Start is called before the first frame update
@@ -18,29 +20,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (isMoving == false)
-        //{
-        //    if (Input.GetKey(KeyCode.UpArrow))
-        //    {
-        //        StartCoroutine(movePlayer(Vector3.up*5));
-        //    }
-        //    if (Input.GetKey(KeyCode.LeftArrow))
-        //    {
-        //        StartCoroutine(movePlayer(Vector3.left*5));
-        //
-        //    }
-        //    if (Input.GetKey(KeyCode.RightArrow))
-        //    {
-        //        StartCoroutine(movePlayer(Vector3.right*5));
-        //
-        //    }
-        //    if (Input.GetKey(KeyCode.DownArrow))
-        //    {
-        //        StartCoroutine(movePlayer(Vector3.down*5));
-        //    }
-        //    Debug.Log(getPosition());
-        //    Debug.Log(transform.position);
-        //}
     }
     public IEnumerator movePlayerFall(Vector3 direction)
     {
@@ -48,16 +27,16 @@ public class PlayerController : MonoBehaviour
         float elapsedTime=0;
 
         Vector3 origPos = transform.position;
-        Vector3 targetPos = origPos + new Vector3(0,0,500) + direction*200;
+        Vector3 targetPos = origPos + new Vector3(0,0,300) + direction*150;
 
         SpriteRenderer spriteRenderer = transform.Find("player").GetComponent<SpriteRenderer>();
         Color originalColor = spriteRenderer.color;
         Color targetColor = Color.white;
 
-        while(elapsedTime < 2f)
+        while(elapsedTime < fallSpeed)
         {
-            spriteRenderer.color = Color.Lerp(originalColor, targetColor, (elapsedTime/2f));
-            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/2f));
+            spriteRenderer.color = Color.Lerp(originalColor, targetColor, (elapsedTime/fallSpeed));
+            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/fallSpeed));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -83,21 +62,19 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-
         transform.position = targetPos;
+        myPosition=myPosition+direction;
+        Debug.Log(myPosition);
         isMoving = false;
-    }
-    public void resetPosition()
-    {
-        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     public Vector2Int getPosition()
     {
-        return new Vector2Int((int)transform.position.x/5, (int)transform.position.y/5);
+        return new Vector2Int((int)myPosition.x, (int)myPosition.y);
     }
     public void setPosition(int x, int y)
     {
-        transform.position = new Vector3(x*5 + 2.5f, y*5 + 2.5f, transform.position.z);
+        myPosition = new Vector3(x, y, 0);
+        transform.position = new Vector3(x*5 + 2.5f, y*5 + 2.5f, 0);
     }
     public Vector2Int getMoveTo()
     {

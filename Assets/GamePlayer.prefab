@@ -131,5 +131,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerName: 
   isMoving: 0
-  moveSpeed: 0.2
+  moveSpeed: 0
+  fallSpeed: 0
   moveTo: {x: 0, y: 0}

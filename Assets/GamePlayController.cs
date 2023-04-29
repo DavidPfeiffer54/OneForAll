@@ -179,10 +179,8 @@ public class GamePlayController : MonoBehaviour
     private void resetLevel()
     {
         players[0].GetComponent<PlayerController>().setPosition(1,3);
-        players[0].GetComponent<PlayerController>().resetPosition();
         players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
         players[1].GetComponent<PlayerController>().setPosition(3,1);
-        players[1].GetComponent<PlayerController>().resetPosition();
         players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
 
     }
