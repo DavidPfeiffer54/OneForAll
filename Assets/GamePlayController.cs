@@ -180,9 +180,25 @@ public class GamePlayController : MonoBehaviour
     {
         players[0].GetComponent<PlayerController>().setPosition(1,3);
         players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
+
+        // Get a reference to the Mesh Renderer component attached to the cube
+        MeshRenderer cubeRenderer = players[0].transform.Find("Cube").GetComponent<MeshRenderer>();
+        // Create a new material and set its color to red
+        Material newMaterial = new Material(Shader.Find("Standard"));
+        newMaterial.color = Color.red;
+
+        // Set the cube's material to the new material
+        cubeRenderer.material = newMaterial;
+
+
         players[1].GetComponent<PlayerController>().setPosition(3,1);
         players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
-
+        // Get a reference to the Mesh Renderer component attached to the cube
+        MeshRenderer cubeRenderer1 = players[1].transform.Find("Cube").GetComponent<MeshRenderer>();
+        // Create a new material and set its color to red
+        Material newMaterial1 = new Material(Shader.Find("Standard"));
+        newMaterial1.color = Color.blue;
+        cubeRenderer1.material = newMaterial1;
     }
     private bool checkOutOfBounds(GameObject p)
     {
