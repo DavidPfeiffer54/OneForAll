@@ -8,17 +8,25 @@ public class GamePlayController : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject goalPrefab;
-    [SerializeField] private GameObject gameGrid;
+    [SerializeField] private GameObject gameGridPrefab;
+
+    [SerializeField] private GameObject levelManagerPrefab;
 
     public GameObject [] players;
     public GameObject [] walls;
     public GameObject [] goals;
+    public GameObject grid;
+    public GameObject levelManager;
 
     public bool isMoving = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+        grid = Instantiate(gameGridPrefab, new Vector3(0,0), Quaternion.identity);
+        levelManager = Instantiate(levelManagerPrefab, new Vector3(0,0), Quaternion.identity);
+
+        grid.GetComponent<GameGrid>().setLevel(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+
     }
 
     // Update is called once per frame
@@ -54,6 +62,7 @@ public class GamePlayController : MonoBehaviour
 
     public void loadlevel()
     {
+        
         players = new GameObject[2];
         walls = new GameObject[13];
         goals = new GameObject[2];

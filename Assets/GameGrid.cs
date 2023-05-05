@@ -9,12 +9,13 @@ public class GameGrid : MonoBehaviour
     private float gridSpaceSize = 5f;
 
     [SerializeField] private GameObject gridCellPrefab;
+    [SerializeField] private GameObject gridWallPrefab;
+    [SerializeField] private GameObject gridGoalPrefab;
     private GameObject [,] gameGrid;
     // Start is called before the first frame update
     void Start()
     {
-        gameGrid = new GameObject[height, width];
-        CreateGrid();
+
     }
 
     private void CreateGrid()
@@ -34,6 +35,15 @@ public class GameGrid : MonoBehaviour
                 gameGrid[x,y].gameObject.name = "Grid Space(" + x.ToString() + " , " + y.ToString() + " )";
             }
         }
+    }
+
+    public void setLevel(GameObject level )
+    {
+        width=level.GetComponent<LevelInfo>().width;
+        height=level.GetComponent<LevelInfo>().height;
+
+        gameGrid = new GameObject[height, width];
+        CreateGrid();       
     }
 
     // Update is called once per frame
