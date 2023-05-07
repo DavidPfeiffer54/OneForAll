@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GamePlayController : MonoBehaviour
 {
@@ -11,21 +12,26 @@ public class GamePlayController : MonoBehaviour
     [SerializeField] private GameObject gameGridPrefab;
 
     [SerializeField] private GameObject levelManagerPrefab;
+    [SerializeField] private GameObject playerManagerPrefab;
 
     public GameObject [] players;
+    public GameObject [] cells;
     public GameObject [] walls;
     public GameObject [] goals;
     public GameObject grid;
+
     public GameObject levelManager;
+    public GameObject playerManager;
 
     public bool isMoving = false;
     // Start is called before the first frame update
     void Start()
     {
-        grid = Instantiate(gameGridPrefab, new Vector3(0,0), Quaternion.identity);
-        levelManager = Instantiate(levelManagerPrefab, new Vector3(0,0), Quaternion.identity);
+        //grid = Instantiate(gameGridPrefab, new Vector3(0,0), Quaternion.identity);
+        Debug.Log("LOADING");
 
-        grid.GetComponent<GameGrid>().setLevel(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+
+        //grid.GetComponent<GameGrid>().setLevel(levelManager.GetComponent<LevelManager>().getCurrentLevel());
 
     }
 
@@ -57,6 +63,8 @@ public class GamePlayController : MonoBehaviour
 
     void Awake()
     {
+        levelManager = Instantiate(levelManagerPrefab, new Vector3(0,0), Quaternion.identity);
+        playerManager = Instantiate(playerManagerPrefab, new Vector3(0,0), Quaternion.identity);
         loadlevel();
     }
 
@@ -67,82 +75,121 @@ public class GamePlayController : MonoBehaviour
         walls = new GameObject[13];
         goals = new GameObject[2];
 
-        players[0] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
-        players[0].GetComponent<PlayerController>().setPosition(1,3);
-        players[0].GetComponent<PlayerController>().playerName="bob";
-        players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
-        players[1] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
-        players[1].GetComponent<PlayerController>().setPosition(3,1);
-        players[1].GetComponent<PlayerController>().playerName="susan";
-        players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
+        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
 
-        int[,] level1Walls = new int[,] {{0,0},{1,0},{0,1},{0,3},{0,4},{1,4},{3,4},{4,4},{4,3},{4,1},{4,0},{3,0},{2,2}};
-        for(int i = 0; i < level1Walls.Length/2; i++)
-        {
-            Debug.Log(i);
-            Debug.Log(level1Walls.Length);
-            walls[i] = Instantiate (wallPrefab, new Vector3(0,0), Quaternion.identity);
-            walls[i].GetComponent<GameWall>().setPosition(level1Walls[i,0], level1Walls[i,1]);
-        }
+        //players[0] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
+        //players[0].GetComponent<PlayerController>().setPosition(new Vector3(1,3,1));
+        //players[0].GetComponent<PlayerController>().playerName="bob";
+        //players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
+        //players[1] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
+        //players[1].GetComponent<PlayerController>().setPosition(new Vector3(3,1,1));
+        //players[1].GetComponent<PlayerController>().playerName="susan";
+        //players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
+        //
+        //int[,] level1Walls = new int[,] {{0,0},{1,0},{0,1},{0,3},{0,4},{1,4},{3,4},{4,4},{4,3},{4,1},{4,0},{3,0},{2,2}};
+        //for(int i = 0; i < level1Walls.Length/2; i++)
+        //{
+        //    Debug.Log(i);
+        //    Debug.Log(level1Walls.Length);
+        //    walls[i] = Instantiate (wallPrefab, new Vector3(0,0), Quaternion.identity);
+        //    walls[i].GetComponent<GameWall>().setPosition(level1Walls[i,0], level1Walls[i,1], 1);
+        //}
+
         //for(int i = 0; i < 6; i++)
         //{
         //    walls[i] = Instantiate (wallPrefab, new Vector3(0,0), Quaternion.identity);
         //    walls[i].GetComponent<GameWall>().setPosition(i+1, i+1);
         //}
 
-        goals[0] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
-        goals[0].GetComponent<GameGoal>().setPosition(0,2);
-        goals[0].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.red;
-
-        goals[1] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
-        goals[1].GetComponent<GameGoal>().setPosition(2,4);
-        goals[1].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.blue;
+        //goals[0] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
+        //goals[0].GetComponent<GameGoal>().setPosition(0,2);
+        //goals[0].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.red;
+        //
+        //goals[1] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
+        //goals[1].GetComponent<GameGoal>().setPosition(2,4);
+        //goals[1].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.blue;
 
     }
 
     public IEnumerator canMove(Vector3 dir)
     {
+        Debug.Log("----");
         isMoving = true;
-        players = SortPlayersByDirection(players,new Vector2Int((int)dir.x, (int)dir.y));
+        players = playerManager.GetComponent<PlayerManager>().SortPlayersByDirection(new Vector2Int((int)dir.x, (int)dir.y));
+        
+        //players = SortPlayersByDirection(players,new Vector2Int((int)dir.x, (int)dir.y));
 
-
-        for(int i =0; i<players.Length; i++)
+        for(int d = 0; d<5; d++)
         {
-            PlayerController p=players[i].GetComponent<PlayerController>();
-            Vector2Int playerMoveTo = new Vector2Int (p.getPosition().x + (int)dir.x, p.getPosition().y + (int)dir.y);
-            
-
-            bool hitSomething = false;
-            foreach (GameObject w in walls)
+            GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
+            //GameObject[] PlayersAtDepth = GetPlayersAtDepth(d);
+            Debug.Log(PlayersAtDepth.Length);
+            for(int i =0; i<PlayersAtDepth.Length; i++)
             {
-                if(playerMoveTo == w.GetComponent<GameWall>().getPosition())
+                PlayerController p=PlayersAtDepth[i].GetComponent<PlayerController>();
+                Vector3 playerMoveTo = new Vector3 (p.getPosition().x + (int)dir.x, p.getPosition().y + (int)dir.y, p.getPosition().z);
+                Debug.Log(playerMoveTo);
+
+
+                bool hitSomething = false;
+
+                //This should be isWallAt/isCellAt and checks a hash table.
+                if(levelManager.GetComponent<LevelManager>().isWallAt(playerMoveTo)) hitSomething = true;
+                            //foreach (GameObject w in walls) //cannot move into walls
+                            //{
+                            //    if(playerMoveTo == w.GetComponent<GameWall>().getPosition())
+                            //    {
+                            //        hitSomething = true;
+                            //    }
+                            //}
+                if(levelManager.GetComponent<LevelManager>().isCellAt(playerMoveTo)) hitSomething = true;
+                            //foreach (GameObject c in cells) //cannot move into cells on the same level
+                            //{
+                            //    if(playerMoveTo == c.GetComponent<GameWall>().getPosition())
+                            //    {
+                            //        hitSomething = true;
+                            //    }
+                            //}
+
+                //is there a player in your direction
+                for(int j =0; j<i; j++) //cannot move onto players on the same level. only check in dir
                 {
-                    hitSomething = true;
+                    if(playerMoveTo == PlayersAtDepth[j].GetComponent<PlayerController>().getMoveTo())
+                    {
+                        hitSomething = true;
+                    }                
                 }
-            }
-            for(int j =0; j<i; j++)
-            {
-                if(playerMoveTo == players[j].GetComponent<PlayerController>().getMoveTo())
+
+                //is anyone on top of you
+                foreach (GameObject op in players) //cannot move if someone is on top of you
                 {
-                    hitSomething = true;
-                }                
-            }
+                    if(p.getPosition()+ new Vector3(0,0,1) ==  op.GetComponent<PlayerController>().getPosition())
+                    {
+                        hitSomething = true;
+                    }                       
+                }
+                //Do i need a "is the next space a moveable onto space?" (cell or top of character)
+                //so we do not move onto a wall? 
 
-            //Debug.Log(p.playerName);
-            //Debug.Log(hitSomething);
-            if(!hitSomething)
-            {
-                p.setMoveTo(playerMoveTo.x,playerMoveTo.y);
-                StartCoroutine(p.movePlayer(dir));
-            }
-            else
-            {
-                p.setMoveTo(p.getPosition().x,p.getPosition().y);
-            }
 
+                //Debug.Log(p.playerName);
+                //Debug.Log(hitSomething);
+
+                //if you didnt hit anything, set moveto
+                if(!hitSomething)
+                {
+                    p.setMoveTo((int)playerMoveTo.x, (int)playerMoveTo.y, (int)playerMoveTo.z);
+                    StartCoroutine(p.movePlayer(dir));
+                }
+                else
+                {
+                    p.setMoveTo((int)p.getPosition().x, (int)p.getPosition().y, (int)p.getPosition().z);
+                }
+
+            }
         }
 
-
+        //if any players are moving, exit
         foreach (GameObject p in players)
         {
             while(p.GetComponent<PlayerController>().isMoving)
@@ -151,17 +198,38 @@ public class GamePlayController : MonoBehaviour
             }
         }
 
-        bool playerFall = false;
+        //if any of the characters are out of bounds, set to falling
+        bool playerFallToInfinity = false;
         foreach (GameObject p in players)
         {
             PlayerController player=p.GetComponent<PlayerController>();
             if(checkOutOfBounds(p))
             {
-                playerFall = true;
+                playerFallToInfinity = true;
                 StartCoroutine(player.movePlayerFall(dir));
             }
-        } 
+        }
 
+        //reset moveto
+        foreach (GameObject p in players)
+        {
+            p.GetComponent<PlayerController>().setMoveTo(-1,-1, -1);
+        }
+
+        //THIS IS TODO
+        //check fall down a level
+        //for(int d = 1; d<5; d++) 
+        //{
+        //    PlayersAtDepth = GetPlayersAtDepth(d);
+        //    foreach (GameObject p in PlayersAtDepth)
+        //    {
+        //        if isAnythingAt(p.GetComponent<PlayerController>().getPosition - new Vector3())
+        //    }
+        //    
+        //    
+        //}
+
+        //wait for players to stop moving
         foreach (GameObject p in players)
         {
             while(p.GetComponent<PlayerController>().isMoving)
@@ -170,24 +238,30 @@ public class GamePlayController : MonoBehaviour
             }
         }
 
+        //reset moveto
         foreach (GameObject p in players)
         {
-            p.GetComponent<PlayerController>().setMoveTo(-1,-1);
+            p.GetComponent<PlayerController>().setMoveTo(-1,-1, -1);
         }
 
 
 
-
-        if(playerFall)
+        //reset if necessary 
+        if(playerFallToInfinity)
         {
             resetLevel();
         }
+
+
         isMoving = false;
         yield return null;
     }
+
     private void resetLevel()
     {
-        players[0].GetComponent<PlayerController>().setPosition(1,3);
+        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+
+        //players[0].GetComponent<PlayerController>().setPosition(1,3,1);
         players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
 
         // Get a reference to the Mesh Renderer component attached to the cube
@@ -200,7 +274,7 @@ public class GamePlayController : MonoBehaviour
         cubeRenderer.material = newMaterial;
 
 
-        players[1].GetComponent<PlayerController>().setPosition(3,1);
+        //players[1].GetComponent<PlayerController>().setPosition(3,1,1);
         players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
         // Get a reference to the Mesh Renderer component attached to the cube
         MeshRenderer cubeRenderer1 = players[1].transform.Find("Cube").GetComponent<MeshRenderer>();
@@ -217,44 +291,4 @@ public class GamePlayController : MonoBehaviour
         if(p.GetComponent<PlayerController>().getMoveTo().y < 0) return true;
         return false;
     }
-
-
-    public static GameObject[] SortPlayersByDirection(GameObject[] players, Vector2Int direction)
-    {
-        // Check if the direction vector is valid
-        if (Mathf.Abs(direction.x) + Mathf.Abs(direction.y) != 1)
-        {
-            Debug.LogError("Direction vector must be a unit vector (i.e., have magnitude 1).");
-            return null;
-        }
-
-        // Sort the players based on the specified direction
-        if (direction.x == 1)
-        {
-            // Sort by x (right)
-            System.Array.Sort(players, (a, b) => b.GetComponent<PlayerController>().getPosition().x.CompareTo(a.GetComponent<PlayerController>().getPosition().x));
-        }
-        else if (direction.x == -1)
-        {
-            // Sort by x (left)
-            System.Array.Sort(players, (a, b) => a.GetComponent<PlayerController>().getPosition().x.CompareTo(b.GetComponent<PlayerController>().getPosition().x));
-        }
-        else if (direction.y == 1)
-        {
-            // Sort by y (up)
-            System.Array.Sort(players, (a, b) => b.GetComponent<PlayerController>().getPosition().y.CompareTo(a.GetComponent<PlayerController>().getPosition().y));
-        }
-        else if (direction.y == -1)
-        {
-            // Sort by y (down)
-            System.Array.Sort(players, (a, b) => a.GetComponent<PlayerController>().getPosition().y.CompareTo(b.GetComponent<PlayerController>().getPosition().y));
-        }
-
-        return players;
-    }
-
-
-
-
-
 }

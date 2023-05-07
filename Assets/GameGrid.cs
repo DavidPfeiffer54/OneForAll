@@ -24,15 +24,15 @@ public class GameGrid : MonoBehaviour
         {
             Debug.LogError("ERROR did not set grid Cell prefab");
         }
-
+        int z=0;
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                gameGrid[x,y] = Instantiate (gridCellPrefab, new Vector3(x*gridSpaceSize, y * gridSpaceSize), Quaternion.identity);
-                gameGrid[x,y].GetComponent<GridCell>().setPosition(x,y);
+                gameGrid[x,y] = Instantiate (gridCellPrefab, new Vector3(x*gridSpaceSize, y * gridSpaceSize, z * gridSpaceSize), Quaternion.identity);
+                gameGrid[x,y].GetComponent<GridCell>().setPosition(x,y,z);
                 gameGrid[x,y].transform.parent = transform;
-                gameGrid[x,y].gameObject.name = "Grid Space(" + x.ToString() + " , " + y.ToString() + " )";
+                gameGrid[x,y].gameObject.name = "Grid Space(" + x.ToString() + " , " + y.ToString()  + " , " + z.ToString() + " )";
             }
         }
     }

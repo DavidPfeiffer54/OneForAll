@@ -6,6 +6,7 @@ public class GameWall : MonoBehaviour
 {
     private int posX;
     private int posY;
+    private int posZ;
 
     // Start is called before the first frame update
     void Start()
@@ -13,16 +14,17 @@ public class GameWall : MonoBehaviour
         
     }
 
-    public void setPosition(int x, int y)
+    public void setPosition(int x, int y, int z)
     {
         posX = x;
         posY = y;
-        transform.position = new Vector3(x*5 + 2.5f,y*5 + 2.5f, transform.position.z);
+        posZ = z;
+        transform.position = new Vector3(x*5 + 2.5f,y*5 + 2.5f, z*5-2.5f);
     }
 
-    public Vector2Int getPosition()
+    public Vector3 getPosition()
     {
-        return new Vector2Int(posX, posY);
+        return new Vector3(posX, posY, posZ);
     }
 
     // Update is called once per frame

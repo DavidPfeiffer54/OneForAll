@@ -158,6 +158,7 @@ MonoBehaviour:
   gameGridPrefab: {fileID: 3823575603204906149, guid: c25aca6fcd76749fb96b7b80edad9e8e, type: 3}
   levelManagerPrefab: {fileID: 7370948316464163404, guid: 280b78e70e3194077bad4ea39db5d122, type: 3}
   players: []
+  cells: []
   walls: []
   goals: []
   grid: {fileID: 0}

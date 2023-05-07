@@ -7,6 +7,7 @@ public class GridCell : MonoBehaviour
 
     private int posX;
     private int posY;
+    private int posZ;
 
     public GameObject objectInThisGridSpace = null;
 
@@ -17,15 +18,16 @@ public class GridCell : MonoBehaviour
         
     }
 
-    public void setPosition(int x, int y)
+    public void setPosition(int x, int y, int z)
     {
         posX = x;
         posY = y;
+        posZ = z;
     }
 
-    public Vector2Int getPosition()
+    public Vector3 getPosition()
     {
-        return new Vector2Int(posX, posY);
+        return new Vector3(posX, posY, posZ);
     }
 
     // Update is called once per frame
