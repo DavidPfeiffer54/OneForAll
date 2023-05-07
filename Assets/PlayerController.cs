@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         float elapsedTime=0;
 
         Vector3 origPos = transform.position;
-        Vector3 targetPos = origPos + new Vector3(0,0,100) + direction*50;
+        Vector3 targetPos = origPos + new Vector3(0,0,50);// + direction*50;
 
         SpriteRenderer spriteRenderer = transform.Find("player").GetComponent<SpriteRenderer>();
         Color originalColor = spriteRenderer.color;

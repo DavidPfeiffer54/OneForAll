@@ -200,15 +200,15 @@ public class GamePlayController : MonoBehaviour
 
         //if any of the characters are out of bounds, set to falling
         bool playerFallToInfinity = false;
-        foreach (GameObject p in players)
-        {
-            PlayerController player=p.GetComponent<PlayerController>();
-            if(checkOutOfBounds(p))
-            {
-                playerFallToInfinity = true;
-                StartCoroutine(player.movePlayerFall(dir));
-            }
-        }
+        //foreach (GameObject p in players)
+        //{
+        //    PlayerController player=p.GetComponent<PlayerController>();
+        //    if(checkOutOfBounds(p))
+        //    {
+        //        playerFallToInfinity = true;
+        //        StartCoroutine(player.movePlayerFall(dir));
+        //    }
+        //}
 
         //reset moveto
         foreach (GameObject p in players)
@@ -233,21 +233,29 @@ public class GamePlayController : MonoBehaviour
             checkForFallers = false;
 
 
-            for(int d = 5; d>=0; d--) 
+            for(int d = 15; d>=0; d--) 
             {
                 GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
                 foreach (GameObject p in PlayersAtDepth)
                 {
                     bool fallDown = false;
-                    //TDOD make sure not falling to infinity
                     if(levelManager.GetComponent<LevelManager>().isCellAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false
                        && playerManager.GetComponent<PlayerManager>().isPlayerAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false)
                     {
-                        fallDown=true;
-                        checkForFallers=true;
+
                         Vector3 tmpvec = p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1);
-                        p.GetComponent<PlayerController>().setMoveTo((int)tmpvec.z,(int)tmpvec.y,(int)tmpvec.z);
-                        StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
+                        if(tmpvec.z>=15)
+                        {
+                            playerFallToInfinity = true;
+                            //StartCoroutine(p.GetComponent<PlayerController>().movePlayerFall(dir));
+                        }
+                        else
+                        {
+                            fallDown=true;
+                            checkForFallers=true;
+                            p.GetComponent<PlayerController>().setMoveTo((int)tmpvec.z,(int)tmpvec.y,(int)tmpvec.z);
+                            StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
+                        }
                     }
                     Debug.Log(fallDown);
                 }
