@@ -84,7 +84,7 @@ public class LevelManager : MonoBehaviour
 
     public bool isCellAt(Vector3 loc)
     {
-        return currentLevel.GetComponent<LevelInfo>().walls.ContainsKey(loc);
+        return currentLevel.GetComponent<LevelInfo>().cells.ContainsKey(loc);
     }
     public bool isWallAt(Vector3 loc)
     {
@@ -102,6 +102,19 @@ public class LevelManager : MonoBehaviour
     public GameObject getCurrentLevel()
     {
         return currentLevel;
+    }
+
+    public Vector3 findNextAvaliableLocation(Vector3 loc)
+    {
+        //if(isCellAt(loc)){Debug.Log("findNextAvaliableLocation theres already something here, ");return loc;}
+        //for(int i = 0; i < 10; i++)
+        //{
+        //    if(isCellAt(loc + new Vector3(0,0,i)))
+        //    {
+        //        return loc + new Vector3(0,0,i);
+        //    }
+        //}
+        return loc;
     }
 
     // Update is called once per frame

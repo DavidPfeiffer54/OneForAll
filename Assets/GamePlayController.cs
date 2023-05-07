@@ -163,7 +163,7 @@ public class GamePlayController : MonoBehaviour
                 //is anyone on top of you
                 foreach (GameObject op in players) //cannot move if someone is on top of you
                 {
-                    if(p.getPosition()+ new Vector3(0,0,1) ==  op.GetComponent<PlayerController>().getPosition())
+                    if(p.getPosition() + new Vector3(0,0,-1) ==  op.GetComponent<PlayerController>().getPosition())
                     {
                         hitSomething = true;
                     }                       
@@ -218,16 +218,42 @@ public class GamePlayController : MonoBehaviour
 
         //THIS IS TODO
         //check fall down a level
-        //for(int d = 1; d<5; d++) 
-        //{
-        //    PlayersAtDepth = GetPlayersAtDepth(d);
-        //    foreach (GameObject p in PlayersAtDepth)
-        //    {
-        //        if isAnythingAt(p.GetComponent<PlayerController>().getPosition - new Vector3())
-        //    }
-        //    
-        //    
-        //}
+        int breakout = 0;
+        bool checkForFallers = true;
+        while(checkForFallers && breakout < 20)
+        {
+            breakout = breakout + 1;
+            foreach (GameObject p in players)
+            {
+                while(p.GetComponent<PlayerController>().isMoving)
+                {
+                    yield return null;
+                }
+            }
+            checkForFallers = false;
+
+
+            for(int d = 5; d>=0; d--) 
+            {
+                GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
+                foreach (GameObject p in PlayersAtDepth)
+                {
+                    bool fallDown = false;
+                    //TDOD make sure not falling to infinity
+                    if(levelManager.GetComponent<LevelManager>().isCellAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false
+                       && playerManager.GetComponent<PlayerManager>().isPlayerAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false)
+                    {
+                        fallDown=true;
+                        checkForFallers=true;
+                        Vector3 tmpvec = p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1);
+                        p.GetComponent<PlayerController>().setMoveTo((int)tmpvec.z,(int)tmpvec.y,(int)tmpvec.z);
+                        StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
+                    }
+                    Debug.Log(fallDown);
+                }
+            }
+            //checkForFallers=false;
+        }
 
         //wait for players to stop moving
         foreach (GameObject p in players)

@@ -22,6 +22,29 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
     }
+    public IEnumerator movePlayerFallDown(Vector3 direction)
+    {
+        Debug.Log("Falling Down");
+        isMoving = true;
+        Vector3 origPos = transform.position;
+        Vector3 targetPos = origPos + direction*5;
+        Debug.Log(origPos);
+        Debug.Log(targetPos);
+        float elapsedTime=0;
+        while(elapsedTime < moveSpeed)
+        {
+            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
+
+        transform.position = targetPos;
+        myPosition=myPosition+direction;
+
+        //Debug.Log(myPosition);
+        isMoving = false;
+    }
     public IEnumerator movePlayerFall(Vector3 direction)
     {
         isMoving = true;

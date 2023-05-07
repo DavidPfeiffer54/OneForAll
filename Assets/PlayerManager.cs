@@ -20,6 +20,24 @@ public class PlayerManager : MonoBehaviour
     {
         
     }
+    public bool isPlayerAt(Vector3 loc)
+    {
+        foreach (GameObject p in players)
+        {
+            if(p.GetComponent<PlayerController>().getPosition() == loc)
+            return true;
+        }
+        return false;
+    }
+    public bool isPlayerMovingTo(Vector3 loc)
+    {
+        foreach (GameObject p in players)
+        {
+            if(p.GetComponent<PlayerController>().getMoveTo() == loc)
+            return true;
+        }
+        return false;
+    }
 
     public void setUpPlayers(GameObject leveInfo)
     {
