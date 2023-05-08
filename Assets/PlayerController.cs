@@ -23,6 +23,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
     }
+    public void startMovePlayerFallDown()
+    {
+        StartCoroutine(movePlayerFallDown(new Vector3(0,0,1)));
+    }
     public IEnumerator movePlayerFallDown(Vector3 direction)
     {
         Debug.Log("Falling Down");
@@ -34,8 +38,11 @@ public class PlayerController : MonoBehaviour
         float elapsedTime=0;
         while(elapsedTime < moveSpeed)
         {
+            Debug.Log("nonnoooooooonon");
             transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
             elapsedTime += Time.deltaTime;
+
+
             yield return null;
         }
         transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
@@ -63,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
         while(elapsedTime < fallSpeed)
         {
+            Debug.Log("nononon");
             transform.Find("Cube").RotateAround(anchor, axis, .2f);
             transform.Find("Cube").position = Vector3.Lerp(origPos, targetPos, (elapsedTime/fallSpeed));
 
@@ -76,7 +84,10 @@ public class PlayerController : MonoBehaviour
 
         transform.position = targetPos;
     }
-
+    public void startMovePlayer(Vector3 direction)
+    {
+        StartCoroutine(movePlayer(direction));
+    }
     public IEnumerator movePlayer(Vector3 direction)
     {
         isMoving = true;

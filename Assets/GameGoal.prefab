@@ -211,7 +211,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6414661239284984283
 Transform:
   m_ObjectHideFlags: 0
@@ -428,6 +428,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pos: {x: 0, y: 0, z: 0}
   col: {r: 0, g: 0, b: 0, a: 0}
+  goalCompleted: 0
   transMat: {fileID: 2100000, guid: e218a7aeabb01492cbd5da0187d85720, type: 2}
 --- !u!1 &5911588557069420351
 GameObject:

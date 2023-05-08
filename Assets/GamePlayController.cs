@@ -25,8 +25,11 @@ public class GamePlayController : MonoBehaviour
     public GameObject levelManager;
     public GameObject playerManager;
 
+    public Coroutine moveCoroutine;
+
     public bool isMoving = false;
     public int currentLevel = 0;
+    public int maxLevel = 3;
     public string mainMenu = "MainMenu";
     // Start is called before the first frame update
     void Start()
@@ -48,21 +51,21 @@ public class GamePlayController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                StartCoroutine(canMove(Vector3.up));
+                moveCoroutine = StartCoroutine(canMove(Vector3.up));
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
-                StartCoroutine(canMove(Vector3.left));
+                moveCoroutine = StartCoroutine(canMove(Vector3.left));
 
             }
             else if (Input.GetKey(KeyCode.RightArrow))
             {
-                StartCoroutine(canMove(Vector3.right));
+                moveCoroutine = StartCoroutine(canMove(Vector3.right));
 
             }
             else if (Input.GetKey(KeyCode.DownArrow))
             {
-                StartCoroutine(canMove(Vector3.down));
+                moveCoroutine = StartCoroutine(canMove(Vector3.down));
             }
         }
     }
@@ -76,13 +79,14 @@ public class GamePlayController : MonoBehaviour
 
     public void loadlevel()
     {
-        
+        //StopCoroutine("canMove");
         players = new GameObject[2];
         walls = new GameObject[13];
         goals = new GameObject[2];
         levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
-
+        players = playerManager.GetComponent<PlayerManager>().players;
+        isMoving=false;
         //players[0] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
         //players[0].GetComponent<PlayerController>().setPosition(new Vector3(1,3,1));
         //players[0].GetComponent<PlayerController>().playerName="bob";
@@ -182,7 +186,8 @@ public class GamePlayController : MonoBehaviour
                 if(!hitSomething)
                 {
                     p.setMoveTo((int)playerMoveTo.x, (int)playerMoveTo.y, (int)playerMoveTo.z);
-                    StartCoroutine(p.movePlayer(dir));
+                    //StartCoroutine(p.movePlayer(dir));
+                    p.startMovePlayer(dir);
                 }
                 else
                 {
@@ -250,14 +255,15 @@ public class GamePlayController : MonoBehaviour
                         if(tmpvec.z>=10)
                         {
                             playerFallToInfinity = true;
-                            //StartCoroutine(p.GetComponent<PlayerController>().movePlayerFall(dir));
+                            // // //StartCoroutine(p.GetComponent<PlayerController>().movePlayerFall(dir));
                         }
                         else
                         {
                             fallDown=true;
                             checkForFallers=true;
                             p.GetComponent<PlayerController>().setMoveTo((int)tmpvec.z,(int)tmpvec.y,(int)tmpvec.z);
-                            StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
+                            //StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
+                            p.GetComponent<PlayerController>().startMovePlayerFallDown();
                         }
                     }
                 }
@@ -306,7 +312,7 @@ public class GamePlayController : MonoBehaviour
         currentLevel = currentLevel + 1;
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0,0), Quaternion.identity);
 
-        if(currentLevel>=2)
+        if(currentLevel>=maxLevel)
         {
             youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
             Time.timeScale = 0f;
