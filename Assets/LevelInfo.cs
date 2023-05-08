@@ -74,23 +74,26 @@ public class LevelInfo : MonoBehaviour
             walls[wall] = Instantiate (gridWallPrefab, wall*5 + new Vector3(0,0,-2.5f), Quaternion.identity);
             walls[wall].GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
             walls[wall].transform.parent = transform;
-            walls[wall].gameObject.name = "Grid WALL(" + wall.x.ToString() + " , " + wall.y.ToString()  + " , " + wall.z.ToString() + " )";
+            walls[wall].gameObject.name = "Grid Wall(" + wall.x.ToString() + " , " + wall.y.ToString()  + " , " + wall.z.ToString() + " )";
             Debug.Log(walls[wall]);
         }
         foreach(LocColorData ps in ld.playerStarts)
         {
             playerStarts[ps.loc] = Instantiate(playerStartPrefab, ps.loc*5 + new Vector3(0,0,-2.5f), Quaternion.identity);
-
-            Debug.Log(playerStarts[ps.loc]);            
-
             playerStarts[ps.loc].GetComponent<PlayerStart>().setPosition(new Vector3(ps.loc.x, ps.loc.y, ps.loc.z));
-
-            Debug.Log(ps.col);  
-
-            playerStarts[ps.loc].GetComponent<PlayerStart>().setColor(colorDictionary[ps.col]);
+            playerStarts[ps.loc].GetComponent<PlayerStart>().setCol(colorDictionary[ps.col]);
             playerStarts[ps.loc].transform.parent = transform;
             playerStarts[ps.loc].gameObject.name = "Player Start(" + ps.loc.ToString() + " )";
             Debug.Log(playerStarts[ps.loc]);            
+        }
+        foreach(LocColorData gg in ld.goals)
+        {
+            goals[gg.loc] = Instantiate(gridGoalPrefab, gg.loc*5, Quaternion.identity);
+            goals[gg.loc].GetComponent<GameGoal>().setPosition(new Vector3(gg.loc.x, gg.loc.y, gg.loc.z));
+            goals[gg.loc].GetComponent<GameGoal>().setCol(colorDictionary[gg.col]);
+            goals[gg.loc].transform.parent = transform;
+            goals[gg.loc].gameObject.name = "GOAL(" + gg.loc.ToString() + " )";
+            Debug.Log(goals[gg.loc]);            
         }
     }
 

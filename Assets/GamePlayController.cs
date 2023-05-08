@@ -113,7 +113,7 @@ public class GamePlayController : MonoBehaviour
 
     public IEnumerator canMove(Vector3 dir)
     {
-        Debug.Log("----");
+        //Debug.Log("----");
         isMoving = true;
         players = playerManager.GetComponent<PlayerManager>().SortPlayersByDirection(new Vector2Int((int)dir.x, (int)dir.y));
         
@@ -123,13 +123,10 @@ public class GamePlayController : MonoBehaviour
         {
             GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
             //GameObject[] PlayersAtDepth = GetPlayersAtDepth(d);
-            Debug.Log(PlayersAtDepth.Length);
             for(int i =0; i<PlayersAtDepth.Length; i++)
             {
                 PlayerController p=PlayersAtDepth[i].GetComponent<PlayerController>();
                 Vector3 playerMoveTo = new Vector3 (p.getPosition().x + (int)dir.x, p.getPosition().y + (int)dir.y, p.getPosition().z);
-                Debug.Log(playerMoveTo);
-
 
                 bool hitSomething = false;
 
@@ -233,7 +230,7 @@ public class GamePlayController : MonoBehaviour
             checkForFallers = false;
 
 
-            for(int d = 15; d>=0; d--) 
+            for(int d = 10; d>=0; d--) 
             {
                 GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
                 foreach (GameObject p in PlayersAtDepth)
@@ -244,7 +241,7 @@ public class GamePlayController : MonoBehaviour
                     {
 
                         Vector3 tmpvec = p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1);
-                        if(tmpvec.z>=15)
+                        if(tmpvec.z>=10)
                         {
                             playerFallToInfinity = true;
                             //StartCoroutine(p.GetComponent<PlayerController>().movePlayerFall(dir));
@@ -257,7 +254,6 @@ public class GamePlayController : MonoBehaviour
                             StartCoroutine(p.GetComponent<PlayerController>().movePlayerFallDown(new Vector3(0,0,1)));
                         }
                     }
-                    Debug.Log(fallDown);
                 }
             }
             //checkForFallers=false;
@@ -286,7 +282,16 @@ public class GamePlayController : MonoBehaviour
             resetLevel();
         }
 
+        levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
 
+        if(levelManager.GetComponent<LevelManager>().isLevelComplete())
+        {
+            Debug.Log("**************");
+            Debug.Log("Level Complete");
+            Debug.Log("**************");
+
+        }
+        
         isMoving = false;
         yield return null;
     }
@@ -294,7 +299,7 @@ public class GamePlayController : MonoBehaviour
     private void resetLevel()
     {
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
-
+        players = playerManager.GetComponent<PlayerManager>().players;
         //players[0].GetComponent<PlayerController>().setPosition(1,3,1);
         players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
 
@@ -324,5 +329,12 @@ public class GamePlayController : MonoBehaviour
         if(p.GetComponent<PlayerController>().getMoveTo().x < 0) return true;
         if(p.GetComponent<PlayerController>().getMoveTo().y < 0) return true;
         return false;
+    }
+    public void setPlayersOn()
+    {
+        foreach (GameObject p in players)
+        {
+
+        }
     }
 }

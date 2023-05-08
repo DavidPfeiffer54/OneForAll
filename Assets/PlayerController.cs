@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public bool isMoving = false;
     private float moveSpeed = .2f;
     private float fallSpeed = 1.25f;
+    public Color col;
 
     public Vector3 myPosition;
     public Vector3 moveTo;
@@ -130,4 +131,13 @@ public class PlayerController : MonoBehaviour
     {
         moveTo = new Vector3(x,y,z);
     }
+    public Color getCol()
+    {
+        return col;
+    }
+    public void setCol(Color newCol)
+    {
+        col = newCol;
+    }
+
 }

@@ -4,31 +4,70 @@ using UnityEngine;
 
 public class GameGoal : MonoBehaviour
 {
-    private int posX;
-    private int posY;
-
+    public Vector3 pos;
+    public Color col;
+    public bool goalCompleted;
+    [SerializeField] private Material transMat;
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    public void setPosition(int x, int y)
+    public Vector3 getPosition()
     {
-        posX = x;
-        posY = y;
-        transform.position = new Vector3(x*5 + 2.5f,y*5 + 2.5f, transform.position.z);
+        return pos;
+    }
+    public void setPosition(Vector3 newPos)
+    {
+        pos = newPos;
+    }
+    public Color getCol()
+    {
+        return col;
+    }
+    public void setCol(Color newCol)
+    {
+        Debug.Log("***********");
+        col = new Color(newCol.r, newCol.g, newCol.b, newCol.a);
+        Material newMaterial = new Material(Shader.Find("Standard"));
+        newMaterial.color = col;
+        transform.Find("Cube00").GetComponent<MeshRenderer>().material = newMaterial;
+        transform.Find("Cube01").GetComponent<MeshRenderer>().material = newMaterial;
+        transform.Find("Cube10").GetComponent<MeshRenderer>().material = newMaterial;
+        transform.Find("Cube11").GetComponent<MeshRenderer>().material = newMaterial;
+
+        Material newMaterial2 = Instantiate(transMat);
+        newCol.a = .1f;
+        newMaterial2.color = newCol;       
+        transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
 
     }
 
-    public Vector2Int getPosition()
+    public void setPlayerOn(bool isOn)
     {
-        return new Vector2Int(posX, posY);
+        if(isOn)
+        {
+            goalCompleted=true;
+            Debug.Log("SOMEONES SCORED");
+            Material newMaterial2 = Instantiate(transMat);
+            Color c = new Color(col.r, col.g, col.b, .6f);
+            newMaterial2.color = c;       
+            transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
+        }
+        else
+        {
+            goalCompleted=false;
+            Material newMaterial2 = Instantiate(transMat);
+            Color c = new Color(col.r, col.g, col.b, .1f);
+            newMaterial2.color = c;            
+            transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

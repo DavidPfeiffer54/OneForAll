@@ -25,11 +25,11 @@ public class PlayerStart : MonoBehaviour
     {
         pos = newPos;
     }
-    public Color getColor()
+    public Color getCol()
     {
         return col;
     }
-    public void setColor(Color newCol)
+    public void setCol(Color newCol)
     {
         col = newCol;
     }

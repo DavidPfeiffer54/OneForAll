@@ -25,7 +25,7 @@ public class PlayerManager : MonoBehaviour
         foreach (GameObject p in players)
         {
             if(p.GetComponent<PlayerController>().getPosition() == loc)
-            return true;
+                return true;
         }
         return false;
     }
@@ -52,11 +52,12 @@ public class PlayerManager : MonoBehaviour
             GameObject newPlayer = Instantiate (playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition() + new Vector3(0,0,-2.5f), Quaternion.identity);
             newPlayer.GetComponent<PlayerController>().setPosition(kvp.Value.GetComponent<PlayerStart>().getPosition());
             newPlayer.GetComponent<PlayerController>().playerName="player"+kvp.Key.ToString();
-            newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color=kvp.Value.GetComponent<PlayerStart>().getColor();
+            newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color=kvp.Value.GetComponent<PlayerStart>().getCol();
             MeshRenderer cubeRenderer = newPlayer.transform.Find("Cube").GetComponent<MeshRenderer>();
             Material newMaterial = new Material(Shader.Find("Standard"));
-            newMaterial.color = kvp.Value.GetComponent<PlayerStart>().getColor();
+            newMaterial.color = kvp.Value.GetComponent<PlayerStart>().getCol();
             cubeRenderer.material = newMaterial;
+            newPlayer.GetComponent<PlayerController>().setCol(kvp.Value.GetComponent<PlayerStart>().getCol());
             newPlayers.Add(newPlayer);
         }
         players = newPlayers.ToArray();

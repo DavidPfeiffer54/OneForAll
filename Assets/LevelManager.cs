@@ -117,6 +117,32 @@ public class LevelManager : MonoBehaviour
         return loc;
     }
 
+    public void setPlayersOnGoals(GameObject[] players)
+    {
+        foreach(KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
+        {
+            goal.Value.GetComponent<GameGoal>().setPlayerOn(false);
+            foreach(GameObject player in players)
+            {
+                if(player.GetComponent<PlayerController>().getPosition() == goal.Value.GetComponent<GameGoal>().getPosition()
+                   && player.GetComponent<PlayerController>().getCol() == goal.Value.GetComponent<GameGoal>().getCol())
+                {
+                    goal.Value.GetComponent<GameGoal>().setPlayerOn(true);
+                }
+            }
+        }
+    }
+    public bool isLevelComplete()
+    {
+        foreach(KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
+        {
+            if(goal.Value.GetComponent<GameGoal>().goalCompleted == false)
+                return false;
+        }
+        return true;
+
+    }
+
     // Update is called once per frame
     void Update()
     {
