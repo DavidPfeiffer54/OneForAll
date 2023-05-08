@@ -29,51 +29,11 @@ public class LevelManager : MonoBehaviour
         Debug.Log("LOADING lm");
         jsonParser = Instantiate (jsonParserPrefab, new Vector3(0,0), Quaternion.identity);
         jsonParser.GetComponent<JsonParser>().readFile();
-        SetUpLevel(1);
-        //cells = new Dictionary<Vector3, GameObject>();
-        //walls = new Dictionary<Vector3, GameObject>();
-        //goals = new Dictionary<Vector3, GameObject>();
-        //buttons = new Dictionary<Vector3, GameObject>();
-        //players = new Dictionary<Vector3, GameObject>();
-        ////Vector3 myVector = new Vector3(myArray[0], myArray[1], myArray[2]);
-        //
-        //
-        //levels = new GameObject[3];
-        //
-        //GameObject level = Instantiate(LevelPrefab, new Vector3(0,0), Quaternion.identity);
-        //int[,] cl = { {0,0,0}, {0,1,0}, {0,2,0}, {0,3,0}, {0,4,0}, 
-        //              {1,0,0}, {1,1,0}, {1,2,0}, {1,3,0}, {1,4,0}, 
-        //              {2,0,0}, {2,1,0}, {2,2,0}, {2,3,0}, {2,4,0}, 
-        //              {3,0,0}, {3,1,0}, {3,2,0}, {3,3,0}, {3,4,0}, 
-        //              {4,0,0}, {4,1,0}, {4,2,0}, {4,3,0}, {4,4,0}
-        //            };
-        //int[,] wl = { {0,0,1}, {1,0,1}, {0,1,1}, {0,3,1}, {0,4,1}, 
-        //              {1,4,1}, {3,4,1}, {4,4,1}, {4,3,1}, {4,1,1}, 
-        //              {4,0,1}, {3,0,1}, {2,2,1} };
-        //int[,] pl = { {0,2,1}, {2,4,1} };                      
-        //int[,] gl = { {1,3,1}, {3,1,1} };
-        //int[,] bl = { {2,0,1};
-        //level.GetComponent<LevelInfo>().SetLevel(1, 5, 5, cl, wl, gl, pl);
-        //levels[0] = level;
-        //
-        //level = Instantiate(LevelPrefab, new Vector3(0,0), Quaternion.identity);
-        //cl = new int[,]{ {0,0,0}, {0,1,0}, {0,2,0}, {0,3,0}, {0,4,0}, 
-        //               {1,0,0}, {1,1,0}, {1,2,0}, {1,3,0}, {1,4,0}, 
-        //               {2,0,0}, {2,1,0}, {2,2,0}, {2,3,0}, {2,4,0}, 
-        //               {3,0,0}, {3,1,0}, {3,2,0}, {3,3,0}, {3,4,0}, 
-        //               {4,0,0}, {4,1,0}, {4,2,0}, {4,3,0}, {4,4,0}
-        //               };
-        //wl = new int[,]{ {0,0,1}, {1,0,1}, {0,1,1}, {0,3,1}, {0,4,1}, 
-        //                 {1,4,1}, {3,4,1}, {4,4,1}, {4,3,1}, {4,1,1}, 
-        //                 {4,0,1}, {3,0,1}, {2,2,1} 
-        //               };
-        //gl = new int[,]{ {1,3,1}, {3,1,1} };
-        //pl = new int[,]{ {0,2,1}, {2,4,1} };
-        //level.GetComponent<LevelInfo>().SetLevel(1, 6, 6, cl, wl, gl, pl);
-        //levels[1] = level;
+        //SetUpLevel(1);
     }
-    public void SetUpLevel(int _level_num)
+    public void setUpLevel(int _level_num)
     {
+        Destroy(currentLevel);
         currentLevel = Instantiate (LevelPrefab, new Vector3(0,0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }

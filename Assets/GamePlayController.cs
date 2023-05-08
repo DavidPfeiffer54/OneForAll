@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GamePlayController : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GamePlayController : MonoBehaviour
 
     [SerializeField] private GameObject levelManagerPrefab;
     [SerializeField] private GameObject playerManagerPrefab;
+    [SerializeField] private GameObject youWinPrefab;
 
     public GameObject [] players;
     public GameObject [] cells;
@@ -24,13 +26,15 @@ public class GamePlayController : MonoBehaviour
     public GameObject playerManager;
 
     public bool isMoving = false;
+    public int currentLevel = 0;
+    public string mainMenu = "MainMenu";
     // Start is called before the first frame update
     void Start()
     {
         //grid = Instantiate(gameGridPrefab, new Vector3(0,0), Quaternion.identity);
         Debug.Log("LOADING");
-
-
+        currentLevel=0;
+        loadlevel();
         //grid.GetComponent<GameGrid>().setLevel(levelManager.GetComponent<LevelManager>().getCurrentLevel());
 
     }
@@ -38,6 +42,8 @@ public class GamePlayController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0)
+            return;
         if (isMoving == false)
         {
             if (Input.GetKey(KeyCode.UpArrow))
@@ -74,7 +80,7 @@ public class GamePlayController : MonoBehaviour
         players = new GameObject[2];
         walls = new GameObject[13];
         goals = new GameObject[2];
-
+        levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
 
         //players[0] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
@@ -289,11 +295,40 @@ public class GamePlayController : MonoBehaviour
             Debug.Log("**************");
             Debug.Log("Level Complete");
             Debug.Log("**************");
-
+            StartCoroutine(levelComplete());
         }
         
         isMoving = false;
         yield return null;
+    }
+    public IEnumerator levelComplete()
+    {
+        currentLevel = currentLevel + 1;
+        GameObject youwin = Instantiate(youWinPrefab, new Vector3(0,0), Quaternion.identity);
+
+        if(currentLevel>=2)
+        {
+            youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
+            Time.timeScale = 0f;
+            yield return new WaitForSecondsRealtime(2.0f);
+            Destroy(youwin);   
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(mainMenu);  
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            yield return new WaitForSecondsRealtime(2.0f);
+            Destroy(youwin);
+
+            levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
+            playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+            players = playerManager.GetComponent<PlayerManager>().players;
+
+            Time.timeScale = 1f;
+
+        }
+
     }
 
     private void resetLevel()
