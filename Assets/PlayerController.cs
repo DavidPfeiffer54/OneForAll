@@ -29,13 +29,11 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator playerChangeColor(GameObject colorChange)
     {
-        isMoving = true;
         Color origCol = getCol();
         Color targetCol = colorChange.GetComponent<ColorChange>().getCol();
         float elapsedTime=0;
         while(elapsedTime < moveSpeed)
         {
-            //transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
             Color currentColor = Color.Lerp(origCol, targetCol, elapsedTime/moveSpeed);
 
             MeshRenderer cubeRenderer = transform.Find("Cube").GetComponent<MeshRenderer>();
@@ -44,16 +42,9 @@ public class PlayerController : MonoBehaviour
             cubeRenderer.material = newMaterial;
             setCol(targetCol);
 
-
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
-        //transform.position = targetPos;
-        //myPosition=myPosition+direction;
-
-        //Debug.Log(myPosition);
-        isMoving = false;
     }
     public void startMovePlayerFallDown()
     {
@@ -78,7 +69,6 @@ public class PlayerController : MonoBehaviour
         transform.position = targetPos;
         myPosition=myPosition+direction;
 
-        //Debug.Log(myPosition);
         isMoving = false;
     }
     public IEnumerator movePlayerFall(Vector3 direction)
@@ -112,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
         transform.position = targetPos;
     }
+
     public void startMovePlayer(Vector3 direction)
     {
         StartCoroutine(movePlayer(direction));
@@ -119,41 +110,62 @@ public class PlayerController : MonoBehaviour
     public IEnumerator movePlayer(Vector3 direction)
     {
         isMoving = true;
-
         float elapsedTime=0;
 
         Vector3 origPos = transform.position;
         Vector3 targetPos = origPos + direction*5;
-
         var anchor = transform.position+new Vector3(0,0,0) + (Vector3.forward + direction) * 2.5f;
         var axis = Vector3.Cross(Vector3.back, direction);
-        Debug.Log(anchor);
-        Debug.Log(axis);
-        Debug.Log(transform.Find("Cube").position);
 
         for (var i = 0; i < 90 / 3; i++) {
             transform.Find("Cube").RotateAround(anchor, axis, 3);
             yield return new WaitForSeconds(0.01f);
         }
 
-        //while(elapsedTime < moveSpeed)
-        //{
-        //    transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
-        //    elapsedTime += Time.deltaTime;
-        //    yield return null;
-        //}
         transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
 
         transform.position = targetPos;
         myPosition=myPosition+direction;
 
-        //Debug.Log(myPosition);
+        isMoving = false;
+    }
+    public void startRockPlayer(Vector3 direction)
+    {
+        StartCoroutine(rockPlayer(direction));
+    }
+    public IEnumerator rockPlayer(Vector3 direction)
+    {
+        isMoving = true;
+        float elapsedTime=0;
+
+        Vector3 origPos = transform.position;
+        Vector3 targetPos = origPos + direction*5;
+        var anchor = transform.position+new Vector3(0,0,0) + (Vector3.forward + direction) * 2.5f;
+        var axis = Vector3.Cross(Vector3.back, direction);
+
+        for (var i = 0; i < 10 / 3; i++) {
+            transform.Find("Cube").RotateAround(anchor, axis, 3);
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        for (var i = 0; i < 10 / 3; i++) {
+            transform.Find("Cube").RotateAround(anchor, axis, -3);
+            yield return new WaitForSeconds(0.06f);
+        }
+        transform.Find("Cube").RotateAround(anchor, axis, -3);
+        yield return new WaitForSeconds(0.01f);
+        transform.Find("Cube").RotateAround(anchor, axis, 3);
+        yield return new WaitForSeconds(0.01f);
+        transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
+
+        //transform.position = origPos;
+        //myPosition=origPos;
+
         isMoving = false;
     }
     public Vector3 getPosition()
     {
-
-        return new Vector3((int)myPosition.x, (int)myPosition.y, (int)myPosition.z);
+        return myPosition;
     }
     public void setPosition(Vector3 newPos)
     {
@@ -166,9 +178,9 @@ public class PlayerController : MonoBehaviour
     {
         return moveTo;
     }
-    public void setMoveTo(int x, int y, int z)
+    public void setMoveTo(Vector3 _moveTo)
     {
-        moveTo = new Vector3(x,y,z);
+        moveTo = _moveTo;
     }
     public Color getCol()
     {

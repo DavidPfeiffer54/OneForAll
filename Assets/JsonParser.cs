@@ -11,32 +11,15 @@ public class JsonParser : MonoBehaviour
     }
     public void readFile()
     {
-          // Load the JSON file from the Resources folder
+        // Load the JSON file from the Resources folder
         TextAsset jsonFile = Resources.Load<TextAsset>("levelDescriptor");
-
         string jsonString = jsonFile.text;
 
         // Parse the JSON file using JsonUtility class
         LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
-
-        //LevelData levelData = JsonUtility.FromJson<LevelData>(jsonData);
-
-        // Access the parsed data
-        levelData = wrapper.levels;
-        Debug.Log(levelData.Count);
-
-        // Loop through each level and print the number of cells
-        foreach (LevelData level in levelData)
-        {
-            Debug.Log(level);
-            //Debug.Log(level.walls);
-            //Debug.Log(level.cells);
-            //Debug.Log(level.cells[0]);
-            //Debug.Log(level.cells[1]);
-        }      
+        levelData = wrapper.levels;   
     }
 }
-
 
 [System.Serializable]
 public class LevelData {
@@ -59,21 +42,3 @@ public class LevelWrapper
 {
     public List<LevelData> levels;
 }
-//
-//[System.Serializable]
-//public class LevelData
-//{
-//    public int[][] cells;
-//    public int[][] walls;
-//    public int[][] goals;
-//    public int[][] playerStarts;
-//    public int[][] buttons;
-//    public ColorChange[] colorChange;
-//}
-//
-//[System.Serializable]
-//public class ColorChange
-//{
-//    public int[] loc;
-//    public string color;
-//}

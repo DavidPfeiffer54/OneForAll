@@ -20,23 +20,28 @@ public class PlayerManager : MonoBehaviour
     {
         
     }
+    
     public bool isPlayerAt(Vector3 loc)
     {
-        foreach (GameObject p in players)
-        {
-            if(p.GetComponent<PlayerController>().getPosition() == loc)
-                return true;
-        }
-        return false;
+        return players.Any(p => p.GetComponent<PlayerController>().getPosition() == loc);
     }
+
     public bool isPlayerMovingTo(Vector3 loc)
+    {
+        return players.Any(p => p.GetComponent<PlayerController>().getMoveTo() == loc);
+    }
+
+    public bool isPlayerMovingTo(Vector3 loc, GameObject[] playerlist)
+    {
+        return playerlist.Any(p => p.GetComponent<PlayerController>().getMoveTo() == loc);
+    }
+
+    public void resetMoveTo()
     {
         foreach (GameObject p in players)
         {
-            if(p.GetComponent<PlayerController>().getMoveTo() == loc)
-            return true;
+            p.GetComponent<PlayerController>().setMoveTo(new Vector3(-1,-1, -1));
         }
-        return false;
     }
 
     public void setUpPlayers(GameObject leveInfo)
@@ -63,6 +68,7 @@ public class PlayerManager : MonoBehaviour
         players = newPlayers.ToArray();
 
     }
+
     public GameObject[] SortPlayersByDirection(Vector2Int direction)
     {
         // Check if the direction vector is valid
@@ -95,6 +101,7 @@ public class PlayerManager : MonoBehaviour
         }
         return players;
     }
+
     public GameObject[] GetPlayersAtDepth(int depth) 
     {
         return players.Where(player => player.GetComponent<PlayerController>().getPosition().z == depth).ToArray();

@@ -13,7 +13,6 @@ public class LevelInfo : MonoBehaviour
     public Dictionary<Vector3, GameObject> goals;
     public Dictionary<Vector3, GameObject> colorChanges;
 
-
     [SerializeField] private GameObject gridCellPrefab;
     [SerializeField] private GameObject gridWallPrefab;
     [SerializeField] private GameObject playerStartPrefab;
@@ -22,21 +21,16 @@ public class LevelInfo : MonoBehaviour
 
     public Dictionary<string, Color> colorDictionary;
 
-
-
-    
-
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame
     void Update()
-    {
-        
+    {    
     }
+
     void awake()
     {
         cells = new Dictionary<Vector3, GameObject>();
@@ -65,7 +59,7 @@ public class LevelInfo : MonoBehaviour
             cells[cell].GetComponent<GridCell>().setPosition((int)cell.x, (int)cell.y, (int)cell.z);
             cells[cell].transform.parent = transform;
             cells[cell].gameObject.name = "Grid Space(" + cell.x.ToString() + " , " + cell.y.ToString()  + " , " + cell.z.ToString() + " )";
-]        }
+        }
         foreach(Vector3 wall in ld.walls)
         {
             walls[wall] = Instantiate (gridWallPrefab, wall*5 + new Vector3(0,0,-2.5f), Quaternion.identity);
@@ -98,5 +92,4 @@ public class LevelInfo : MonoBehaviour
             colorChanges[ccg.loc].gameObject.name = "Color Change(" + ccg.loc.ToString() + " )";
         }
     }
-
 }
