@@ -87,38 +87,6 @@ public class GamePlayController : MonoBehaviour
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
         isMoving=false;
-        //players[0] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
-        //players[0].GetComponent<PlayerController>().setPosition(new Vector3(1,3,1));
-        //players[0].GetComponent<PlayerController>().playerName="bob";
-        //players[0].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.red;
-        //players[1] = Instantiate (playerPrefab, new Vector3(0,0), Quaternion.identity);
-        //players[1].GetComponent<PlayerController>().setPosition(new Vector3(3,1,1));
-        //players[1].GetComponent<PlayerController>().playerName="susan";
-        //players[1].transform.Find("player").GetComponent<SpriteRenderer>().color=Color.blue;
-        //
-        //int[,] level1Walls = new int[,] {{0,0},{1,0},{0,1},{0,3},{0,4},{1,4},{3,4},{4,4},{4,3},{4,1},{4,0},{3,0},{2,2}};
-        //for(int i = 0; i < level1Walls.Length/2; i++)
-        //{
-        //    Debug.Log(i);
-        //    Debug.Log(level1Walls.Length);
-        //    walls[i] = Instantiate (wallPrefab, new Vector3(0,0), Quaternion.identity);
-        //    walls[i].GetComponent<GameWall>().setPosition(level1Walls[i,0], level1Walls[i,1], 1);
-        //}
-
-        //for(int i = 0; i < 6; i++)
-        //{
-        //    walls[i] = Instantiate (wallPrefab, new Vector3(0,0), Quaternion.identity);
-        //    walls[i].GetComponent<GameWall>().setPosition(i+1, i+1);
-        //}
-
-        //goals[0] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
-        //goals[0].GetComponent<GameGoal>().setPosition(0,2);
-        //goals[0].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.red;
-        //
-        //goals[1] = Instantiate (goalPrefab, new Vector3(0,0), Quaternion.identity);
-        //goals[1].GetComponent<GameGoal>().setPosition(2,4);
-        //goals[1].transform.Find("goal").GetComponent<SpriteRenderer>().color=Color.blue;
-
     }
 
     public IEnumerator canMove(Vector3 dir)
@@ -140,23 +108,10 @@ public class GamePlayController : MonoBehaviour
 
                 bool hitSomething = false;
 
-                //This should be isWallAt/isCellAt and checks a hash table.
                 if(levelManager.GetComponent<LevelManager>().isWallAt(playerMoveTo)) hitSomething = true;
-                            //foreach (GameObject w in walls) //cannot move into walls
-                            //{
-                            //    if(playerMoveTo == w.GetComponent<GameWall>().getPosition())
-                            //    {
-                            //        hitSomething = true;
-                            //    }
-                            //}
+
                 if(levelManager.GetComponent<LevelManager>().isCellAt(playerMoveTo)) hitSomething = true;
-                            //foreach (GameObject c in cells) //cannot move into cells on the same level
-                            //{
-                            //    if(playerMoveTo == c.GetComponent<GameWall>().getPosition())
-                            //    {
-                            //        hitSomething = true;
-                            //    }
-                            //}
+
 
                 //is there a player in your direction
                 for(int j =0; j<i; j++) //cannot move onto players on the same level. only check in dir
@@ -168,25 +123,19 @@ public class GamePlayController : MonoBehaviour
                 }
 
                 //is anyone on top of you
-                foreach (GameObject op in players) //cannot move if someone is on top of you
-                {
-                    if(p.getPosition() + new Vector3(0,0,-1) ==  op.GetComponent<PlayerController>().getPosition())
-                    {
-                        hitSomething = true;
-                    }                       
-                }
-                //Do i need a "is the next space a moveable onto space?" (cell or top of character)
-                //so we do not move onto a wall? 
-
-
-                //Debug.Log(p.playerName);
-                //Debug.Log(hitSomething);
+                if(playerManager.GetComponent<PlayerManager>().isPlayerAt(p.getPosition() + new Vector3(0,0,-1))) hitSomething = true;
+                //foreach (GameObject op in players) //cannot move if someone is on top of you
+                //{
+                //    if(p.getPosition() + new Vector3(0,0,-1) ==  op.GetComponent<PlayerController>().getPosition())
+                //    {
+                //        hitSomething = true;
+                //    }                       
+                //}
 
                 //if you didnt hit anything, set moveto
                 if(!hitSomething)
                 {
                     p.setMoveTo((int)playerMoveTo.x, (int)playerMoveTo.y, (int)playerMoveTo.z);
-                    //StartCoroutine(p.movePlayer(dir));
                     p.startMovePlayer(dir);
                 }
                 else
@@ -200,23 +149,11 @@ public class GamePlayController : MonoBehaviour
         //if any players are moving, exit
         foreach (GameObject p in players)
         {
-            while(p.GetComponent<PlayerController>().isMoving)
-            {
-                yield return null;
-            }
+            while(p.GetComponent<PlayerController>().isMoving){ yield return null;}
         }
 
         //if any of the characters are out of bounds, set to falling
-        bool playerFallToInfinity = false;
-        //foreach (GameObject p in players)
-        //{
-        //    PlayerController player=p.GetComponent<PlayerController>();
-        //    if(checkOutOfBounds(p))
-        //    {
-        //        playerFallToInfinity = true;
-        //        StartCoroutine(player.movePlayerFall(dir));
-        //    }
-        //}
+        
 
         //reset moveto
         foreach (GameObject p in players)
@@ -224,13 +161,10 @@ public class GamePlayController : MonoBehaviour
             p.GetComponent<PlayerController>().setMoveTo(-1,-1, -1);
         }
 
-        //THIS IS TODO
-        //check fall down a level
-        int breakout = 0;
+        bool playerFallToInfinity = false;
         bool checkForFallers = true;
-        while(checkForFallers && breakout < 20)
+        while(checkForFallers)
         {
-            breakout = breakout + 1;
             foreach (GameObject p in players)
             {
                 while(p.GetComponent<PlayerController>().isMoving)
@@ -274,10 +208,7 @@ public class GamePlayController : MonoBehaviour
         //wait for players to stop moving
         foreach (GameObject p in players)
         {
-            while(p.GetComponent<PlayerController>().isMoving)
-            {
-                yield return null;
-            }
+            while(p.GetComponent<PlayerController>().isMoving){ yield return null;}
         }
 
         //reset moveto
@@ -288,11 +219,24 @@ public class GamePlayController : MonoBehaviour
 
 
 
-        //reset if necessary 
-        if(playerFallToInfinity)
+        //reset moveto
+        foreach (GameObject p in players)
         {
-            resetLevel();
+            GameObject colorChange = levelManager.GetComponent<LevelManager>().getColorChangeAt(p.GetComponent<PlayerController>().getPosition());
+            if(colorChange && p.GetComponent<PlayerController>().getCol() != colorChange.GetComponent<ColorChange>().getCol())
+            {
+                p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange);
+            }
         }
+
+        //wait for players to stop moving
+        foreach (GameObject p in players)
+        {
+            while(p.GetComponent<PlayerController>().isMoving){ yield return null;}
+        }
+
+        //reset if necessary 
+        if(playerFallToInfinity){ resetLevel();}
 
         levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
 

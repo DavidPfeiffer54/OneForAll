@@ -301,6 +301,7 @@ MonoBehaviour:
   playerManager: {fileID: 1787162878360525107, guid: b6e59bb11465941b695d88acdc42125d, type: 3}
   isMoving: 0
   currentLevel: 0
+  maxLevel: 3
   mainMenu: MainMenu
 --- !u!4 &352462182
 Transform:

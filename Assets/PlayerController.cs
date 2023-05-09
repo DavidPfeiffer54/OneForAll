@@ -23,13 +23,44 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
     }
+    public void startPlayerChangeColor(GameObject colorChange)
+    {
+        StartCoroutine(playerChangeColor(colorChange));
+    }
+    public IEnumerator playerChangeColor(GameObject colorChange)
+    {
+        isMoving = true;
+        Color origCol = getCol();
+        Color targetCol = colorChange.GetComponent<ColorChange>().getCol();
+        float elapsedTime=0;
+        while(elapsedTime < moveSpeed)
+        {
+            //transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
+            Color currentColor = Color.Lerp(origCol, targetCol, elapsedTime/moveSpeed);
+
+            MeshRenderer cubeRenderer = transform.Find("Cube").GetComponent<MeshRenderer>();
+            Material newMaterial = new Material(Shader.Find("Standard"));
+            newMaterial.color = currentColor;
+            cubeRenderer.material = newMaterial;
+            setCol(targetCol);
+
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        //transform.position = targetPos;
+        //myPosition=myPosition+direction;
+
+        //Debug.Log(myPosition);
+        isMoving = false;
+    }
     public void startMovePlayerFallDown()
     {
         StartCoroutine(movePlayerFallDown(new Vector3(0,0,1)));
     }
     public IEnumerator movePlayerFallDown(Vector3 direction)
     {
-        Debug.Log("Falling Down");
         isMoving = true;
         Vector3 origPos = transform.position;
         Vector3 targetPos = origPos + direction*5;
@@ -38,11 +69,8 @@ public class PlayerController : MonoBehaviour
         float elapsedTime=0;
         while(elapsedTime < moveSpeed)
         {
-            Debug.Log("nonnoooooooonon");
             transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
             elapsedTime += Time.deltaTime;
-
-
             yield return null;
         }
         transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);

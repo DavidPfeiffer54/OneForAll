@@ -56,7 +56,13 @@ public class LevelManager : MonoBehaviour
     }
     public bool isGoalAt(Vector3 loc)
     {
-        return false;
+        return currentLevel.GetComponent<LevelInfo>().goals.ContainsKey(loc);
+    }
+    public GameObject getColorChangeAt(Vector3 loc)
+    {
+        if(currentLevel.GetComponent<LevelInfo>().colorChanges.ContainsKey(loc))
+            return currentLevel.GetComponent<LevelInfo>().colorChanges[loc];
+        return null;
     }
 
     public GameObject getCurrentLevel()

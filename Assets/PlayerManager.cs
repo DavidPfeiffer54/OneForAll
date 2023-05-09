@@ -41,7 +41,6 @@ public class PlayerManager : MonoBehaviour
 
     public void setUpPlayers(GameObject leveInfo)
     {
-        Debug.Log("hihihihihihihihihihih");
         foreach (GameObject obj in players)
         {
             Destroy(obj);
@@ -62,7 +61,6 @@ public class PlayerManager : MonoBehaviour
             newPlayers.Add(newPlayer);
         }
         players = newPlayers.ToArray();
-        Debug.Log("bybybybybybybybyb");
 
     }
     public GameObject[] SortPlayersByDirection(Vector2Int direction)

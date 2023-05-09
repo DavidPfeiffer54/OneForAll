@@ -45,7 +45,7 @@ public class LevelData {
     public LocColorData[] goals;
     public LocColorData[] playerStarts;
     public Vector3[] buttons;
-    //public List<ColorChangeData> colorChange;
+    public LocColorData[] colorChange;
 }
 
 [System.Serializable]
