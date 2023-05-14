@@ -7,8 +7,11 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[] levels;
     public int currentLevelID;
-    [SerializeField] private GameObject LevelPrefab;
     GameObject currentLevel;
+
+    
+    [SerializeField] private GameObject LevelPrefab;
+    [SerializeField] private GameObject jsonParserPrefab;
 
 
     private Dictionary<string, int> cells;
@@ -17,7 +20,6 @@ public class LevelManager : MonoBehaviour
     private Dictionary<string, int> buttons;
     private Dictionary<string, int> players;
 
-    [SerializeField] private GameObject jsonParserPrefab;
     private GameObject jsonParser;
 
     void Start()

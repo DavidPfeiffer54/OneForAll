@@ -71,6 +71,10 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject[] SortPlayersByDirection(Vector2Int direction)
     {
+        //var result = _db.Employee
+        //      .OrderBy( e => e.EmpName )  //OrderBy and SortBy empname  Ascending
+        //      .ThenBy( ed => ed.EmpAddress ); //orderby address ascending
+
         // Check if the direction vector is valid
         if (Mathf.Abs(direction.x) + Mathf.Abs(direction.y) != 1)
         {

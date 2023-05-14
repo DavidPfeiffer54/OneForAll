@@ -100,16 +100,16 @@ public class GamePlayController : MonoBehaviour
                 else
                 {
                     p.startRockPlayer(dir);
-
                     p.setMoveTo(p.getPosition());
                 }
             }
         }
+
         while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
-        playerManager.GetComponent<PlayerManager>().resetMoveTo();
-        levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
+        playerManager.GetComponent<PlayerManager>().resetMoveTo(); // playerController could do this on its own when its done moving
+        levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players); //Level Manager could do this on its own without being prompted
 
-
+        //TODO: This could be a single line, or even taken care of by the level manager itself not being prompted
         foreach (GameObject p in players)
         {
             GameObject colorChange = levelManager.GetComponent<LevelManager>().getColorChangeAt(p.GetComponent<PlayerController>().getPosition());
@@ -118,8 +118,9 @@ public class GamePlayController : MonoBehaviour
                 p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange);
             }
         }
-        while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
-        playerManager.GetComponent<PlayerManager>().resetMoveTo();
+
+        while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null; //I dont think we need this, as the things doen between the last wait arent timed
+        playerManager.GetComponent<PlayerManager>().resetMoveTo(); //see above
 
         bool playerFallToInfinity = false;
         bool checkForFallers = true;
@@ -128,7 +129,8 @@ public class GamePlayController : MonoBehaviour
             while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
             checkForFallers = false;
 
-
+            //TODO: Bring this into the Player Manager
+            //this doubleloop could be changed to a single orderby.thenby
             for(int d = 10; d>=0; d--) 
             {
                 GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
@@ -153,7 +155,6 @@ public class GamePlayController : MonoBehaviour
                     }
                 }
             }
-            //checkForFallers=false;
         }
 
         while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
@@ -175,8 +176,8 @@ public class GamePlayController : MonoBehaviour
         //reset if necessary 
         if(playerFallToInfinity){ resetLevel(); }
 
+        //could be taken out and ch?
         levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
-
         if(levelManager.GetComponent<LevelManager>().isLevelComplete())
         {
             Debug.Log("**************");
@@ -220,14 +221,5 @@ public class GamePlayController : MonoBehaviour
     {
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
-        //players[0].GetComponent<PlayerController>().setPosition(1,3,1);
-    }
-    private bool checkOutOfBounds(GameObject p)
-    {
-        if(p.GetComponent<PlayerController>().getMoveTo().x > 4) return true;
-        if(p.GetComponent<PlayerController>().getMoveTo().y > 4) return true;
-        if(p.GetComponent<PlayerController>().getMoveTo().x < 0) return true;
-        if(p.GetComponent<PlayerController>().getMoveTo().y < 0) return true;
-        return false;
     }
 }
