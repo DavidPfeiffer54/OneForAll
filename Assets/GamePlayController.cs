@@ -237,7 +237,7 @@ public class GamePlayController : MonoBehaviour
         currentLevel = currentLevel + 1;
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0,0), Quaternion.identity);
 
-        if(currentLevel>=maxLevel)
+        if(currentLevel>=LevelSelector.maxLevels)
         {
             youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
             Time.timeScale = 0f;

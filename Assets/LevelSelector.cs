@@ -8,6 +8,7 @@ public class LevelSelector : MonoBehaviour
 {
     [SerializeField] private GameObject jsonParserPrefab;
     [SerializeField] private GameObject levelSelectItemPrefab;
+    public static int maxLevels;
 
 
     // Start is called before the first frame update
@@ -15,9 +16,10 @@ public class LevelSelector : MonoBehaviour
     {
         GameObject jsonParser = Instantiate (jsonParserPrefab, new Vector3(0,0), Quaternion.identity);
         jsonParser.GetComponent<JsonParser>().readFile();
-        int numberOfLevels = jsonParser.GetComponent<JsonParser>().levelData.Count;
+        maxLevels = jsonParser.GetComponent<JsonParser>().levelData.Count;
+
         GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
-        for(int i = 0; i < numberOfLevels; i++)
+        for(int i = 0; i < maxLevels; i++)
         {
             GameObject levelSelectItem = Instantiate(levelSelectItemPrefab, new Vector3(0,0), Quaternion.identity);
             levelSelectItem.GetComponent<RectTransform>().localPosition = new Vector3(0f, 0f, 0f);
