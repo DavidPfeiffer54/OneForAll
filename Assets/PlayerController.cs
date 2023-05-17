@@ -189,6 +189,10 @@ public class PlayerController : MonoBehaviour
     public void setCol(Color newCol)
     {
         col = newCol;
+        MeshRenderer cubeRenderer = transform.Find("Cube").GetComponent<MeshRenderer>();
+        Material newMaterial = new Material(Shader.Find("Standard"));
+        newMaterial.color = col;
+        cubeRenderer.material = newMaterial;
     }
 
 }

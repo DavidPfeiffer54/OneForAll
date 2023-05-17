@@ -4,6 +4,17 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.SceneManagement;
 
+public class MoveHistory
+{
+    public Vector3 position;
+    public Color col;
+    public MoveHistory(Vector3 _position, Color _col)
+    {
+        position = _position;
+        col = _col;
+    }
+}
+
 public class GamePlayController : MonoBehaviour
 {
 
@@ -31,11 +42,14 @@ public class GamePlayController : MonoBehaviour
     public int currentLevel = 0;
     public int maxLevel = 3;
     public string mainMenu = "MainMenu";
+    List<Dictionary<GameObject, MoveHistory>> moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
     // Start is called before the first frame update
     void Start()
     {
         currentLevel=0;
+        currentLevel=LevelSelectItem.selectedLevel;
+        moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         loadlevel();
     }
 
@@ -50,6 +64,7 @@ public class GamePlayController : MonoBehaviour
             else if (Input.GetKey(KeyCode.LeftArrow)) moveCoroutine = StartCoroutine(canMove(Vector3.left));
             else if (Input.GetKey(KeyCode.RightArrow))moveCoroutine = StartCoroutine(canMove(Vector3.right));
             else if (Input.GetKey(KeyCode.DownArrow))moveCoroutine = StartCoroutine(canMove(Vector3.down));
+            else if (Input.GetKeyDown(KeyCode.B)) goBack();
         }
     }
 
@@ -62,6 +77,7 @@ public class GamePlayController : MonoBehaviour
 
     public void loadlevel()
     {
+        moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         players = new GameObject[2];
         walls = new GameObject[13];
         goals = new GameObject[2];
@@ -70,11 +86,36 @@ public class GamePlayController : MonoBehaviour
         players = playerManager.GetComponent<PlayerManager>().players;
         isMoving=false;
     }
+    public void goBack()
+    {
+        if(moveLists.Count > 0)
+        {
+            Debug.Log("back");
+            Dictionary<GameObject, MoveHistory> vector3Dict = moveLists[moveLists.Count - 1];
+            moveLists.RemoveAt(moveLists.Count - 1);  
+            foreach (KeyValuePair<GameObject, MoveHistory> pair in vector3Dict)
+            {
+                pair.Key.GetComponent<PlayerController>().setPosition(pair.Value.position);
+                pair.Key.GetComponent<PlayerController>().setCol(pair.Value.col);
+            }
+        }
+        levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
+        
 
+    }
     public IEnumerator canMove(Vector3 dir)
     {
         isMoving = true;
+
         players = playerManager.GetComponent<PlayerManager>().SortPlayersByDirection(new Vector2Int((int)dir.x, (int)dir.y));
+
+        Dictionary<GameObject, MoveHistory> vector3Dict = new Dictionary<GameObject, MoveHistory>();
+        foreach (GameObject p in players)
+        {
+            vector3Dict[p] = new MoveHistory(p.GetComponent<PlayerController>().getPosition(), p.GetComponent<PlayerController>().getCol());
+        }
+        moveLists.Add(vector3Dict);
+
         //TODO:: FIND DEPTH INHERENTLY
         for(int d = 0; d<5; d++)
         {
@@ -178,6 +219,8 @@ public class GamePlayController : MonoBehaviour
 
         //could be taken out and ch?
         levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
+
+
         if(levelManager.GetComponent<LevelManager>().isLevelComplete())
         {
             Debug.Log("**************");
@@ -221,5 +264,7 @@ public class GamePlayController : MonoBehaviour
     {
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
+        moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+
     }
 }
