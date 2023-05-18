@@ -240,6 +240,8 @@ public class GamePlayController : MonoBehaviour
         if(currentLevel>=LevelSelector.maxLevels)
         {
             youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
+            moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(2.0f);
             Destroy(youwin);   
@@ -248,6 +250,8 @@ public class GamePlayController : MonoBehaviour
         }
         else
         {
+            moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(2.0f);
             Destroy(youwin);
