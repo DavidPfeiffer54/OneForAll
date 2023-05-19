@@ -234,13 +234,48 @@ public class GamePlayController : MonoBehaviour
     }
     public IEnumerator levelComplete()
     {
-        PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 2);
-        currentLevel = currentLevel + 1;
-        PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 0); //Set the next level to be available
+
+        int starsScored = 0;
+        if(moveLists.Count <= levelManager.GetComponent<LevelManager>().getThreeStarThreshold())
+        {
+            starsScored=3;
+            //PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 3);
+        }
+        else if(moveLists.Count <= levelManager.GetComponent<LevelManager>().getTwoStarThreshold())
+        {
+            starsScored=2;
+            //PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 2);
+        }
+        else
+        {
+            starsScored=1;
+            //PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 1);
+        }
+        int previousStarRecord = PlayerPrefs.GetInt("Level_" + currentLevel.ToString(), -1);
+
+
+        Debug.Log("######");
+        Debug.Log(moveLists.Count);
+        Debug.Log(levelManager.GetComponent<LevelManager>().getThreeStarThreshold());
+        Debug.Log(levelManager.GetComponent<LevelManager>().getTwoStarThreshold());
+        Debug.Log(starsScored);
+        Debug.Log(previousStarRecord);
+        Debug.Log("######");
+
+
+        if(starsScored > previousStarRecord)
+            PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), starsScored);
+
+        
+        int nextLevel = currentLevel + 1;
+        int nextLevelStars = PlayerPrefs.GetInt("Level_" + nextLevel.ToString(), -1);
+        if(nextLevelStars == -1)
+            PlayerPrefs.SetInt("Level_" + nextLevel.ToString(), 0); //Set the next level to be available UNLESS ITS ALREADY BEEN DONE
 
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0,0), Quaternion.identity);
 
-        if(currentLevel>=LevelSelector.maxLevels)
+        currentLevel = nextLevel;
+        if(nextLevel>=LevelSelector.maxLevels)
         {
             youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
             moveLists = new List<Dictionary<GameObject, MoveHistory>>();

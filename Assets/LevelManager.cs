@@ -110,7 +110,14 @@ public class LevelManager : MonoBehaviour
         return true;
 
     }
-
+    public int getTwoStarThreshold()
+    {
+        return currentLevel.GetComponent<LevelInfo>().twoStarThreshold;
+    }
+    public int getThreeStarThreshold()
+    {
+        return currentLevel.GetComponent<LevelInfo>().threeStarThreshold;
+    }
     // Update is called once per frame
     void Update()
     {

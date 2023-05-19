@@ -7,6 +7,8 @@ public class LevelInfo : MonoBehaviour
     public int level_num;
     public int width;
     public int height;
+    public int twoStarThreshold;
+    public int threeStarThreshold;
     public Dictionary<Vector3, GameObject> cells;
     public Dictionary<Vector3, GameObject> walls;
     public Dictionary<Vector3, GameObject> playerStarts;
@@ -41,6 +43,9 @@ public class LevelInfo : MonoBehaviour
     }
     public void setLevel(int  level_num, LevelData ld)
     {
+        twoStarThreshold = ld.twoStarThreshold;
+        threeStarThreshold = ld.threeStarThreshold;
+
         colorDictionary = new Dictionary<string, Color>();
         colorDictionary["grey"]=Color.grey;
         colorDictionary["red"]=Color.red;

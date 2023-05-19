@@ -23,6 +23,8 @@ public class JsonParser : MonoBehaviour
 
 [System.Serializable]
 public class LevelData {
+    public int twoStarThreshold;
+    public int threeStarThreshold;
     public Vector3[] cells;
     public Vector3[] walls;
     public LocColorData[] goals;
