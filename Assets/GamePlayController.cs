@@ -234,7 +234,10 @@ public class GamePlayController : MonoBehaviour
     }
     public IEnumerator levelComplete()
     {
+        PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 2);
         currentLevel = currentLevel + 1;
+        PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), 0); //Set the next level to be available
+
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0,0), Quaternion.identity);
 
         if(currentLevel>=LevelSelector.maxLevels)

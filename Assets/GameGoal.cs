@@ -38,8 +38,9 @@ public class GameGoal : MonoBehaviour
         transform.Find("Cube11").GetComponent<MeshRenderer>().material = newMaterial;
 
         Material newMaterial2 = Instantiate(transMat);
-        newCol.a = .1f;
-        newMaterial2.color = newCol;       
+        Color nc2 = new Color(newCol.r, newCol.g, newCol.b, newCol.a);
+        nc2.a = .1f;
+        newMaterial2.color = nc2;       
         transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
 
     }

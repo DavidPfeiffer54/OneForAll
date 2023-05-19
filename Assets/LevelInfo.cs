@@ -46,6 +46,7 @@ public class LevelInfo : MonoBehaviour
         colorDictionary["red"]=Color.red;
         colorDictionary["blue"]=Color.blue;
         colorDictionary["green"]=Color.green;
+        colorDictionary["gold"]=Color.yellow;
 
         cells = new Dictionary<Vector3, GameObject>();
         walls = new Dictionary<Vector3, GameObject>();

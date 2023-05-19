@@ -31,28 +31,57 @@ public class LevelSelectItem : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
     }
-    public void setLevelSelectItem(int _levelID, bool _isLocked, int _numStars)
+    public void setLevelSelectItem(int _levelID, int _numStars)
     {
+
         levelID = _levelID;
-        isLocked = _isLocked;
         numStars = _numStars;
-        Debug.Log("hi");
-        Debug.Log(transform);
-        Debug.Log(transform.GetComponentInChildren<Button>());
-        Debug.Log(transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>());
+        isLocked = numStars < 0;
+
+        Debug.Log(levelID);
+        transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text="Level "+levelID.ToString();
+
+        if(isLocked)
+        {
+            transform.Find("lock").gameObject.SetActive(true);
+            transform.Find("Button").gameObject.SetActive(false);
+
+            setStars(numStars);
+        }
+        else
+        {
+            transform.Find("lock").gameObject.SetActive(false);
+            transform.Find("Button").gameObject.SetActive(true);
+
+            setStars(numStars);
+        }
+        //Debug.Log("hi");
+        //Debug.Log(transform);
+        //Debug.Log(transform.GetComponentInChildren<Button>());
+        //Debug.Log(transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>());
+
         //myText = GetComponent<TextMeshProUGUI>();
         //string textString = myText.text;
         //Debug.Log("Text: " + textString);
         //transform.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text="Level "+levelID.ToString();
         //Text.GetComponent<Text>().text="Level "+levelID.ToString();
-        transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text="Level "+levelID.ToString();
-    }   
+    }
+    public void setStars(int numStars)
+    {
+        transform.Find("star1").gameObject.SetActive(false);
+        transform.Find("star2").gameObject.SetActive(false);
+        transform.Find("star3").gameObject.SetActive(false);
+        if(numStars >= 1){transform.Find("star1").gameObject.SetActive(true);} else{transform.Find("star1").gameObject.SetActive(false);}
+        if(numStars >= 2){transform.Find("star2").gameObject.SetActive(true);} else{transform.Find("star2").gameObject.SetActive(false);}
+        if(numStars >= 3){transform.Find("star3").gameObject.SetActive(true);} else{transform.Find("star3").gameObject.SetActive(false);}
+       
+    }
     public void OnRectTransformDimensionsChange()
     {
         //rectTransform = GetComponent<RectTransform>();
         //Debug.Log("Rezise");
         //float scaleFactor = rectTransform.rect.width / rectTransform.rect.height;
-//
+        //
         //foreach (Transform child in transform)
         //{
         //    RectTransform childRectTransform = child.GetComponent<RectTransform>();

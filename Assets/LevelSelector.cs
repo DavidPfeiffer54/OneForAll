@@ -14,9 +14,13 @@ public class LevelSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+
+
         GameObject jsonParser = Instantiate (jsonParserPrefab, new Vector3(0,0), Quaternion.identity);
         jsonParser.GetComponent<JsonParser>().readFile();
         maxLevels = jsonParser.GetComponent<JsonParser>().levelData.Count;
+
 
         GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
         for(int i = 0; i < maxLevels; i++)
@@ -25,8 +29,14 @@ public class LevelSelector : MonoBehaviour
             levelSelectItem.GetComponent<RectTransform>().localPosition = new Vector3(0f, 0f, 0f);
             levelSelectItem.transform.SetParent(gridLayoutGroup.transform, false);
 
-            levelSelectItem.GetComponent<LevelSelectItem>().setLevelSelectItem(i, true, 0);
-            if(i == 0) levelSelectItem.GetComponent<LevelSelectItem>().isLocked = false;
+            int levelStars = 0;
+            if(i>0){levelStars = PlayerPrefs.GetInt("Level_" + i.ToString(), -1);}
+            else{levelStars = PlayerPrefs.GetInt("Level_" + i.ToString(), 0);}
+
+            levelSelectItem.GetComponent<LevelSelectItem>().setLevelSelectItem(i, levelStars);
+            
+
+            //if(i == 0) levelSelectItem.GetComponent<LevelSelectItem>().isLocked = false;
         
             //levelSelectItem.transform.SetParent(gridLayoutGroup.transform, false);
             //levelSelectItem.GetComponent<RectTransform>().localScale = Vector3.one;
