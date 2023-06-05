@@ -45,7 +45,12 @@
 			],
 			"buttons":
 			[
-					{"x": 3.0, "y": 0.0, "z": 0.0}
+					{ 
+					  "buttonLoc" : {"x": 0.0, "y": 0.0, "z": 2.0},
+					  "ghostLocStart" : {"x": 3.0, "y": 1.0, "z": 1.0},
+					  "ghostLocEnd" : {"x": 3.0, "y": 2.0, "z": 1.0},
+					  "col":"red"
+					}
 			],
 			"colorChange":
 			[

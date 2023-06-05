@@ -22,6 +22,7 @@ public class GamePlayController : MonoBehaviour
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject goalPrefab;
     [SerializeField] private GameObject gameGridPrefab;
+    [SerializeField] private GameObject ghostPrefab;
 
     [SerializeField] private GameObject levelManagerPrefab;
     [SerializeField] private GameObject playerManagerPrefab;

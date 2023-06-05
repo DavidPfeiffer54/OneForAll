@@ -14,12 +14,14 @@ public class LevelInfo : MonoBehaviour
     public Dictionary<Vector3, GameObject> playerStarts;
     public Dictionary<Vector3, GameObject> goals;
     public Dictionary<Vector3, GameObject> colorChanges;
+    public Dictionary<Vector3, GameObject> ghosts;
 
     [SerializeField] private GameObject gridCellPrefab;
     [SerializeField] private GameObject gridWallPrefab;
     [SerializeField] private GameObject playerStartPrefab;
     [SerializeField] private GameObject gridGoalPrefab;
     [SerializeField] private GameObject colorChangePrefab;
+    [SerializeField] private GameObject ghostPrefab;
 
     public Dictionary<string, Color> colorDictionary;
 
@@ -40,6 +42,7 @@ public class LevelInfo : MonoBehaviour
         goals = new Dictionary<Vector3, GameObject>();
         playerStarts = new Dictionary<Vector3, GameObject>();
         colorChanges = new Dictionary<Vector3, GameObject>();
+        ghosts = new Dictionary<Vector3, GameObject>();
     }
     public void setLevel(int  level_num, LevelData ld)
     {
@@ -51,13 +54,15 @@ public class LevelInfo : MonoBehaviour
         colorDictionary["red"]=Color.red;
         colorDictionary["blue"]=Color.blue;
         colorDictionary["green"]=Color.green;
-        colorDictionary["gold"]=Color.yellow;
+        colorDictionary["gold"]=new Color(255f/255f,200f/255f,0f/255f);
+        colorDictionary["tirq"]=new Color(0f/255f,255f/255f,255f/255f);
 
         cells = new Dictionary<Vector3, GameObject>();
         walls = new Dictionary<Vector3, GameObject>();
         goals = new Dictionary<Vector3, GameObject>();
         playerStarts = new Dictionary<Vector3, GameObject>();
         colorChanges = new Dictionary<Vector3, GameObject>();
+        ghosts = new Dictionary<Vector3, GameObject>();
 
         foreach(Vector3 cell in ld.cells)
         {
@@ -96,6 +101,15 @@ public class LevelInfo : MonoBehaviour
             colorChanges[ccg.loc].GetComponent<ColorChange>().setCol(colorDictionary[ccg.col]);
             colorChanges[ccg.loc].transform.parent = transform;
             colorChanges[ccg.loc].gameObject.name = "Color Change(" + ccg.loc.ToString() + " )";
+        }
+        foreach(ButtonPressedData bpd in ld.buttons)
+        {
+            ghosts[bpd.buttonLoc] = Instantiate(ghostPrefab, bpd.ghostLocStart*5, Quaternion.identity);
+            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setPositionStart(new Vector3(bpd.ghostLocStart.x, bpd.ghostLocStart.y, bpd.ghostLocStart.z));
+            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setPositionEnd(new Vector3(bpd.ghostLocEnd.x, bpd.ghostLocEnd.y, bpd.ghostLocEnd.z));
+            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setCol(colorDictionary[bpd.col]);
+            ghosts[bpd.buttonLoc].transform.parent = transform;
+            ghosts[bpd.buttonLoc].gameObject.name = "Button Press(" + bpd.buttonLoc.ToString() + " )";
         }
     }
 }

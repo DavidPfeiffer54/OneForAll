@@ -29,13 +29,21 @@ public class LevelData {
     public Vector3[] walls;
     public LocColorData[] goals;
     public LocColorData[] playerStarts;
-    public Vector3[] buttons;
+    public ButtonPressedData[] buttons;
     public LocColorData[] colorChange;
 }
 
 [System.Serializable]
 public class LocColorData {
     public Vector3 loc;
+    public string col;
+}
+
+[System.Serializable]
+public class ButtonPressedData {
+    public Vector3 buttonLoc;
+    public Vector3 ghostLocStart;
+    public Vector3 ghostLocEnd;
     public string col;
 }
 

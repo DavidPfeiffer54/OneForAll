@@ -47,8 +47,11 @@ MonoBehaviour:
   level_num: 0
   width: 0
   height: 0
+  twoStarThreshold: 0
+  threeStarThreshold: 0
   gridCellPrefab: {fileID: 3817093687244178888, guid: 2709a0108f09e41f791884f973bb6493, type: 3}
   gridWallPrefab: {fileID: 6156382544977937219, guid: 7de1ed17134754a4295d0fac22170e78, type: 3}
   playerStartPrefab: {fileID: 6135498625609829482, guid: 37eca103d93c24ec684327730b6208c0, type: 3}
   gridGoalPrefab: {fileID: 3952929475644569438, guid: bcc9d20950fbd4f14b3cfcea1faa6f84, type: 3}
   colorChangePrefab: {fileID: 2299145794626912787, guid: a12f92ec3c9814ea99c741c85b30b6a8, type: 3}
+  ghostPrefab: {fileID: 1172543726639417000, guid: d76615b4c211049eca4c5e91040153b3, type: 3}
