@@ -54,4 +54,4 @@ MonoBehaviour:
   playerStartPrefab: {fileID: 6135498625609829482, guid: 37eca103d93c24ec684327730b6208c0, type: 3}
   gridGoalPrefab: {fileID: 3952929475644569438, guid: bcc9d20950fbd4f14b3cfcea1faa6f84, type: 3}
   colorChangePrefab: {fileID: 2299145794626912787, guid: a12f92ec3c9814ea99c741c85b30b6a8, type: 3}
-  ghostPrefab: {fileID: 1172543726639417000, guid: d76615b4c211049eca4c5e91040153b3, type: 3}
+  buttonPrefab: {fileID: 2595956000457423280, guid: c21cc91f37fff418e82a01681317297a, type: 3}

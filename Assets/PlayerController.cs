@@ -50,6 +50,11 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(movePlayerFallDown(new Vector3(0,0,1)));
     }
+    public void startMovePlayerPushed(Vector3 direction)
+    {
+        StartCoroutine(movePlayerFallDown(direction));
+    }
+
     public IEnumerator movePlayerFallDown(Vector3 direction)
     {
         isMoving = true;

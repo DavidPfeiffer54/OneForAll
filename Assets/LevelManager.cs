@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class LevelManager : MonoBehaviour
 {
@@ -43,6 +45,10 @@ public class LevelManager : MonoBehaviour
     {
 
     }
+    public void moveCell(GameObject cellToMove, Vector3 newLocation)
+    {
+        currentLevel.GetComponent<LevelInfo>().moveCell(cellToMove, newLocation);
+    }
 
     public bool isCellAt(Vector3 loc)
     {
@@ -53,7 +59,7 @@ public class LevelManager : MonoBehaviour
         return currentLevel.GetComponent<LevelInfo>().walls.ContainsKey(loc);
     }
     public bool isPlayerAt(Vector3 loc)
-    {
+    {//???????????????????????????????????????????
         return false;
     }
     public bool isGoalAt(Vector3 loc)
@@ -110,6 +116,18 @@ public class LevelManager : MonoBehaviour
         return true;
 
     }
+
+
+    public GameObject[] getCells()
+    {
+        return currentLevel.GetComponent<LevelInfo>().cells.Values.ToArray();
+    }
+    public GameObject[] getButtons()
+    {
+        return currentLevel.GetComponent<LevelInfo>().buttons.Values.ToArray();
+    }
+
+
     public int getTwoStarThreshold()
     {
         return currentLevel.GetComponent<LevelInfo>().twoStarThreshold;

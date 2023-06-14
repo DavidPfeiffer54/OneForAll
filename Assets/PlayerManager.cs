@@ -21,6 +21,21 @@ public class PlayerManager : MonoBehaviour
         
     }
     
+    public GameObject getPlayerAt(Vector3 loc)
+    {
+        foreach (GameObject p in players)
+        {
+            if(p.GetComponent<PlayerController>().getPosition()==loc)
+            {
+                return p;
+            }
+        }
+        return null;        
+    }
+
+
+
+
     public bool isPlayerAt(Vector3 loc)
     {
         return players.Any(p => p.GetComponent<PlayerController>().getPosition() == loc);

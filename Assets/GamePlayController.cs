@@ -59,8 +59,15 @@ public class GamePlayController : MonoBehaviour
     {
         if (Time.timeScale == 0)
             return;
+
+        
+        //checkButtonPresses();
+        checkColorChangers();
+        checkFinishOrRestart();
         if (isMoving == false)
         {
+            StartCoroutine(checkForFallers());
+            
             if (Input.GetKey(KeyCode.UpArrow)) moveCoroutine = StartCoroutine(canMove(Vector3.up));
             else if (Input.GetKey(KeyCode.LeftArrow)) moveCoroutine = StartCoroutine(canMove(Vector3.left));
             else if (Input.GetKey(KeyCode.RightArrow))moveCoroutine = StartCoroutine(canMove(Vector3.right));
@@ -149,7 +156,30 @@ public class GamePlayController : MonoBehaviour
 
         while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
         playerManager.GetComponent<PlayerManager>().resetMoveTo(); // playerController could do this on its own when its done moving
+
+        isMoving = false;
+        yield return null;
+    }
+
+
+    public void checkFinishOrRestart()
+    {
         levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players); //Level Manager could do this on its own without being prompted
+
+        if(levelManager.GetComponent<LevelManager>().isLevelComplete())
+        {
+            Debug.Log("**************");
+            Debug.Log("Level Complete");
+            Debug.Log("**************");
+            StartCoroutine(levelComplete());
+        }
+        if(playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(9).Length > 0)
+        {
+            resetLevel();
+        }
+    }
+    public void checkColorChangers()
+    {
 
         //TODO: This could be a single line, or even taken care of by the level manager itself not being prompted
         foreach (GameObject p in players)
@@ -159,80 +189,167 @@ public class GamePlayController : MonoBehaviour
             {
                 p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange);
             }
-        }
-
-        while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null; //I dont think we need this, as the things doen between the last wait arent timed
-        playerManager.GetComponent<PlayerManager>().resetMoveTo(); //see above
+        }       
+    }
+    public IEnumerator checkForFallers()
+    {
+        isMoving = true;       
 
         bool playerFallToInfinity = false;
-        bool checkForFallers = true;
-        while(checkForFallers)
+
+        //TODO: Bring this into the Player Manager
+        //this doubleloop could be changed to a single orderby.thenby
+        for(int d = 10; d>=0; d--) 
         {
-            while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
-            checkForFallers = false;
-
-            //TODO: Bring this into the Player Manager
-            //this doubleloop could be changed to a single orderby.thenby
-            for(int d = 10; d>=0; d--) 
+            GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
+            foreach (GameObject p in PlayersAtDepth)
             {
-                GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
-                foreach (GameObject p in PlayersAtDepth)
+                if(levelManager.GetComponent<LevelManager>().isCellAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false
+                   && playerManager.GetComponent<PlayerManager>().isPlayerAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false)
                 {
-                    if(levelManager.GetComponent<LevelManager>().isCellAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false
-                       && playerManager.GetComponent<PlayerManager>().isPlayerAt(p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1)) == false)
-                    {
 
-                        Vector3 tmpvec = p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1);
-                        //TODO USE ACTUAL DEPTH
-                        if(tmpvec.z>=10)
-                        {
-                            playerFallToInfinity = true;
-                        }
-                        else
-                        {
-                            checkForFallers=true;
-                            p.GetComponent<PlayerController>().setMoveTo(tmpvec);
-                            p.GetComponent<PlayerController>().startMovePlayerFallDown();
-                        }
+                    Vector3 tmpvec = p.GetComponent<PlayerController>().getPosition() + new Vector3(0,0,1);
+                    //TODO USE ACTUAL DEPTH
+                    if(tmpvec.z>=10)
+                    {
+                        playerFallToInfinity = true;
+                    }
+                    else
+                    {
+                        p.GetComponent<PlayerController>().setMoveTo(tmpvec);
+                        p.GetComponent<PlayerController>().startMovePlayerFallDown();
                     }
                 }
             }
         }
+        
+        checkButtonPresses();
 
         while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
-        playerManager.GetComponent<PlayerManager>().resetMoveTo();
-
-        foreach (GameObject p in players)
-        {
-            GameObject colorChange = levelManager.GetComponent<LevelManager>().getColorChangeAt(p.GetComponent<PlayerController>().getPosition());
-            if(colorChange && p.GetComponent<PlayerController>().getCol() != colorChange.GetComponent<ColorChange>().getCol())
+        cells = levelManager.GetComponent<LevelManager>().getCells();
+        while(cells.Any(p => p.GetComponent<GridCell>().isMoving)) yield return null;
+        isMoving = false;
+    }
+    public bool isButtonPressed(GameObject button)
+    {
+        foreach (GameObject p in players){
+            if(button.GetComponent<GameButton>().getPosition() == p.GetComponent<PlayerController>().getPosition())
             {
-                p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange);
+                return true;
             }
         }
-
-        while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
-        playerManager.GetComponent<PlayerManager>().resetMoveTo();
-
-
-        //reset if necessary 
-        if(playerFallToInfinity){ resetLevel(); }
-
-        //could be taken out and ch?
-        levelManager.GetComponent<LevelManager>().setPlayersOnGoals(players);
-
-
-        if(levelManager.GetComponent<LevelManager>().isLevelComplete())
+        return false;
+    }
+    public void checkButtonPresses()
+    {
+        //isMoving = true;
+        
+        foreach(GameObject button in levelManager.GetComponent<LevelManager>().getButtons())
         {
-            Debug.Log("**************");
-            Debug.Log("Level Complete");
-            Debug.Log("**************");
-            StartCoroutine(levelComplete());
+            if(isButtonPressed(button))
+            {
+                Debug.Log("ButtonPressed@@@@@@@@@@@@@@");
+                if(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc() != button.GetComponent<GameButton>().getToMoveEnd())
+                {
+                    Debug.Log("NEEDS TO MOVE@@@@@@");
+                    Vector3 directionToMove = GetDirection(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc(), button.GetComponent<GameButton>().getToMoveEnd());
+                    pushItems(button.GetComponent<GameButton>().getObjectToMove(), directionToMove);
+                }
+            }
+            else
+            {
+                if(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc() != button.GetComponent<GameButton>().getToMoveStart())
+                {
+                    Debug.Log("NEEDS TO MOVENEEDS GO BACL@@@");
+
+                    Vector3 directionToMove = GetDirection(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc(), button.GetComponent<GameButton>().getToMoveStart());
+                    pushItems(button.GetComponent<GameButton>().getObjectToMove(), directionToMove);
+                }
+            }
         }
         
-        isMoving = false;
-        yield return null;
+        //while(RecursiveCanMovTo(bp.itemToMove, bp.toMoveTo))
+        //{
+        //    p.GetComponent<PlayerController>().startMovePlayerPush();
+        //}
     }
+    public Vector3 GetDirection(Vector3 currentLocation, Vector3 goalPosition)
+    {
+        // Calculate the difference between the goal position and the current location
+        Vector3 direction = goalPosition - currentLocation;
+        
+        // Normalize the direction vector to make it unit length
+        direction.Normalize();
+        
+        // Round the direction vector to the nearest axis
+        direction.x = Mathf.Round(direction.x);
+        direction.y = Mathf.Round(direction.y);
+        direction.z = Mathf.Round(direction.z);
+        
+        return direction;
+    }
+
+    public bool pushItems(GameObject obj, Vector3 dir)
+    {
+        Debug.Log(obj);
+        Debug.Log(dir);
+        // Check if the GameObject has the GridCell or Player component
+        GridCell gridCell = obj.GetComponent<GridCell>();
+        PlayerController player = obj.GetComponent<PlayerController>();
+
+        if (gridCell != null)
+        {
+            if(levelManager.GetComponent<LevelManager>().isWallAt(gridCell.getLoc()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(gridCell.getLoc()+dir))
+            {
+                return false;
+            }
+            if(playerManager.GetComponent<PlayerManager>().isPlayerAt(gridCell.getLoc()+dir))
+            {
+                if(!pushItems(playerManager.GetComponent<PlayerManager>().getPlayerAt(gridCell.getLoc()+dir), dir))
+                {
+                    return false;
+                }
+            }
+            Debug.Log("gridCell can move!");
+            gridCell.GetComponent<GridCell>().startMoveCellPushed(dir);
+            levelManager.GetComponent<LevelManager>().moveCell(obj, gridCell.getPosition()+dir);
+
+        }
+        else if (player != null)
+        {
+            if(levelManager.GetComponent<LevelManager>().isWallAt(player.getPosition()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(player.getPosition()+dir))
+            {
+                return false;
+            }
+            if(playerManager.GetComponent<PlayerManager>().isPlayerAt(player.getPosition()+dir))
+            {
+                if(!pushItems(playerManager.GetComponent<PlayerManager>().getPlayerAt(player.getPosition()+dir), dir))
+                {
+                    return false;
+                }
+            }
+            Debug.Log("player can move!");
+            player.GetComponent<PlayerController>().startMovePlayerPushed(dir);
+        }
+        else
+        {
+            // GameObject doesn't have the required component
+            Debug.LogError("Object does not have GridCell or Player component.");
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool RecursiveCanMovTo(Vector3 loc, Vector3 dir)
+    {
+
+        //if(isWallAt(loc+dir) || isCellAt(loc+dir)) return False;
+        //if(isPlayerAt(loc+dir))
+        //  return RecursiveCanMovTo(loc+dir, dir);
+        return true;
+    }
+
     public IEnumerator levelComplete()
     {
 
@@ -255,19 +372,9 @@ public class GamePlayController : MonoBehaviour
         int previousStarRecord = PlayerPrefs.GetInt("Level_" + currentLevel.ToString(), -1);
 
 
-        Debug.Log("######");
-        Debug.Log(moveLists.Count);
-        Debug.Log(levelManager.GetComponent<LevelManager>().getThreeStarThreshold());
-        Debug.Log(levelManager.GetComponent<LevelManager>().getTwoStarThreshold());
-        Debug.Log(starsScored);
-        Debug.Log(previousStarRecord);
-        Debug.Log("######");
-
-
         if(starsScored > previousStarRecord)
             PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), starsScored);
 
-        
         int nextLevel = currentLevel + 1;
         int nextLevelStars = PlayerPrefs.GetInt("Level_" + nextLevel.ToString(), -1);
         if(nextLevelStars == -1)

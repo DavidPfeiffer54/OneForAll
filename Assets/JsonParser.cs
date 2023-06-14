@@ -42,8 +42,8 @@ public class LocColorData {
 [System.Serializable]
 public class ButtonPressedData {
     public Vector3 buttonLoc;
-    public Vector3 ghostLocStart;
-    public Vector3 ghostLocEnd;
+    public Vector3 buttonMoveToStart;
+    public Vector3 buttonMoveToEnd;
     public string col;
 }
 

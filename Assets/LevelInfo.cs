@@ -14,14 +14,14 @@ public class LevelInfo : MonoBehaviour
     public Dictionary<Vector3, GameObject> playerStarts;
     public Dictionary<Vector3, GameObject> goals;
     public Dictionary<Vector3, GameObject> colorChanges;
-    public Dictionary<Vector3, GameObject> ghosts;
+    public Dictionary<Vector3, GameObject> buttons;
 
     [SerializeField] private GameObject gridCellPrefab;
     [SerializeField] private GameObject gridWallPrefab;
     [SerializeField] private GameObject playerStartPrefab;
     [SerializeField] private GameObject gridGoalPrefab;
     [SerializeField] private GameObject colorChangePrefab;
-    [SerializeField] private GameObject ghostPrefab;
+    [SerializeField] private GameObject buttonPrefab;
 
     public Dictionary<string, Color> colorDictionary;
 
@@ -42,8 +42,15 @@ public class LevelInfo : MonoBehaviour
         goals = new Dictionary<Vector3, GameObject>();
         playerStarts = new Dictionary<Vector3, GameObject>();
         colorChanges = new Dictionary<Vector3, GameObject>();
-        ghosts = new Dictionary<Vector3, GameObject>();
+        buttons = new Dictionary<Vector3, GameObject>();
     }
+
+    public void moveCell(GameObject cellToMove, Vector3 newLocation)
+    {
+        cells.Remove(cellToMove.GetComponent<GridCell>().getPosition());
+        cells[newLocation] = cellToMove;
+    }
+
     public void setLevel(int  level_num, LevelData ld)
     {
         twoStarThreshold = ld.twoStarThreshold;
@@ -62,7 +69,7 @@ public class LevelInfo : MonoBehaviour
         goals = new Dictionary<Vector3, GameObject>();
         playerStarts = new Dictionary<Vector3, GameObject>();
         colorChanges = new Dictionary<Vector3, GameObject>();
-        ghosts = new Dictionary<Vector3, GameObject>();
+        buttons = new Dictionary<Vector3, GameObject>();
 
         foreach(Vector3 cell in ld.cells)
         {
@@ -104,12 +111,14 @@ public class LevelInfo : MonoBehaviour
         }
         foreach(ButtonPressedData bpd in ld.buttons)
         {
-            ghosts[bpd.buttonLoc] = Instantiate(ghostPrefab, bpd.ghostLocStart*5, Quaternion.identity);
-            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setPositionStart(new Vector3(bpd.ghostLocStart.x, bpd.ghostLocStart.y, bpd.ghostLocStart.z));
-            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setPositionEnd(new Vector3(bpd.ghostLocEnd.x, bpd.ghostLocEnd.y, bpd.ghostLocEnd.z));
-            ghosts[bpd.buttonLoc].GetComponent<Ghost>().setCol(colorDictionary[bpd.col]);
-            ghosts[bpd.buttonLoc].transform.parent = transform;
-            ghosts[bpd.buttonLoc].gameObject.name = "Button Press(" + bpd.buttonLoc.ToString() + " )";
+            buttons[bpd.buttonLoc] = Instantiate(buttonPrefab, bpd.buttonLoc*5, Quaternion.identity);
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setPosition(new Vector3(bpd.buttonLoc.x, bpd.buttonLoc.y, bpd.buttonLoc.z));
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setToMoveStart(new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z));
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setToMoveEnd(new Vector3(bpd.buttonMoveToEnd.x, bpd.buttonMoveToEnd.y, bpd.buttonMoveToEnd.z));
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setCol(colorDictionary[bpd.col]);
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setObjectToMove(cells[buttons[bpd.buttonLoc].GetComponent<GameButton>().getToMoveStart()]);
+            buttons[bpd.buttonLoc].transform.parent = transform;
+            buttons[bpd.buttonLoc].gameObject.name = "Button Press(" + bpd.buttonLoc.ToString() + " )";
         }
     }
 }
