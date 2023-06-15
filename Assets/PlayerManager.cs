@@ -40,6 +40,10 @@ public class PlayerManager : MonoBehaviour
     {
         return players.Any(p => p.GetComponent<PlayerController>().getPosition() == loc);
     }
+    public bool isPlayerMoveTo(Vector3 loc)
+    {
+        return players.Any(p => p.GetComponent<PlayerController>().getMoveTo() == loc);
+    }
 
     public bool isPlayerMovingTo(Vector3 loc)
     {

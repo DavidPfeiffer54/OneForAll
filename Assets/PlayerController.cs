@@ -60,8 +60,6 @@ public class PlayerController : MonoBehaviour
         isMoving = true;
         Vector3 origPos = transform.position;
         Vector3 targetPos = origPos + direction*5;
-        Debug.Log(origPos);
-        Debug.Log(targetPos);
         float elapsedTime=0;
         while(elapsedTime < moveSpeed)
         {

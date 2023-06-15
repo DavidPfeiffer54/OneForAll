@@ -67,7 +67,9 @@ public class GamePlayController : MonoBehaviour
         if (isMoving == false)
         {
             StartCoroutine(checkForFallers());
-            
+        }
+        if (isMoving == false)
+        {           
             if (Input.GetKey(KeyCode.UpArrow)) moveCoroutine = StartCoroutine(canMove(Vector3.up));
             else if (Input.GetKey(KeyCode.LeftArrow)) moveCoroutine = StartCoroutine(canMove(Vector3.left));
             else if (Input.GetKey(KeyCode.RightArrow))moveCoroutine = StartCoroutine(canMove(Vector3.right));
@@ -299,18 +301,25 @@ public class GamePlayController : MonoBehaviour
 
         if (gridCell != null)
         {
-            if(levelManager.GetComponent<LevelManager>().isWallAt(gridCell.getLoc()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(gridCell.getLoc()+dir))
+            if(levelManager.GetComponent<LevelManager>().isWallAt(gridCell.getLoc()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(gridCell.getLoc()+dir) || playerManager.GetComponent<PlayerManager>().isPlayerMoveTo(gridCell.getLoc()+dir))
             {
                 return false;
             }
             if(playerManager.GetComponent<PlayerManager>().isPlayerAt(gridCell.getLoc()+dir))
             {
+                if(playerManager.GetComponent<PlayerManager>().getPlayerAt(gridCell.getLoc()+dir).GetComponent<PlayerController>().isMoving)
+                {
+                    return false;
+                }
+
                 if(!pushItems(playerManager.GetComponent<PlayerManager>().getPlayerAt(gridCell.getLoc()+dir), dir))
                 {
                     return false;
                 }
             }
             Debug.Log("gridCell can move!");
+            //TODO Move players that are on top of the grid
+            //TODO and move the players that are on top of those players
             gridCell.GetComponent<GridCell>().startMoveCellPushed(dir);
             levelManager.GetComponent<LevelManager>().moveCell(obj, gridCell.getPosition()+dir);
 
@@ -329,6 +338,8 @@ public class GamePlayController : MonoBehaviour
                 }
             }
             Debug.Log("player can move!");
+            //TODO: MOVE Players that are on top of the player (if they can)
+            //TODO: and Move the players that are on top of them as well
             player.GetComponent<PlayerController>().startMovePlayerPushed(dir);
         }
         else
