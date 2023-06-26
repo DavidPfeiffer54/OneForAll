@@ -119,6 +119,26 @@ public class LevelInfo : MonoBehaviour
             buttons[bpd.buttonLoc].GetComponent<GameButton>().setObjectToMove(cells[buttons[bpd.buttonLoc].GetComponent<GameButton>().getToMoveStart()]);
             buttons[bpd.buttonLoc].transform.parent = transform;
             buttons[bpd.buttonLoc].gameObject.name = "Button Press(" + bpd.buttonLoc.ToString() + " )";
+
+            cells[new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z)].GetComponent<GridCell>().createArrows();
+            Vector3 dir2Move = GetDirection(new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z), new Vector3(bpd.buttonMoveToEnd.x, bpd.buttonMoveToEnd.y, bpd.buttonMoveToEnd.z));
+            cells[new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z)].GetComponent<GridCell>().setArrowDir(dir2Move);
         }
+    }
+
+    public Vector3 GetDirection(Vector3 currentLocation, Vector3 goalPosition)
+    {
+        // Calculate the difference between the goal position and the current location
+        Vector3 direction = goalPosition - currentLocation;
+        
+        // Normalize the direction vector to make it unit length
+        direction.Normalize();
+        
+        // Round the direction vector to the nearest axis
+        direction.x = Mathf.Round(direction.x);
+        direction.y = Mathf.Round(direction.y);
+        direction.z = Mathf.Round(direction.z);
+        
+        return direction;
     }
 }

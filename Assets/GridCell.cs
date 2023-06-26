@@ -12,6 +12,8 @@ public class GridCell : MonoBehaviour
     private float moveSpeed = .2f;
 
     public GameObject objectInThisGridSpace = null;
+    public GameObject arrows = null;
+    [SerializeField] private GameObject arrowPrefab;
 
     public bool isOccupied = false;
     // Start is called before the first frame update
@@ -61,6 +63,16 @@ public class GridCell : MonoBehaviour
     public Vector3 getLoc()
     {
         return new Vector3(posX, posY, posZ);
+    }
+    public void createArrows()
+    {
+        arrows = Instantiate (arrowPrefab, transform.position, Quaternion.identity);
+        arrows.transform.SetParent(transform);
+    }
+
+    public void setArrowDir(Vector3 dir)
+    {
+        arrows.GetComponent<Arrows>().setDirectionOfMoving(dir);
     }
 
     // Update is called once per frame

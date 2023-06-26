@@ -142,5 +142,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1930a8a1ca443ee8e3de466bd6c7d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMoving: 0
   objectInThisGridSpace: {fileID: 0}
+  arrows: {fileID: 0}
+  arrowPrefab: {fileID: 6594571735007088951, guid: cebb97ba3a61f4c62aca0ab4a47b6603, type: 3}
   isOccupied: 0

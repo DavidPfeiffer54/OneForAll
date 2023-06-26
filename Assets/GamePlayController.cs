@@ -228,6 +228,7 @@ public class GamePlayController : MonoBehaviour
         checkButtonPresses();
 
         while(players.Any(p => p.GetComponent<PlayerController>().isMoving)) yield return null;
+        playerManager.GetComponent<PlayerManager>().resetMoveTo();
         cells = levelManager.GetComponent<LevelManager>().getCells();
         while(cells.Any(p => p.GetComponent<GridCell>().isMoving)) yield return null;
         isMoving = false;
@@ -250,6 +251,9 @@ public class GamePlayController : MonoBehaviour
         {
             if(isButtonPressed(button))
             {
+                Vector3 dir2move = GetDirection(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc(), button.GetComponent<GameButton>().getToMoveEnd());
+                //button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().setArrowDir(dir2move);
+
                 Debug.Log("ButtonPressed@@@@@@@@@@@@@@");
                 if(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc() != button.GetComponent<GameButton>().getToMoveEnd())
                 {
@@ -260,6 +264,9 @@ public class GamePlayController : MonoBehaviour
             }
             else
             {
+                Vector3 dir2move = GetDirection(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc(), button.GetComponent<GameButton>().getToMoveStart());
+                //button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().setArrowDir(dir2move);
+
                 if(button.GetComponent<GameButton>().getObjectToMove().GetComponent<GridCell>().getLoc() != button.GetComponent<GameButton>().getToMoveStart())
                 {
                     Debug.Log("NEEDS TO MOVENEEDS GO BACL@@@");
@@ -303,12 +310,15 @@ public class GamePlayController : MonoBehaviour
         {
             if(levelManager.GetComponent<LevelManager>().isWallAt(gridCell.getLoc()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(gridCell.getLoc()+dir) || playerManager.GetComponent<PlayerManager>().isPlayerMoveTo(gridCell.getLoc()+dir))
             {
+                Debug.Log("gridCell can move!1");
+                Debug.Log(playerManager.GetComponent<PlayerManager>().isPlayerMoveTo(gridCell.getLoc()+dir));
                 return false;
             }
             if(playerManager.GetComponent<PlayerManager>().isPlayerAt(gridCell.getLoc()+dir))
             {
                 if(playerManager.GetComponent<PlayerManager>().getPlayerAt(gridCell.getLoc()+dir).GetComponent<PlayerController>().isMoving)
                 {
+
                     return false;
                 }
 
@@ -328,12 +338,15 @@ public class GamePlayController : MonoBehaviour
         {
             if(levelManager.GetComponent<LevelManager>().isWallAt(player.getPosition()+dir) || levelManager.GetComponent<LevelManager>().isCellAt(player.getPosition()+dir))
             {
+                Debug.Log("player cant move1!");
                 return false;
             }
             if(playerManager.GetComponent<PlayerManager>().isPlayerAt(player.getPosition()+dir))
             {
                 if(!pushItems(playerManager.GetComponent<PlayerManager>().getPlayerAt(player.getPosition()+dir), dir))
                 {
+                    Debug.Log("player cant move2!");
+
                     return false;
                 }
             }
