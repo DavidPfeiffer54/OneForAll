@@ -155,11 +155,22 @@ MonoBehaviour:
   playerPrefab: {fileID: 2424297671439845723, guid: 77e6f4a4e043f4a229242e0b52aabf2b, type: 3}
   wallPrefab: {fileID: 6156382544977937219, guid: 7de1ed17134754a4295d0fac22170e78, type: 3}
   goalPrefab: {fileID: 3952929475644569438, guid: bcc9d20950fbd4f14b3cfcea1faa6f84, type: 3}
-  gameGrid: {fileID: 733826983}
+  gameGridPrefab: {fileID: 3823575603204906149, guid: c25aca6fcd76749fb96b7b80edad9e8e, type: 3}
+  ghostPrefab: {fileID: 1172543726639417000, guid: d76615b4c211049eca4c5e91040153b3, type: 3}
+  levelManagerPrefab: {fileID: 7370948316464163404, guid: 280b78e70e3194077bad4ea39db5d122, type: 3}
+  playerManagerPrefab: {fileID: 1787162878360525107, guid: b6e59bb11465941b695d88acdc42125d, type: 3}
+  youWinPrefab: {fileID: 3244635163330205051, guid: 22da149d66e614b47b31edad04f71421, type: 3}
   players: []
+  cells: []
   walls: []
   goals: []
+  grid: {fileID: 0}
+  levelManager: {fileID: 0}
+  playerManager: {fileID: 0}
   isMoving: 0
+  currentLevel: 0
+  maxLevel: 3
+  mainMenu: MainMenu
 --- !u!4 &352462182
 Transform:
   m_ObjectHideFlags: 0
@@ -299,6 +310,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridCellPrefab: {fileID: 3817093687244178888, guid: 2709a0108f09e41f791884f973bb6493, type: 3}
+  gridWallPrefab: {fileID: 0}
+  gridGoalPrefab: {fileID: 0}
 --- !u!4 &733826985
 Transform:
   m_ObjectHideFlags: 0
