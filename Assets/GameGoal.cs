@@ -11,7 +11,7 @@ public class GameGoal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     public Vector3 getPosition()
@@ -40,28 +40,27 @@ public class GameGoal : MonoBehaviour
         Material newMaterial2 = Instantiate(transMat);
         Color nc2 = new Color(newCol.r, newCol.g, newCol.b, newCol.a);
         nc2.a = .1f;
-        newMaterial2.color = nc2;       
+        newMaterial2.color = nc2;
         transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
 
     }
 
     public void setPlayerOn(bool isOn)
     {
-        if(isOn)
+        if (isOn)
         {
-            goalCompleted=true;
-            Debug.Log("SOMEONES SCORED");
+            goalCompleted = true;
             Material newMaterial2 = Instantiate(transMat);
             Color c = new Color(col.r, col.g, col.b, .6f);
-            newMaterial2.color = c;       
+            newMaterial2.color = c;
             transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
         }
         else
         {
-            goalCompleted=false;
+            goalCompleted = false;
             Material newMaterial2 = Instantiate(transMat);
             Color c = new Color(col.r, col.g, col.b, .1f);
-            newMaterial2.color = c;            
+            newMaterial2.color = c;
             transform.Find("Cylinder").GetComponent<MeshRenderer>().material = newMaterial2;
         }
     }

@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour
     public int currentLevelID;
     GameObject currentLevel;
 
-    
+
     [SerializeField] private GameObject LevelPrefab;
     [SerializeField] private GameObject jsonParserPrefab;
 
@@ -31,14 +31,14 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         Debug.Log("LOADING lm");
-        jsonParser = Instantiate (jsonParserPrefab, new Vector3(0,0), Quaternion.identity);
+        jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
         jsonParser.GetComponent<JsonParser>().readFile();
         //SetUpLevel(1);
     }
     public void setUpLevel(int _level_num)
     {
         Destroy(currentLevel);
-        currentLevel = Instantiate (LevelPrefab, new Vector3(0,0), Quaternion.identity);
+        currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }
     public void setUpLevel()
@@ -52,7 +52,15 @@ public class LevelManager : MonoBehaviour
 
     public bool isCellAt(Vector3 loc)
     {
-        return currentLevel.GetComponent<LevelInfo>().cells.ContainsKey(loc);
+        //return currentLevel.GetComponent<LevelInfo>().cells.ContainsKey(loc);
+        return getCells().Any(c => c.GetComponent<GridCell>().getLoc() == loc);
+
+    }
+    public GameObject getCellAt(Vector3 loc)
+    {
+        if (!isCellAt(loc)) return null;
+        //return currentLevel.GetComponent<LevelInfo>().cells[loc];
+        return getCells().FirstOrDefault(obj => obj.GetComponent<GridCell>().getLoc() == loc);
     }
     public bool isWallAt(Vector3 loc)
     {
@@ -62,13 +70,18 @@ public class LevelManager : MonoBehaviour
     {//???????????????????????????????????????????
         return false;
     }
+    public bool isCellMoveTo(Vector3 loc)
+    {
+
+        return getCells().Any(c => c.GetComponent<GridCell>().getMoveTo() == loc);
+    }
     public bool isGoalAt(Vector3 loc)
     {
         return currentLevel.GetComponent<LevelInfo>().goals.ContainsKey(loc);
     }
     public GameObject getColorChangeAt(Vector3 loc)
     {
-        if(currentLevel.GetComponent<LevelInfo>().colorChanges.ContainsKey(loc))
+        if (currentLevel.GetComponent<LevelInfo>().colorChanges.ContainsKey(loc))
             return currentLevel.GetComponent<LevelInfo>().colorChanges[loc];
         return null;
     }
@@ -93,12 +106,12 @@ public class LevelManager : MonoBehaviour
 
     public void setPlayersOnGoals(GameObject[] players)
     {
-        foreach(KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
+        foreach (KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
         {
             goal.Value.GetComponent<GameGoal>().setPlayerOn(false);
-            foreach(GameObject player in players)
+            foreach (GameObject player in players)
             {
-                if(player.GetComponent<PlayerController>().getPosition() == goal.Value.GetComponent<GameGoal>().getPosition()
+                if (player.GetComponent<PlayerController>().getPosition() == goal.Value.GetComponent<GameGoal>().getPosition()
                    && player.GetComponent<PlayerController>().getCol() == goal.Value.GetComponent<GameGoal>().getCol())
                 {
                     goal.Value.GetComponent<GameGoal>().setPlayerOn(true);
@@ -108,9 +121,9 @@ public class LevelManager : MonoBehaviour
     }
     public bool isLevelComplete()
     {
-        foreach(KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
+        foreach (KeyValuePair<Vector3, GameObject> goal in currentLevel.GetComponent<LevelInfo>().goals)
         {
-            if(goal.Value.GetComponent<GameGoal>().goalCompleted == false)
+            if (goal.Value.GetComponent<GameGoal>().goalCompleted == false)
                 return false;
         }
         return true;
@@ -139,6 +152,6 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

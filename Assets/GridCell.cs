@@ -9,6 +9,7 @@ public class GridCell : MonoBehaviour
     private int posY;
     private int posZ;
     public bool isMoving;
+    public Vector3 moveTo;
     private float moveSpeed = .2f;
 
     public GameObject objectInThisGridSpace = null;
@@ -19,7 +20,7 @@ public class GridCell : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
     public void startMoveCellPushed(Vector3 direction)
     {
@@ -28,26 +29,27 @@ public class GridCell : MonoBehaviour
     public IEnumerator moveCellPush(Vector3 direction)
     {
         isMoving = true;
+        setMoveTo(getPosition() + direction);
         Vector3 origPos = transform.position;
-        Vector3 targetPos = origPos + direction*5;
-        Debug.Log(origPos);
-        Debug.Log(targetPos);
-        float elapsedTime=0;
-        while(elapsedTime < moveSpeed)
+        Vector3 targetPos = origPos + direction * 5;
+        float elapsedTime = 0;
+        while (elapsedTime < moveSpeed)
         {
-            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
+            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / moveSpeed));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         //transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
 
         transform.position = targetPos;
-        posX=posX+(int)direction.x;
-        posY=posY+(int)direction.y;
-        posZ=posZ+(int)direction.z;
+        posX = posX + (int)direction.x;
+        posY = posY + (int)direction.y;
+        posZ = posZ + (int)direction.z;
 
         isMoving = false;
-    }    
+        setMoveTo(new Vector3(-1, -1, -1));
+
+    }
     public void setPosition(int x, int y, int z)
     {
         posX = x;
@@ -66,7 +68,7 @@ public class GridCell : MonoBehaviour
     }
     public void createArrows()
     {
-        arrows = Instantiate (arrowPrefab, transform.position, Quaternion.identity);
+        arrows = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
         arrows.transform.SetParent(transform);
     }
 
@@ -78,6 +80,22 @@ public class GridCell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+    public Vector3 getMoveTo()
+    {
+        return moveTo;
+    }
+    public void setMoveTo(Vector3 _moveTo)
+    {
+        moveTo = _moveTo;
+    }
+    public bool getIsMoving()
+    {
+        return isMoving;
+    }
+    public void setIsMoving(bool _isMoving)
+    {
+        isMoving = _isMoving;
     }
 }
