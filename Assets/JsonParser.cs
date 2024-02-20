@@ -9,6 +9,15 @@ public class JsonParser : MonoBehaviour
     {
 
     }
+    public void readEditorFile()
+    {
+        TextAsset jsonFile = Resources.Load<TextAsset>("levelDescriptorEditor");
+        string jsonString = jsonFile.text;
+
+        // Parse the JSON file using JsonUtility class
+        LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
+        levelData = wrapper.levels;
+    }
     public void readFile()
     {
         // Load the JSON file from the Resources folder
@@ -17,12 +26,13 @@ public class JsonParser : MonoBehaviour
 
         // Parse the JSON file using JsonUtility class
         LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
-        levelData = wrapper.levels;   
+        levelData = wrapper.levels;
     }
 }
 
 [System.Serializable]
-public class LevelData {
+public class LevelData
+{
     public int twoStarThreshold;
     public int threeStarThreshold;
     public Vector3[] cells;
@@ -34,13 +44,15 @@ public class LevelData {
 }
 
 [System.Serializable]
-public class LocColorData {
+public class LocColorData
+{
     public Vector3 loc;
     public string col;
 }
 
 [System.Serializable]
-public class ButtonPressedData {
+public class ButtonPressedData
+{
     public Vector3 buttonLoc;
     public Vector3 buttonMoveToStart;
     public Vector3 buttonMoveToEnd;

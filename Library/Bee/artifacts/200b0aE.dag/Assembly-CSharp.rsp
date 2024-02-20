@@ -366,6 +366,7 @@
 "Assets/GridCell.cs"
 "Assets/JsonParser.cs"
 "Assets/LevelButton.cs"
+"Assets/LevelEditor.cs"
 "Assets/LevelInfo.cs"
 "Assets/LevelManager.cs"
 "Assets/LevelSelectItem.cs"

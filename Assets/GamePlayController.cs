@@ -333,11 +333,12 @@ public class GamePlayController : MonoBehaviour
         return levelManager.GetComponent<LevelManager>().getCellAt(loc).GetComponent<GridCell>();
     }
 
+    //TODO24 cell and player should be siblings so you dont have to if else. 
+    //or put them in their own thing. 
     public bool canBeMovedInDir(Dictionary<GridCell, Vector3> cellsToMove, GameObject obj, Vector3 dir)
     {
         GridCell gridCell = obj.GetComponent<GridCell>();
         PlayerController player = obj.GetComponent<PlayerController>();
-
 
         Vector3 objLocation = new Vector3();
         if (gridCell)
@@ -380,21 +381,18 @@ public class GamePlayController : MonoBehaviour
         }
 
 
-        //TODO24 grid cell and player should be siblings that have the same getLoc, isMoving, etc
+        //if another player is on top of moving piece, try to move it too
         Vector3 locationAbove = objLocation + new Vector3(0, 0, -1);
         if (isPlayerAt(locationAbove))
             canBeMovedInDir(cellsToMove, getPlayerAt(locationAbove).gameObject, dir);
 
+        //TODO24 grid cell and player should be siblings that have the same getLoc, isMoving, etc
         if (gridCell)
         {
-            //TODO should not update where player is. only where they are going and then update where they are when they get there 
-
             gridCell.GetComponent<GridCell>().startMoveCellPushed(dir);
-            //levelManager.GetComponent<LevelManager>().moveCell(obj, gridCell.getLoc() + dir);
         }
         if (player)
         {
-            //TODO should not update where player is. only where they are going and then update where they are when they get there 
             player.GetComponent<PlayerController>().startMovePlayerPushed(dir);
         }
         return true;

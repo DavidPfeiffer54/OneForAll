@@ -51,6 +51,13 @@ public class LevelInfo : MonoBehaviour
         cells[newLocation] = cellToMove;
     }
 
+    public void addWall(Vector3 wall)
+    {
+        walls[wall] = Instantiate(gridWallPrefab, wall * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+        walls[wall].GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
+        walls[wall].transform.parent = transform;
+        walls[wall].gameObject.name = "Grid Wall(" + wall.x.ToString() + " , " + wall.y.ToString() + " , " + wall.z.ToString() + " )";
+    }
     public void setLevel(int level_num, LevelData ld)
     {
         twoStarThreshold = ld.twoStarThreshold;

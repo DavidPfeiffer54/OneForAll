@@ -74,6 +74,7 @@
     <Compile Include="Assets/JsonParser.cs" />
     <Compile Include="Assets/GameGrid.cs" />
     <Compile Include="Assets/PlayerManager.cs" />
+    <Compile Include="Assets/LevelEditor.cs" />
     <Compile Include="Assets/Arrows.cs" />
     <Compile Include="Assets/PlayerStart.cs" />
     <Compile Include="Assets/GameWall.cs" />

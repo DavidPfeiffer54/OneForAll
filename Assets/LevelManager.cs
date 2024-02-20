@@ -41,6 +41,14 @@ public class LevelManager : MonoBehaviour
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }
+    public void setUpEditorLevel()
+    {
+        Destroy(currentLevel);
+        GameObject jsonParserEdit = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
+        jsonParserEdit.GetComponent<JsonParser>().readEditorFile();
+        currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParserEdit.GetComponent<JsonParser>().levelData[0]);
+    }
     public void setUpLevel()
     {
 
@@ -153,5 +161,9 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
 
+    }
+    public void addWall(Vector3 location)
+    {
+        currentLevel.GetComponent<LevelInfo>().addWall(location);
     }
 }
