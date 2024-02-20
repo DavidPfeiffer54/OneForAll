@@ -145,19 +145,20 @@ public class GamePlayController : MonoBehaviour
                 if (levelManager.GetComponent<LevelManager>().isWallAt(playerMoveTo)) hitSomething = true;
                 if (levelManager.GetComponent<LevelManager>().isCellAt(playerMoveTo)) hitSomething = true;
                 if (playerManager.GetComponent<PlayerManager>().isPlayerMovingTo(playerMoveTo, PlayersAtDepth.Take(i).ToArray())) hitSomething = true;
-                if (playerManager.GetComponent<PlayerManager>().isPlayerAt(p.getPosition() + new Vector3(0, 0, -1))) hitSomething = true;
 
+                //cant move if someone is on top of you
+                if (playerManager.GetComponent<PlayerManager>().isPlayerAt(abovePlayerAt)) hitSomething = true;
                 if (levelManager.GetComponent<LevelManager>().isWallAt(abovePlayerAt)) hitSomething = true;
                 if (levelManager.GetComponent<LevelManager>().isCellAt(abovePlayerAt)) hitSomething = true;
 
-                //if (levelManager.GetComponent<LevelManager>().isWallAt(abovePlayerMoveTo)) hitSomething = true;
-                //if (levelManager.GetComponent<LevelManager>().isCellAt(abovePlayerMoveTo)) hitSomething = true;
+                //cant go into a NOOK. would clip 
+                if (levelManager.GetComponent<LevelManager>().isWallAt(abovePlayerMoveTo)) hitSomething = true;
+                if (levelManager.GetComponent<LevelManager>().isCellAt(abovePlayerMoveTo)) hitSomething = true;
 
 
 
                 if (!hitSomething)
                 {
-                    //TODO:// SHOULDNT THE Player itself be doing this
                     p.setMoveTo(playerMoveTo);
                     p.startMovePlayer(dir);
                 }
@@ -254,9 +255,7 @@ public class GamePlayController : MonoBehaviour
         return players.Any(p =>
             button.GetComponent<GameButton>().getPosition() == p.GetComponent<PlayerController>().getPosition());
     }
-    //TODO24 we want to evaluate the moving pieces in a specific order. so they alway do the same thing regardles where they are on the stack
-    //    sort all of the pieces by topleft
-    //    evaluate push in order, setting isMoving
+
     public void checkButtonPresses()
     {
         Dictionary<GridCell, Vector3> cellsToMove = new Dictionary<GridCell, Vector3>();
@@ -283,7 +282,6 @@ public class GamePlayController : MonoBehaviour
                 {
                     Vector3 directionToMove = GetDirection(btn_cell.getLoc(), btn.getToMoveStart());
                     cellsToMove[btn.getObjectToMove().GetComponent<GridCell>()] = directionToMove;
-                    //pushItems(btn.getObjectToMove(), directionToMove);
                 }
             }
         }
@@ -334,15 +332,7 @@ public class GamePlayController : MonoBehaviour
     {
         return levelManager.GetComponent<LevelManager>().getCellAt(loc).GetComponent<GridCell>();
     }
-    /*
-    this isnt working properly becuase things are clipping into eachother.
-    this is because one can move into a space that is currently occupied but something is moving out of.
-    fix: need to make sure 
-    - no one is already going to where im going. 
-    - if someone is currently at where im going
-    -    only go there if they are going in the same direction of me. 
-    -    otherwise you gotta wait.  
-    */
+
     public bool canBeMovedInDir(Dictionary<GridCell, Vector3> cellsToMove, GameObject obj, Vector3 dir)
     {
         GridCell gridCell = obj.GetComponent<GridCell>();
@@ -424,206 +414,35 @@ public class GamePlayController : MonoBehaviour
             Vector3 dir = entry.Value;
             canBeMovedInDir(cellsToMove, cell.gameObject, dir);
         }
-
-        /*
-
-        //TODO24 - remove an item after it has been evalutated. 
-        //So we dont get into a loop where something couldnt move and get reevealuated
-        foreach (GridCells gridcell in cellsToMove)
-        {
-            Vector3 destLocation = gridCell.getLoc() + dir;
-            if (isWallAt(destLocation) || isCellrMoveTo(destLocation) || isPlayerMoveTo(destLocation))
-                return false;
-
-            if (isCellAt(destLocation))
-            {
-                if (cellAtDest.isMoving and cellAtDest.movingDir != dir)
-                    return false;
-                if (cellAtDest not in cellsToMove)
-                    return false;
-                if (cellsToMove[cellAtDest] != dir)
-                    return false
-                if (cellAtDest.canMove() == false)
-                    return false;
-            }
-            if (isPlayerAt(destLocation))
-            {
-                if (playerMoving())
-                    return false;
-                if (playerCanMove == false)
-                    return false;
-            }
-            
-        }*/
     }
-    /*
-    public bool pushItems(GameObject obj, Vector3 dir)
-    {
-        // Check if the GameObject has the GridCell or Player component
-        GridCell gridCell = obj.GetComponent<GridCell>();
-        PlayerController player = obj.GetComponent<PlayerController>();
-
-        if (gridCell != null)
-        {
-            
-            //if there is a wall, dont move
-            //if there is a player, see if they can move them
-            //    are they currently moving? 
-            //    if not, can they go in the direction
-            //if there is a sell GOING TO BE THERE - dont move
-            //if there is a cell "currently there"
-            //    if the cell is trying to move
-            //        is the cell trying to move in the same direction
-            //             can it do that? 
-                
-                
-                
-            //    see if it is going to move in the same direction.
-            //        (if it is already moving, check the dir)
-            //        (if it hasnt been evalutaed yet, evaluate it)
-            //             (does it want to move? in which direction)
-            
-            //is a wall, cell there or player going to be there
-            Vector3 destLocation = gridCell.getLoc() + dir;
-            if (isWallAt(destLocation) || isCellrMoveTo(destLocation) || isPlayerMoveTo(destLocation))
-                return false;
-
-            if (isCellAt(destLocation))
-            {
-                GridCell cellAt = getCellAt(destLocation);
-                //if theres already a cell there, only move its moving inthe same direction? 
-                //how do you tell? if its already moveing check dir? 
-                //
-                //if cellAt.getMovingTo() == cellAt+dir OOOORRR if cellAt.getMovingDir == dir (this implys moving is not null)
-
-
-
-
-                //if cellAt.isMoving and cellAt.isMovingDir!=dir
-                //return false //already moving, but not in the right direction
-                //if cellAt.GoingToMoveDir == None //
-                //return false// not moving
-                //if cellAt.GoingToMoveDir != dir
-                //return false //going to move, just in a different direction
-                //if 
-
-                //if n
-                //if the cell isnt planning on moving, do notheing
-                //may not be nesessary
-                if (cellAt.isgoingToMove == false)
-                    return false
-
-                //if its not moving in the same direction
-                if (cellAt.isGoingToMoveDir != dir)
-                    return false
-
-                //is already moving the same as going to move? 
-                if (cellAt.isAlreadyMoving)
-                    if (cellAt.isAlreadyMovingDir != dir)
-                        return false
-
-                //try to move the new one.
-                if (tryToMove(cellAt, dir) == false)
-                    return false
-            }
-            //if a player is currently there, ill they be moving? 
-            if (isPlayerAt(destLocation))
-            {
-
-                //If the player is moving its because they are falling
-                //that should take precidence
-                //TODO24 - Q: if the player is falling are they there or are they moveto? 
-                if (getPlayerAt(destLocation).isMoving)
-                    return false;
-
-                if (!pushItems(getPlayerAt(destLocation).gameObject, dir))
-                    return false;
-            }
-
-
-            //Move players that are on top of the moving cell 
-            Vector3 locationAbove = gridCell.getLoc() + new Vector3(0, 0, -1);
-            if (isPlayerAt(locationAbove) && !getPlayerAt(locationAbove).isMoving)
-            {
-                Debug.Log("Moving a player that is on top");
-                Debug.Log(getPlayerAt(locationAbove).isMoving);
-                pushItems(getPlayerAt(locationAbove).gameObject, dir);
-            }
-            //TODO and move the players that are on top of those players
-            gridCell.GetComponent<GridCell>().startMoveCellPushed(dir);
-            levelManager.GetComponent<LevelManager>().moveCell(obj, gridCell.getPosition() + dir);
-
-        }
-        else if (player != null)
-        {
-            //TODO: do we need to check if another player is already going to be or move here? 
-            Vector3 destLocation = player.getPosition() + dir;
-            if (isWallAt(destLocation) || isCellAt(destLocation) || isPlayerMoveTo(destLocation))
-                return false;
-
-            if (isPlayerAt(destLocation))
-            {
-                //TODO: dont we also want to check if there is 
-                if (!pushItems(getPlayerAt(destLocation).gameObject, dir))
-                    return false;
-            }
-
-            //MOVE Players that are on top of the player (if they can) 
-            Vector3 locationAbove = player.getPosition() + new Vector3(0, 0, -1);
-            if (isPlayerAt(locationAbove) && !getPlayerAt(locationAbove).isMoving)
-            {
-                Debug.Log("Moving a player that is on top");
-                Debug.Log(getPlayerAt(locationAbove).isMoving);
-                pushItems(getPlayerAt(locationAbove).gameObject, dir);
-            }
-
-            //TODO: and Move the players that are on top of them as well
-            Debug.Log("MOVING A PLAYER");
-            player.GetComponent<PlayerController>().startMovePlayerPushed(dir);
-        }
-        else
-        {
-            // GameObject doesn't have the required component
-            Debug.LogError("Object does not have GridCell or Player component.");
-            return false;
-        }
-        return true;
-        
-    }*/
-
-    /*
-    public bool RecursiveCanMovTo(Vector3 loc, Vector3 dir)
-    {
-
-        //if(isWallAt(loc+dir) || isCellAt(loc+dir)) return False;
-        //if(isPlayerAt(loc+dir))
-        //  return RecursiveCanMovTo(loc+dir, dir);
-        return true;
-    }
-    */
 
     public IEnumerator levelComplete()
     {
         int starsScored = 0;
+
+        //score stars based on number of moves
         if (moveLists.Count <= levelManager.GetComponent<LevelManager>().getThreeStarThreshold()) { starsScored = 3; }
         else if (moveLists.Count <= levelManager.GetComponent<LevelManager>().getTwoStarThreshold()) { starsScored = 2; }
         else { starsScored = 1; }
 
+        //set record if it were broken
         int previousStarRecord = PlayerPrefs.GetInt("Level_" + currentLevel.ToString(), -1);
-
         if (starsScored > previousStarRecord)
             PlayerPrefs.SetInt("Level_" + currentLevel.ToString(), starsScored);
 
+        //set up the next level
         int nextLevel = currentLevel + 1;
+        //get the star raiting for the level. if it hasnt been played before, set to 0
         int nextLevelStars = PlayerPrefs.GetInt("Level_" + nextLevel.ToString(), -1);
         if (nextLevelStars == -1)
-            PlayerPrefs.SetInt("Level_" + nextLevel.ToString(), 0); //Set the next level to be available UNLESS ITS ALREADY BEEN DONE
+            PlayerPrefs.SetInt("Level_" + nextLevel.ToString(), 0);
+
 
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0, 0), Quaternion.identity);
-
         currentLevel = nextLevel;
         if (nextLevel >= LevelSelector.maxLevels)
         {
+            //you have finished all of the levels! return to the main menu
             youwin.transform.Find("TheText").GetComponent<TMPro.TextMeshProUGUI>().text = "YOU Win game!!!";
             moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
@@ -635,8 +454,6 @@ public class GamePlayController : MonoBehaviour
         }
         else
         {
-            moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(2.0f);
             Destroy(youwin);
@@ -644,6 +461,7 @@ public class GamePlayController : MonoBehaviour
             levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
             playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
             players = playerManager.GetComponent<PlayerManager>().players;
+            moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
             Time.timeScale = 1f;
         }
@@ -652,8 +470,8 @@ public class GamePlayController : MonoBehaviour
     private void resetLevel()
     {
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+        levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
         players = playerManager.GetComponent<PlayerManager>().players;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-
     }
 }
