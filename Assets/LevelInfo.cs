@@ -50,14 +50,45 @@ public class LevelInfo : MonoBehaviour
         cells.Remove(cellToMove.GetComponent<GridCell>().getPosition());
         cells[newLocation] = cellToMove;
     }
-
-    public void addWall(Vector3 wall)
+    public void addNewItem(GameGoal goal)
     {
-        walls[wall] = Instantiate(gridWallPrefab, wall * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
-        walls[wall].GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
-        walls[wall].transform.parent = transform;
-        walls[wall].gameObject.name = "Grid Wall(" + wall.x.ToString() + " , " + wall.y.ToString() + " , " + wall.z.ToString() + " )";
+        Vector3 goalLoc = goal.getPosition();
+        goals[goalLoc] = Instantiate(gridGoalPrefab, goalLoc * 5, Quaternion.identity);
+        goals[goalLoc].GetComponent<GameGoal>().setPosition(new Vector3(goalLoc.x, goalLoc.y, goalLoc.z));
+        goals[goalLoc].GetComponent<GameGoal>().setColor(goal.getColor());
+        goals[goalLoc].transform.parent = transform;
+        goals[goalLoc].gameObject.name = "GOAL(" + goalLoc.ToString() + " )";
     }
+    public void addNewItem(GameWall wall)
+    {
+        Vector3 wallLoc = wall.getPosition();
+        walls[wallLoc] = Instantiate(gridWallPrefab, wallLoc * 5, Quaternion.identity);
+        walls[wallLoc].GetComponent<GameWall>().setPosition((int)wallLoc.x, (int)wallLoc.y, (int)wallLoc.z);
+        walls[wallLoc].transform.parent = transform;
+        walls[wallLoc].gameObject.name = "Grid Wall(" + wallLoc.x.ToString() + " , " + wallLoc.y.ToString() + " , " + wallLoc.z.ToString() + " )";
+    }
+
+    public void addNewItem(PlayerStart ps)
+    {
+        Vector3 psLoc = ps.getPosition();
+        playerStarts[psLoc] = Instantiate(playerStartPrefab, psLoc * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+        playerStarts[psLoc].GetComponent<PlayerStart>().setPosition(psLoc);
+        playerStarts[psLoc].GetComponent<PlayerStart>().setColor(ps.getColor());
+        playerStarts[psLoc].transform.parent = transform;
+        playerStarts[psLoc].gameObject.name = "Player Start(" + psLoc.ToString() + " )";
+    }
+
+    public void addNewItem(GameItem item)
+    {
+        if (item is GameWall) addNewItem(item as GameWall);
+        else if (item is GameGoal) addNewItem(item as GameGoal);
+        else if (item is PlayerStart) addNewItem(item as PlayerStart);
+        else
+        {
+            Debug.LogError("Unknown type of GameItem!");
+        }
+    }
+
     public void setLevel(int level_num, LevelData ld)
     {
         twoStarThreshold = ld.twoStarThreshold;
@@ -96,7 +127,7 @@ public class LevelInfo : MonoBehaviour
         {
             playerStarts[ps.loc] = Instantiate(playerStartPrefab, ps.loc * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
             playerStarts[ps.loc].GetComponent<PlayerStart>().setPosition(new Vector3(ps.loc.x, ps.loc.y, ps.loc.z));
-            playerStarts[ps.loc].GetComponent<PlayerStart>().setCol(colorDictionary[ps.col]);
+            playerStarts[ps.loc].GetComponent<PlayerStart>().setColor(colorDictionary[ps.col]);
             playerStarts[ps.loc].transform.parent = transform;
             playerStarts[ps.loc].gameObject.name = "Player Start(" + ps.loc.ToString() + " )";
         }
@@ -104,7 +135,7 @@ public class LevelInfo : MonoBehaviour
         {
             goals[gg.loc] = Instantiate(gridGoalPrefab, gg.loc * 5, Quaternion.identity);
             goals[gg.loc].GetComponent<GameGoal>().setPosition(new Vector3(gg.loc.x, gg.loc.y, gg.loc.z));
-            goals[gg.loc].GetComponent<GameGoal>().setCol(colorDictionary[gg.col]);
+            goals[gg.loc].GetComponent<GameGoal>().setColor(colorDictionary[gg.col]);
             goals[gg.loc].transform.parent = transform;
             goals[gg.loc].gameObject.name = "GOAL(" + gg.loc.ToString() + " )";
         }

@@ -360,6 +360,7 @@
 "Assets/GameButton.cs"
 "Assets/GameGoal.cs"
 "Assets/GameGrid.cs"
+"Assets/GameItem.cs"
 "Assets/GamePlayController.cs"
 "Assets/GameWall.cs"
 "Assets/Ghost.cs"

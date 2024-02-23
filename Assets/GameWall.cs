@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameWall : MonoBehaviour
+public class GameWall : GameItem
 {
     private int posX;
     private int posY;
@@ -13,11 +13,13 @@ public class GameWall : MonoBehaviour
     {
 
     }
-    public void setPosition(Vector3 newPos)
+    public override void setPosition(Vector3 newPos)
     {
         posX = (int)newPos.x;
         posY = (int)newPos.y;
         posZ = (int)newPos.z;
+        transform.position = new Vector3(posX * 5 + 2.5f, posY * 5 + 2.5f, posZ * 5 - 2.5f);
+
     }
 
     public void setPosition(int x, int y, int z)
@@ -28,7 +30,7 @@ public class GameWall : MonoBehaviour
         transform.position = new Vector3(x * 5 + 2.5f, y * 5 + 2.5f, z * 5 - 2.5f);
     }
 
-    public Vector3 getPosition()
+    public override Vector3 getPosition()
     {
         return new Vector3(posX, posY, posZ);
     }

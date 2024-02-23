@@ -120,7 +120,7 @@ public class LevelManager : MonoBehaviour
             foreach (GameObject player in players)
             {
                 if (player.GetComponent<PlayerController>().getPosition() == goal.Value.GetComponent<GameGoal>().getPosition()
-                   && player.GetComponent<PlayerController>().getCol() == goal.Value.GetComponent<GameGoal>().getCol())
+                   && player.GetComponent<PlayerController>().getCol() == goal.Value.GetComponent<GameGoal>().getColor())
                 {
                     goal.Value.GetComponent<GameGoal>().setPlayerOn(true);
                 }
@@ -162,8 +162,8 @@ public class LevelManager : MonoBehaviour
     {
 
     }
-    public void addWall(Vector3 location)
+    public void addNewItem(GameItem item)
     {
-        currentLevel.GetComponent<LevelInfo>().addWall(location);
+        currentLevel.GetComponent<LevelInfo>().addNewItem(item);
     }
 }

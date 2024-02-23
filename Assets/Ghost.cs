@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost : MonoBehaviour
+public class Ghost : GameItem
 {
     public Vector3 posStart;
     public Vector3 posEnd;
@@ -10,17 +10,17 @@ public class Ghost : MonoBehaviour
     public Color col;
     public bool isMoving;
     public float moveSpeed;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public IEnumerator moveGhost(Vector3 moveTo)
@@ -33,10 +33,10 @@ public class Ghost : MonoBehaviour
         Debug.Log(origPos);
         Debug.Log(targetPos);
 
-        float elapsedTime=0;
-        while(elapsedTime < moveSpeed)
+        float elapsedTime = 0;
+        while (elapsedTime < moveSpeed)
         {
-            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime/moveSpeed));
+            transform.position = Vector3.Lerp(origPos, targetPos, (elapsedTime / moveSpeed));
             elapsedTime += Time.deltaTime;
             yield return null;
         }
@@ -47,13 +47,15 @@ public class Ghost : MonoBehaviour
         isMoving = false;
     }
 
-    public Vector3 getPosition()
+    public override Vector3 getPosition()
     {
         return pos;
     }
-    public void setPosition(Vector3 newPos)
+    public override void setPosition(Vector3 newPos)
     {
         pos = newPos;
+        transform.position = new Vector3(pos.x * 5 + 2.5f, pos.y * 5 + 2.5f, pos.z * 5 - 2.5f);
+
     }
 
     public Vector3 getPositionStart()
@@ -73,11 +75,11 @@ public class Ghost : MonoBehaviour
     {
         posEnd = newPosEnd;
     }
-    public Color getCol()
+    public override Color getColor()
     {
         return col;
     }
-    public void setCol(Color newCol)
+    public override void setColor(Color newCol)
     {
         col = new Color(newCol.r, newCol.g, newCol.b, newCol.a);
         //Material newMaterial = new Material(Shader.Find("Standard"));

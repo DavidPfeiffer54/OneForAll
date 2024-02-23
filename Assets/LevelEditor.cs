@@ -8,6 +8,7 @@ public class LevelEditor : MonoBehaviour
 {
 
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject playerStartPrefab;
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject goalPrefab;
     [SerializeField] private GameObject gameGridPrefab;
@@ -35,12 +36,13 @@ public class LevelEditor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        createItemColor = Color.red;
         loadlevel();
         setCreateItemTypeWall();
         setCreateItemColorBlue();
 
         Vector3 wall = new Vector3(0, 0, 4);
-        nextItem = Instantiate(wallPrefab, wall * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+        nextItem = Instantiate(wallPrefab, wall * 5, Quaternion.identity);
         nextItem.GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
         nextItem.transform.parent = transform;
 
@@ -70,12 +72,55 @@ public class LevelEditor : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.O)) canMove(Vector3.forward);
         else if (Input.GetKeyDown(KeyCode.I)) addNewItem();
 
+        else if (Input.GetKeyDown(KeyCode.Q)) changeNextItemToGoal();
+        else if (Input.GetKeyDown(KeyCode.W)) changeNextItemToWall();
+        else if (Input.GetKeyDown(KeyCode.E)) changeNextItem(wallPrefab);
+        else if (Input.GetKeyDown(KeyCode.R)) changeNextItem(goalPrefab);
+        else if (Input.GetKeyDown(KeyCode.T)) changeNextItem(playerStartPrefab);
+
+
+        else if (Input.GetKeyDown(KeyCode.A)) changeNextItemToGoal(Color.red);
+        else if (Input.GetKeyDown(KeyCode.S)) changeNextItemToGoal(Color.blue);
+
+    }
+    public void changeNextItemToGoal(Color c)
+    {
+        createItemColor = c;
+        nextItem.GetComponent<GameItem>().setColor(c);
+    }
+    public void changeNextItem(GameObject nextItemType)
+    {
+        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
+        Destroy(nextItem);
+        nextItem = Instantiate(nextItemType, newLocation * 5, Quaternion.identity);
+        nextItem.GetComponent<GameItem>().setPosition(newLocation);
+        nextItem.GetComponent<GameItem>().setColor(createItemColor);
+        nextItem.transform.parent = transform;
+    }
+    public void changeNextItemToGoal()
+    {
+        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
+        Destroy(nextItem);
+        nextItem = Instantiate(goalPrefab, newLocation * 5, Quaternion.identity);
+        nextItem.GetComponent<GameItem>().setPosition(newLocation);
+        nextItem.GetComponent<GameGoal>().setColor(createItemColor);
+        nextItem.transform.parent = transform;
+    }
+    public void changeNextItemToWall()
+    {
+        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
+        Destroy(nextItem);
+        nextItem = Instantiate(wallPrefab, newLocation * 5, Quaternion.identity);
+        nextItem.GetComponent<GameItem>().setPosition(newLocation);
+        nextItem.transform.parent = transform;
     }
     public void canMove(Vector3 dir)
     {
+        nextItem.GetComponent<GameItem>().editMove(dir);
 
-        nextItem.GetComponent<GameWall>().setPosition(nextItem.GetComponent<GameWall>().getPosition() + dir);
-        nextItem.transform.position = (nextItem.GetComponent<GameWall>().getPosition() * 5) + new Vector3(2.5f, 2.5f, -2.5f);
+
+        //nextItem.GetComponent<GameItem>().setPosition(nextItem.GetComponent<GameItem>().getPosition() + dir);
+        //nextItem.transform.position = (nextItem.GetComponent<GameItem>().getPosition() * 5) + new Vector3(2.5f, 2.5f, -2.5f);
 
     }
     public void loadlevel()
@@ -91,8 +136,8 @@ public class LevelEditor : MonoBehaviour
 
     public void addNewItem()
     {
-        Vector3 location = nextItem.GetComponent<GameWall>().getPosition();
-        levelManager.GetComponent<LevelManager>().addWall(location);
+        //Vector3 location = nextItem.GetComponent<GameItem>().getPosition();
+        levelManager.GetComponent<LevelManager>().addNewItem(nextItem.GetComponent<GameItem>());
     }
     public void setCreateItemTypeWall()
     {

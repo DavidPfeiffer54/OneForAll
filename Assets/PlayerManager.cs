@@ -12,25 +12,25 @@ public class PlayerManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     public GameObject getPlayerAt(Vector3 loc)
     {
         foreach (GameObject p in players)
         {
-            if(p.GetComponent<PlayerController>().getPosition()==loc)
+            if (p.GetComponent<PlayerController>().getPosition() == loc)
             {
                 return p;
             }
         }
-        return null;        
+        return null;
     }
 
 
@@ -59,7 +59,7 @@ public class PlayerManager : MonoBehaviour
     {
         foreach (GameObject p in players)
         {
-            p.GetComponent<PlayerController>().setMoveTo(new Vector3(-1,-1, -1));
+            p.GetComponent<PlayerController>().setMoveTo(new Vector3(-1, -1, -1));
         }
     }
 
@@ -73,15 +73,15 @@ public class PlayerManager : MonoBehaviour
         Dictionary<Vector3, GameObject> playerStarts = leveInfo.GetComponent<LevelInfo>().playerStarts;
         foreach (KeyValuePair<Vector3, GameObject> kvp in playerStarts)
         {
-            GameObject newPlayer = Instantiate (playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition() + new Vector3(0,0,-2.5f), Quaternion.identity);
+            GameObject newPlayer = Instantiate(playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition() + new Vector3(0, 0, -2.5f), Quaternion.identity);
             newPlayer.GetComponent<PlayerController>().setPosition(kvp.Value.GetComponent<PlayerStart>().getPosition());
-            newPlayer.GetComponent<PlayerController>().playerName="player"+kvp.Key.ToString();
-            newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color=kvp.Value.GetComponent<PlayerStart>().getCol();
+            newPlayer.GetComponent<PlayerController>().playerName = "player" + kvp.Key.ToString();
+            newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color = kvp.Value.GetComponent<PlayerStart>().getColor();
             MeshRenderer cubeRenderer = newPlayer.transform.Find("Cube").GetComponent<MeshRenderer>();
             Material newMaterial = new Material(Shader.Find("Standard"));
-            newMaterial.color = kvp.Value.GetComponent<PlayerStart>().getCol();
+            newMaterial.color = kvp.Value.GetComponent<PlayerStart>().getColor();
             cubeRenderer.material = newMaterial;
-            newPlayer.GetComponent<PlayerController>().setCol(kvp.Value.GetComponent<PlayerStart>().getCol());
+            newPlayer.GetComponent<PlayerController>().setCol(kvp.Value.GetComponent<PlayerStart>().getColor());
             newPlayers.Add(newPlayer);
         }
         players = newPlayers.ToArray();
@@ -125,7 +125,7 @@ public class PlayerManager : MonoBehaviour
         return players;
     }
 
-    public GameObject[] GetPlayersAtDepth(int depth) 
+    public GameObject[] GetPlayersAtDepth(int depth)
     {
         return players.Where(player => player.GetComponent<PlayerController>().getPosition().z == depth).ToArray();
     }
