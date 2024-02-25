@@ -377,6 +377,7 @@
 "Assets/PlayerController.cs"
 "Assets/PlayerManager.cs"
 "Assets/PlayerStart.cs"
+"Assets/QuickOutline/Scripts/Outline.cs"
 -langversion:9.0
 
 /deterministic

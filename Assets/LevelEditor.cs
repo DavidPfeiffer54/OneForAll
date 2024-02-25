@@ -13,6 +13,7 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private GameObject goalPrefab;
     [SerializeField] private GameObject gameGridPrefab;
     [SerializeField] private GameObject ghostPrefab;
+    [SerializeField] private GameObject gameButtonPrefab;
 
     [SerializeField] private GameObject levelManagerPrefab;
     [SerializeField] private GameObject playerManagerPrefab;
@@ -37,14 +38,13 @@ public class LevelEditor : MonoBehaviour
     void Start()
     {
         createItemColor = Color.red;
+        Vector3 wall = new Vector3(0, 0, 3);
         loadlevel();
-        setCreateItemTypeWall();
-        setCreateItemColorBlue();
+        changeNextItem(wallPrefab, wall);
+        changeNextItemColor(Color.blue);
 
-        Vector3 wall = new Vector3(0, 0, 4);
-        nextItem = Instantiate(wallPrefab, wall * 5, Quaternion.identity);
-        nextItem.GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
-        nextItem.transform.parent = transform;
+
+
 
 
         //nextItem.transform.position = new Vector3(0, 0, 4) * 5;
@@ -64,6 +64,18 @@ public class LevelEditor : MonoBehaviour
     void Update()
     {
 
+
+        var outline = nextItem.GetComponent<GameItem>().GetComponent<Outline>();
+        if (canPlacePiece(nextItem.GetComponent<GameItem>()))
+        {
+            outline.OutlineColor = Color.yellow;
+        }
+        else
+        {
+            outline.OutlineColor = Color.red;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.UpArrow)) canMove(Vector3.up);
         else if (Input.GetKeyDown(KeyCode.LeftArrow)) canMove(Vector3.left);
         else if (Input.GetKeyDown(KeyCode.RightArrow)) canMove(Vector3.right);
@@ -72,56 +84,39 @@ public class LevelEditor : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.O)) canMove(Vector3.forward);
         else if (Input.GetKeyDown(KeyCode.I)) addNewItem();
 
-        else if (Input.GetKeyDown(KeyCode.Q)) changeNextItemToGoal();
-        else if (Input.GetKeyDown(KeyCode.W)) changeNextItemToWall();
-        else if (Input.GetKeyDown(KeyCode.E)) changeNextItem(wallPrefab);
-        else if (Input.GetKeyDown(KeyCode.R)) changeNextItem(goalPrefab);
-        else if (Input.GetKeyDown(KeyCode.T)) changeNextItem(playerStartPrefab);
+
+        else if (Input.GetKeyDown(KeyCode.Q)) changeNextItem(wallPrefab, nextItem.GetComponent<GameItem>().getPosition());
+        else if (Input.GetKeyDown(KeyCode.W)) changeNextItem(goalPrefab, nextItem.GetComponent<GameItem>().getPosition());
+        else if (Input.GetKeyDown(KeyCode.E)) changeNextItem(playerStartPrefab, nextItem.GetComponent<GameItem>().getPosition());
+        else if (Input.GetKeyDown(KeyCode.R)) changeNextItem(gameButtonPrefab, nextItem.GetComponent<GameItem>().getPosition());
 
 
-        else if (Input.GetKeyDown(KeyCode.A)) changeNextItemToGoal(Color.red);
-        else if (Input.GetKeyDown(KeyCode.S)) changeNextItemToGoal(Color.blue);
+        else if (Input.GetKeyDown(KeyCode.A)) changeNextItemColor(Color.red);
+        else if (Input.GetKeyDown(KeyCode.S)) changeNextItemColor(Color.blue);
 
     }
-    public void changeNextItemToGoal(Color c)
+    public void changeNextItemColor(Color c)
     {
         createItemColor = c;
         nextItem.GetComponent<GameItem>().setColor(c);
     }
-    public void changeNextItem(GameObject nextItemType)
+    public void changeNextItem(GameObject nextItemType, Vector3 newLocation)
     {
-        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
+        //Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
         Destroy(nextItem);
         nextItem = Instantiate(nextItemType, newLocation * 5, Quaternion.identity);
         nextItem.GetComponent<GameItem>().setPosition(newLocation);
         nextItem.GetComponent<GameItem>().setColor(createItemColor);
         nextItem.transform.parent = transform;
-    }
-    public void changeNextItemToGoal()
-    {
-        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
-        Destroy(nextItem);
-        nextItem = Instantiate(goalPrefab, newLocation * 5, Quaternion.identity);
-        nextItem.GetComponent<GameItem>().setPosition(newLocation);
-        nextItem.GetComponent<GameGoal>().setColor(createItemColor);
-        nextItem.transform.parent = transform;
-    }
-    public void changeNextItemToWall()
-    {
-        Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
-        Destroy(nextItem);
-        nextItem = Instantiate(wallPrefab, newLocation * 5, Quaternion.identity);
-        nextItem.GetComponent<GameItem>().setPosition(newLocation);
-        nextItem.transform.parent = transform;
+
+        var outline = nextItem.gameObject.AddComponent<Outline>();
+        outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
+        outline.OutlineColor = Color.yellow;
+        outline.OutlineWidth = 5f;
     }
     public void canMove(Vector3 dir)
     {
         nextItem.GetComponent<GameItem>().editMove(dir);
-
-
-        //nextItem.GetComponent<GameItem>().setPosition(nextItem.GetComponent<GameItem>().getPosition() + dir);
-        //nextItem.transform.position = (nextItem.GetComponent<GameItem>().getPosition() * 5) + new Vector3(2.5f, 2.5f, -2.5f);
-
     }
     public void loadlevel()
     {
@@ -136,31 +131,72 @@ public class LevelEditor : MonoBehaviour
 
     public void addNewItem()
     {
-        //Vector3 location = nextItem.GetComponent<GameItem>().getPosition();
-        levelManager.GetComponent<LevelManager>().addNewItem(nextItem.GetComponent<GameItem>());
+        if (canPlacePiece(nextItem.GetComponent<GameItem>()))
+        {
+            //Vector3 location = nextItem.GetComponent<GameItem>().getPosition();
+            levelManager.GetComponent<LevelManager>().addNewItem(nextItem.GetComponent<GameItem>());
+            if (nextItem.GetComponent<GameItem>() is GameButton)
+            {
+                changeNextItem(wallPrefab, nextItem.GetComponent<GameItem>().getPosition());
+            }
+        }
     }
-    public void setCreateItemTypeWall()
+    public bool canPlacePiece(GameItem item)
     {
-        createItemType = wallPrefab;
+        if (item is GameWall) return canPlaceWall(item as GameWall);
+        else if (item is GameGoal) return canPlaceGoal(item as GameGoal);
+        else if (item is PlayerStart) return canPlacePlayerStart(item as PlayerStart);
+        else if (item is GameButton) return canPlaceGameButton(item as GameButton);
+        else
+        {
+            Debug.LogError("Unknown type of GameItem!");
+            return false;
+        }
     }
-    public void setCreateItemTypePlayer()
+    public bool canPlaceWall(GameWall wall)
     {
-        createItemType = playerPrefab;
+        return !levelManager.GetComponent<LevelManager>().isAnythingThere(wall.getPosition());
+
+        //LevelManager lman = levelManager.GetComponent<LevelManager>();
+        //
+        //if (lman.isAnythingThere(wall.getPosition()))
+        //    return false;
+        //
+        //Vector3 below = wall.getPosition() + new Vector3(0, 0, 1);
+        //return (lman.isWallAt(below) || lman.isCellAt(below));
+
+
     }
-    public void setCreateItemTypeGoal()
+    public bool canPlaceGoal(GameGoal goal)
     {
-        createItemType = goalPrefab;
+        LevelManager lman = levelManager.GetComponent<LevelManager>();
+
+        if (lman.isAnythingThere(goal.getPosition()))
+            return false;
+
+        Vector3 below = goal.getPosition() + new Vector3(0, 0, 1);
+        return (lman.isWallAt(below) || lman.isCellAt(below));
     }
-    public void setCreateItemColorGreen()
+    public bool canPlacePlayerStart(PlayerStart playerStart)
     {
-        createItemColor = Color.green;
+        LevelManager lman = levelManager.GetComponent<LevelManager>();
+
+        if (lman.isAnythingThere(playerStart.getPosition()))
+            return false;
+
+        Vector3 below = playerStart.getPosition() + new Vector3(0, 0, 1);
+        return (lman.isWallAt(below) || lman.isCellAt(below));
     }
-    public void setCreateItemColorRed()
+    public bool canPlaceGameButton(GameButton button)
     {
-        createItemColor = Color.red;
+        LevelManager lman = levelManager.GetComponent<LevelManager>();
+
+        if (lman.isAnythingThere(button.getPosition()))
+            return false;
+
+        Vector3 below = button.getPosition() + new Vector3(0, 0, 1);
+        return (lman.isWallAt(below) || lman.isCellAt(below));
     }
-    public void setCreateItemColorBlue()
-    {
-        createItemColor = Color.blue;
-    }
+
+
 }

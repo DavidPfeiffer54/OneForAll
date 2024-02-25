@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameButton : MonoBehaviour
+public class GameButton : GameItem
 {
-    public bool isPressed=false;
+    public bool isPressed = false;
     public GameObject objectToMove;
     public Vector3 toMoveStart;
     public Vector3 toMoveEnd;
@@ -13,13 +13,13 @@ public class GameButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public bool getIsPressed()
     {
@@ -53,19 +53,19 @@ public class GameButton : MonoBehaviour
     {
         toMoveEnd = _toMoveEnd;
     }
-    public Vector3 getPosition()
+    public override Vector3 getPosition()
     {
         return pos;
     }
-    public void setPosition(Vector3 newPos)
+    public override void setPosition(Vector3 newPos)
     {
         pos = newPos;
     }
-    public Color getCol()
+    public override Color getColor()
     {
         return col;
     }
-    public void setCol(Color newCol)
+    public override void setColor(Color newCol)
     {
         col = new Color(newCol.r, newCol.g, newCol.b, newCol.a);
         Material newMaterial = new Material(Shader.Find("Standard"));

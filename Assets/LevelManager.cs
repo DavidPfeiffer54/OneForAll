@@ -30,7 +30,6 @@ public class LevelManager : MonoBehaviour
     }
     void Awake()
     {
-        Debug.Log("LOADING lm");
         jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
         jsonParser.GetComponent<JsonParser>().readFile();
         //SetUpLevel(1);
@@ -165,5 +164,9 @@ public class LevelManager : MonoBehaviour
     public void addNewItem(GameItem item)
     {
         currentLevel.GetComponent<LevelInfo>().addNewItem(item);
+    }
+    public bool isAnythingThere(Vector3 location)
+    {
+        return currentLevel.GetComponent<LevelInfo>().isAnythingThere(location);
     }
 }

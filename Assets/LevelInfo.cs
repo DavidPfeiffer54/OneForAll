@@ -59,6 +59,24 @@ public class LevelInfo : MonoBehaviour
         goals[goalLoc].transform.parent = transform;
         goals[goalLoc].gameObject.name = "GOAL(" + goalLoc.ToString() + " )";
     }
+    public void addNewItem(GameButton button)
+    {
+        Vector3 buttonLoc = button.getPosition();
+
+        buttons[buttonLoc] = Instantiate(buttonPrefab, buttonLoc * 5, Quaternion.identity);
+        buttons[buttonLoc].GetComponent<GameButton>().setPosition(new Vector3(buttonLoc.x, buttonLoc.y, buttonLoc.z));
+        //TODO24 buttons[buttonLoc].GetComponent<GameButton>().setToMoveStart(new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z));
+        //TODO24 buttons[buttonLoc].GetComponent<GameButton>().setToMoveEnd(new Vector3(bpd.buttonMoveToEnd.x, bpd.buttonMoveToEnd.y, bpd.buttonMoveToEnd.z));
+        buttons[buttonLoc].GetComponent<GameButton>().setColor(button.getColor());
+        //TODO24 buttons[buttonLoc].GetComponent<GameButton>().setObjectToMove(cells[buttons[buttonLoc].GetComponent<GameButton>().getToMoveStart()]);
+        buttons[buttonLoc].transform.parent = transform;
+        buttons[buttonLoc].gameObject.name = "Button Press(" + buttonLoc.ToString() + " )";
+
+        //TODO24 cells[new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z)].GetComponent<GridCell>().createArrows();
+        //TODO24 Vector3 dir2Move = GetDirection(new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z), new Vector3(bpd.buttonMoveToEnd.x, bpd.buttonMoveToEnd.y, bpd.buttonMoveToEnd.z));
+        //TODO24 cells[new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z)].GetComponent<GridCell>().setArrowDir(dir2Move);
+
+    }
     public void addNewItem(GameWall wall)
     {
         Vector3 wallLoc = wall.getPosition();
@@ -83,6 +101,7 @@ public class LevelInfo : MonoBehaviour
         if (item is GameWall) addNewItem(item as GameWall);
         else if (item is GameGoal) addNewItem(item as GameGoal);
         else if (item is PlayerStart) addNewItem(item as PlayerStart);
+        else if (item is GameButton) addNewItem(item as GameButton);
         else
         {
             Debug.LogError("Unknown type of GameItem!");
@@ -153,7 +172,7 @@ public class LevelInfo : MonoBehaviour
             buttons[bpd.buttonLoc].GetComponent<GameButton>().setPosition(new Vector3(bpd.buttonLoc.x, bpd.buttonLoc.y, bpd.buttonLoc.z));
             buttons[bpd.buttonLoc].GetComponent<GameButton>().setToMoveStart(new Vector3(bpd.buttonMoveToStart.x, bpd.buttonMoveToStart.y, bpd.buttonMoveToStart.z));
             buttons[bpd.buttonLoc].GetComponent<GameButton>().setToMoveEnd(new Vector3(bpd.buttonMoveToEnd.x, bpd.buttonMoveToEnd.y, bpd.buttonMoveToEnd.z));
-            buttons[bpd.buttonLoc].GetComponent<GameButton>().setCol(colorDictionary[bpd.col]);
+            buttons[bpd.buttonLoc].GetComponent<GameButton>().setColor(colorDictionary[bpd.col]);
             buttons[bpd.buttonLoc].GetComponent<GameButton>().setObjectToMove(cells[buttons[bpd.buttonLoc].GetComponent<GameButton>().getToMoveStart()]);
             buttons[bpd.buttonLoc].transform.parent = transform;
             buttons[bpd.buttonLoc].gameObject.name = "Button Press(" + bpd.buttonLoc.ToString() + " )";
@@ -178,5 +197,14 @@ public class LevelInfo : MonoBehaviour
         direction.z = Mathf.Round(direction.z);
 
         return direction;
+    }
+    public bool isAnythingThere(Vector3 location)
+    {
+        return cells.ContainsKey(location)
+        || walls.ContainsKey(location)
+        || goals.ContainsKey(location)
+        || playerStarts.ContainsKey(location)
+        || colorChanges.ContainsKey(location)
+        || buttons.ContainsKey(location);
     }
 }
