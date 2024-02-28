@@ -20,7 +20,7 @@ public class GameItem : MonoBehaviour
         StartCoroutine(FlyToTarget(targetPosition, flySpeed));
     }
 
-    IEnumerator FlyToTarget(Vector3 targetPosition, float flySpeed)
+    public IEnumerator FlyToTarget(Vector3 targetPosition, float flySpeed)
     {
         float smoothTime = 0.3f; // Adjust the smooth time for the desired deceleration effect
         Vector3 currentVelocity = Vector3.zero;

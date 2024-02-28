@@ -71,15 +71,23 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator FlyButtons(GameObject[] combinedArray)
     {
+        List<Coroutine> runningCoroutines = new List<Coroutine>();
+
         // Disable user input during movement
         foreach (GameObject button in combinedArray)
         {
+
             float flySpeed = 50f;
             GameItem butt = button.GetComponent<GameItem>();
-            butt.FlyIn(butt.getPosition() * 5, flySpeed);
+            Coroutine newCoroutine = StartCoroutine(butt.FlyToTarget(butt.getPosition() * 5, flySpeed));
+            runningCoroutines.Add(newCoroutine);
             yield return new WaitForSeconds(0.1f); // Delay between flying each button
         }
-
+        foreach (Coroutine coroutine in runningCoroutines)
+        {
+            yield return coroutine;
+        }
+        Debug.Log("FINISHED THE FLIY THNG");
         // Enable user input after all buttons have flown in
     }
 

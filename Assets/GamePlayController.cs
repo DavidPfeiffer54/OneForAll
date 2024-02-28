@@ -52,6 +52,7 @@ public class GamePlayController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("HELLO");
         currentLevel = 0;
         currentLevel = LevelSelectItem.selectedLevel;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
@@ -62,16 +63,16 @@ public class GamePlayController : MonoBehaviour
     }
     IEnumerator FlyInItemsAndPlayersCoroutine()
     {
+        isMoving = true;
         // Start the coroutine for flying in items
         yield return StartCoroutine(levelManager.GetComponent<LevelManager>().flyInItems());
 
-        Debug.Log("+_+_+_+_+_+_+_ STARTING Fly in pyaers");
         // Once the coroutine for flying in items finishes, proceed with flying in players
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
-        playerManager.GetComponent<PlayerManager>().flyInPlayers();
+        yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().flyInPlayers());
+        isMoving = false;
 
-        Debug.Log("DPNE  done");
     }
     void Awake()
     {

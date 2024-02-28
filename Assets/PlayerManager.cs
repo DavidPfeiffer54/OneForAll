@@ -21,7 +21,7 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    public void flyInPlayers()
+    public IEnumerator flyInPlayers()
     {
         foreach (GameObject player in players)
         {
@@ -32,20 +32,27 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("-");
             Debug.Log(playerItem.transform.position);
         }
-        StartCoroutine(FlyPlayers());
+        Coroutine flyButtonsCoroutine = StartCoroutine(FlyPlayers());
+        yield return flyButtonsCoroutine;
     }
 
     IEnumerator FlyPlayers()
     {
+        List<Coroutine> runningCoroutines = new List<Coroutine>();
         // Disable user input during movement
         foreach (GameObject player in players)
         {
             float flySpeed = 50f;
             GameItem playerItem = player.GetComponent<GameItem>();
-            playerItem.FlyIn(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed);
+            //playerItem.FlyIn(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed);
+            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed));
+            runningCoroutines.Add(newCoroutine);
             yield return new WaitForSeconds(0.1f); // Delay between flying each button
         }
-
+        foreach (Coroutine coroutine in runningCoroutines)
+        {
+            yield return coroutine;
+        }
         // Enable user input after all buttons have flown in
     }
     public GameObject getPlayerAt(Vector3 loc)
