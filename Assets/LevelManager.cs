@@ -48,10 +48,36 @@ public class LevelManager : MonoBehaviour
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParserEdit.GetComponent<JsonParser>().levelData[0]);
     }
-    public void setUpLevel()
-    {
 
+    public void flyInItems()
+    {
+        GameObject[] combinedArray = getCells().Concat(getWalls())
+                                    .Concat(getGoals())
+                                    .Concat(getPlayerStarts())
+                                    .Concat(getButtons())
+                                   .ToArray();
+        foreach (GameObject button in combinedArray)
+        {
+            GameItem butt = button.GetComponent<GameItem>();
+            butt.transform.position = butt.transform.position + new Vector3(0, 0, -100);
+        }
+        StartCoroutine(FlyButtons(combinedArray));
     }
+
+    IEnumerator FlyButtons(GameObject[] combinedArray)
+    {
+        // Disable user input during movement
+        foreach (GameObject button in combinedArray)
+        {
+            float flySpeed = 50f;
+            GameItem butt = button.GetComponent<GameItem>();
+            butt.FlyIn(butt.transform.position, flySpeed);
+            yield return new WaitForSeconds(0.1f); // Delay between flying each button
+        }
+
+        // Enable user input after all buttons have flown in
+    }
+
     public void moveCell(GameObject cellToMove, Vector3 newLocation)
     {
         currentLevel.GetComponent<LevelInfo>().moveCell(cellToMove, newLocation);
@@ -141,6 +167,18 @@ public class LevelManager : MonoBehaviour
     public GameObject[] getCells()
     {
         return currentLevel.GetComponent<LevelInfo>().cells.Values.ToArray();
+    }
+    public GameObject[] getWalls()
+    {
+        return currentLevel.GetComponent<LevelInfo>().walls.Values.ToArray();
+    }
+    public GameObject[] getGoals()
+    {
+        return currentLevel.GetComponent<LevelInfo>().goals.Values.ToArray();
+    }
+    public GameObject[] getPlayerStarts()
+    {
+        return currentLevel.GetComponent<LevelInfo>().playerStarts.Values.ToArray();
     }
     public GameObject[] getButtons()
     {

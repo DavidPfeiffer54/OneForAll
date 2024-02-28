@@ -56,12 +56,26 @@ public class GamePlayController : MonoBehaviour
         currentLevel = LevelSelectItem.selectedLevel;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         loadlevel();
+        Debug.Log("Flyin");
+        levelManager.GetComponent<LevelManager>().flyInItems();
+        Debug.Log("Flyin done");
     }
     void Awake()
     {
         levelManager = Instantiate(levelManagerPrefab, new Vector3(0, 0), Quaternion.identity);
         playerManager = Instantiate(playerManagerPrefab, new Vector3(0, 0), Quaternion.identity);
         loadlevel();
+        //Debug.Log("Flyin");
+        //levelManager.GetComponent<LevelManager>().flyInItems();
+        Debug.Log("Flyin done");
+    }
+    void setUpLevel(LevelInfo levelInfo)
+    {
+        moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+        levelManager.GetComponent<LevelManager>().flyInItems();
+        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+        players = playerManager.GetComponent<PlayerManager>().players;
+        isMoving = false;
     }
     // Update is called once per frame
     void Update()
@@ -89,9 +103,6 @@ public class GamePlayController : MonoBehaviour
     public void loadlevel()
     {
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-        players = new GameObject[2];
-        walls = new GameObject[13];
-        goals = new GameObject[2];
         levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
@@ -405,9 +416,6 @@ public class GamePlayController : MonoBehaviour
 
         foreach (var entry in sortedEntries)
         {
-            Debug.Log("Evaluating");
-            Debug.Log(entry);
-            Debug.Log("++++++++");
             GridCell cell = entry.Key;
             Vector3 dir = entry.Value;
             canBeMovedInDir(cellsToMove, cell.gameObject, dir);

@@ -94,6 +94,12 @@ public class LevelEditor : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.A)) changeNextItemColor(Color.red);
         else if (Input.GetKeyDown(KeyCode.S)) changeNextItemColor(Color.blue);
 
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            LevelSelectItem.selectedLevel = 0;
+            SceneManager.LoadScene("Gameplay");
+        }
+
     }
     public void changeNextItemColor(Color c)
     {

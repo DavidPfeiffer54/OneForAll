@@ -11,7 +11,7 @@ public class LevelSelectItem : MonoBehaviour
     public static int selectedLevel;
     public int levelID;
     public bool isLocked;
-    public int numStars; 
+    public int numStars;
     private RectTransform rectTransform;
     [SerializeField] public GameObject Text;
 
@@ -19,13 +19,13 @@ public class LevelSelectItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     private void Awake()
     {
@@ -39,9 +39,9 @@ public class LevelSelectItem : MonoBehaviour
         isLocked = numStars < 0;
 
         Debug.Log(levelID);
-        transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text="Level "+levelID.ToString();
+        transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text = "Level " + levelID.ToString();
 
-        if(isLocked)
+        if (isLocked)
         {
             transform.Find("lock").gameObject.SetActive(true);
             transform.Find("Button").gameObject.SetActive(false);
@@ -55,26 +55,17 @@ public class LevelSelectItem : MonoBehaviour
 
             setStars(numStars);
         }
-        //Debug.Log("hi");
-        //Debug.Log(transform);
-        //Debug.Log(transform.GetComponentInChildren<Button>());
-        //Debug.Log(transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>());
 
-        //myText = GetComponent<TextMeshProUGUI>();
-        //string textString = myText.text;
-        //Debug.Log("Text: " + textString);
-        //transform.GetComponentInChildren<Button>().GetComponentInChildren<Text>().text="Level "+levelID.ToString();
-        //Text.GetComponent<Text>().text="Level "+levelID.ToString();
     }
     public void setStars(int numStars)
     {
         transform.Find("star1").gameObject.SetActive(false);
         transform.Find("star2").gameObject.SetActive(false);
         transform.Find("star3").gameObject.SetActive(false);
-        if(numStars >= 1){transform.Find("star1").gameObject.SetActive(true);} else{transform.Find("star1").gameObject.SetActive(false);}
-        if(numStars >= 2){transform.Find("star2").gameObject.SetActive(true);} else{transform.Find("star2").gameObject.SetActive(false);}
-        if(numStars >= 3){transform.Find("star3").gameObject.SetActive(true);} else{transform.Find("star3").gameObject.SetActive(false);}
-       
+        if (numStars >= 1) { transform.Find("star1").gameObject.SetActive(true); } else { transform.Find("star1").gameObject.SetActive(false); }
+        if (numStars >= 2) { transform.Find("star2").gameObject.SetActive(true); } else { transform.Find("star2").gameObject.SetActive(false); }
+        if (numStars >= 3) { transform.Find("star3").gameObject.SetActive(true); } else { transform.Find("star3").gameObject.SetActive(false); }
+
     }
     public void OnRectTransformDimensionsChange()
     {

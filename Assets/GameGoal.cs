@@ -29,7 +29,6 @@ public class GameGoal : GameItem
 
     public override void setColor(Color newCol)
     {
-        Debug.Log("***********");
         col = newCol;
 
         // Create a new material with the Standard shader

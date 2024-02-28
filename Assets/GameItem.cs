@@ -15,6 +15,28 @@ public class GameItem : MonoBehaviour
     {
 
     }
+    public void FlyIn(Vector3 targetPosition, float flySpeed)
+    {
+        StartCoroutine(FlyToTarget(getPosition() * 5, flySpeed));
+    }
+
+    IEnumerator FlyToTarget(Vector3 targetPosition, float flySpeed)
+    {
+        float smoothTime = 0.3f; // Adjust the smooth time for the desired deceleration effect
+        Vector3 currentVelocity = Vector3.zero;
+
+        while (Vector3.Distance(transform.position, targetPosition) > 0.1f)
+        {
+            // Calculate the new position using SmoothDamp
+            Vector3 newPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref currentVelocity, smoothTime, flySpeed);
+
+            // Move the object to the new position
+            transform.position = newPosition;
+
+            yield return null;
+        }
+    }
+
     public virtual Color getColor()
     {
         return new Color(0, 0, 0);

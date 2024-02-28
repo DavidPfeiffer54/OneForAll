@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridCell : MonoBehaviour
+public class GridCell : GameItem
 {
 
     private int posX;
@@ -57,7 +57,7 @@ public class GridCell : MonoBehaviour
         posZ = z;
     }
 
-    public Vector3 getPosition()
+    public override Vector3 getPosition()
     {
         return new Vector3(posX, posY, posZ);
     }
