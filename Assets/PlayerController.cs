@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : GameItem
 {
     public string playerName;
     public bool isMoving = false;
@@ -173,11 +173,11 @@ public class PlayerController : MonoBehaviour
 
         isMoving = false;
     }
-    public Vector3 getPosition()
+    public override Vector3 getPosition()
     {
         return myPosition;
     }
-    public void setPosition(Vector3 newPos)
+    public override void setPosition(Vector3 newPos)
     {
         myPosition = newPos;
         transform.position = new Vector3(myPosition.x * 5 + 2.5f, myPosition.y * 5 + 2.5f, myPosition.z * 5);

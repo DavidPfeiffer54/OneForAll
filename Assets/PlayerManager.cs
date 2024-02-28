@@ -21,6 +21,33 @@ public class PlayerManager : MonoBehaviour
 
     }
 
+    public void flyInPlayers()
+    {
+        foreach (GameObject player in players)
+        {
+            GameItem playerItem = player.GetComponent<GameItem>();
+            Debug.Log("-");
+            Debug.Log(playerItem.transform.position);
+            playerItem.transform.position = playerItem.transform.position + new Vector3(0, 0, -100);
+            Debug.Log("-");
+            Debug.Log(playerItem.transform.position);
+        }
+        StartCoroutine(FlyPlayers());
+    }
+
+    IEnumerator FlyPlayers()
+    {
+        // Disable user input during movement
+        foreach (GameObject player in players)
+        {
+            float flySpeed = 50f;
+            GameItem playerItem = player.GetComponent<GameItem>();
+            playerItem.FlyIn(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed);
+            yield return new WaitForSeconds(0.1f); // Delay between flying each button
+        }
+
+        // Enable user input after all buttons have flown in
+    }
     public GameObject getPlayerAt(Vector3 loc)
     {
         foreach (GameObject p in players)
@@ -83,6 +110,8 @@ public class PlayerManager : MonoBehaviour
             cubeRenderer.material = newMaterial;
             newPlayer.GetComponent<PlayerController>().setCol(kvp.Value.GetComponent<PlayerStart>().getColor());
             newPlayers.Add(newPlayer);
+            Debug.Log("---");
+            Debug.Log(newPlayer.transform.position);
         }
         players = newPlayers.ToArray();
 

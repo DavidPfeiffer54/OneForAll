@@ -144,7 +144,7 @@ public class LevelInfo : MonoBehaviour
         }
         foreach (LocColorData ps in ld.playerStarts)
         {
-            playerStarts[ps.loc] = Instantiate(playerStartPrefab, ps.loc * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+            playerStarts[ps.loc] = Instantiate(playerStartPrefab, ps.loc * 5, Quaternion.identity);
             playerStarts[ps.loc].GetComponent<PlayerStart>().setPosition(new Vector3(ps.loc.x, ps.loc.y, ps.loc.z));
             playerStarts[ps.loc].GetComponent<PlayerStart>().setColor(colorDictionary[ps.col]);
             playerStarts[ps.loc].transform.parent = transform;

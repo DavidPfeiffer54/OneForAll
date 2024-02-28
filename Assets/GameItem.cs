@@ -17,7 +17,7 @@ public class GameItem : MonoBehaviour
     }
     public void FlyIn(Vector3 targetPosition, float flySpeed)
     {
-        StartCoroutine(FlyToTarget(getPosition() * 5, flySpeed));
+        StartCoroutine(FlyToTarget(targetPosition, flySpeed));
     }
 
     IEnumerator FlyToTarget(Vector3 targetPosition, float flySpeed)

@@ -57,8 +57,21 @@ public class GamePlayController : MonoBehaviour
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         loadlevel();
         Debug.Log("Flyin");
-        levelManager.GetComponent<LevelManager>().flyInItems();
+        StartCoroutine(FlyInItemsAndPlayersCoroutine());
         Debug.Log("Flyin done");
+    }
+    IEnumerator FlyInItemsAndPlayersCoroutine()
+    {
+        // Start the coroutine for flying in items
+        yield return StartCoroutine(levelManager.GetComponent<LevelManager>().flyInItems());
+
+        Debug.Log("+_+_+_+_+_+_+_ STARTING Fly in pyaers");
+        // Once the coroutine for flying in items finishes, proceed with flying in players
+        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+        players = playerManager.GetComponent<PlayerManager>().players;
+        playerManager.GetComponent<PlayerManager>().flyInPlayers();
+
+        Debug.Log("DPNE  done");
     }
     void Awake()
     {
@@ -67,7 +80,7 @@ public class GamePlayController : MonoBehaviour
         loadlevel();
         //Debug.Log("Flyin");
         //levelManager.GetComponent<LevelManager>().flyInItems();
-        Debug.Log("Flyin done");
+        Debug.Log("Fasdfaosdifjapsldkfje");
     }
     void setUpLevel(LevelInfo levelInfo)
     {
@@ -104,8 +117,7 @@ public class GamePlayController : MonoBehaviour
     {
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
-        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
-        players = playerManager.GetComponent<PlayerManager>().players;
+
         isMoving = false;
     }
     public void goBack()

@@ -49,7 +49,7 @@ public class LevelManager : MonoBehaviour
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParserEdit.GetComponent<JsonParser>().levelData[0]);
     }
 
-    public void flyInItems()
+    public IEnumerator flyInItems()
     {
         GameObject[] combinedArray = getCells().Concat(getWalls())
                                     .Concat(getGoals())
@@ -61,7 +61,12 @@ public class LevelManager : MonoBehaviour
             GameItem butt = button.GetComponent<GameItem>();
             butt.transform.position = butt.transform.position + new Vector3(0, 0, -100);
         }
-        StartCoroutine(FlyButtons(combinedArray));
+
+        // Start the FlyButtons coroutine
+        Coroutine flyButtonsCoroutine = StartCoroutine(FlyButtons(combinedArray));
+
+        // Wait for the coroutine to finish
+        yield return flyButtonsCoroutine;
     }
 
     IEnumerator FlyButtons(GameObject[] combinedArray)
@@ -71,7 +76,7 @@ public class LevelManager : MonoBehaviour
         {
             float flySpeed = 50f;
             GameItem butt = button.GetComponent<GameItem>();
-            butt.FlyIn(butt.transform.position, flySpeed);
+            butt.FlyIn(butt.getPosition() * 5, flySpeed);
             yield return new WaitForSeconds(0.1f); // Delay between flying each button
         }
 
