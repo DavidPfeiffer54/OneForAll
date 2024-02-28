@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
     public void setPosition(Vector3 newPos)
     {
         myPosition = newPos;
-        transform.position = new Vector3(myPosition.x * 5 + 2.5f, myPosition.y * 5 + 2.5f, myPosition.z * 5 - 2.5f);
+        transform.position = new Vector3(myPosition.x * 5 + 2.5f, myPosition.y * 5 + 2.5f, myPosition.z * 5);
         transform.Find("Cube").position = transform.position;
         transform.Find("Cube").rotation = Quaternion.identity;
     }

@@ -73,7 +73,7 @@ public class PlayerManager : MonoBehaviour
         Dictionary<Vector3, GameObject> playerStarts = leveInfo.GetComponent<LevelInfo>().playerStarts;
         foreach (KeyValuePair<Vector3, GameObject> kvp in playerStarts)
         {
-            GameObject newPlayer = Instantiate(playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition() + new Vector3(0, 0, -2.5f), Quaternion.identity);
+            GameObject newPlayer = Instantiate(playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition(), Quaternion.identity);
             newPlayer.GetComponent<PlayerController>().setPosition(kvp.Value.GetComponent<PlayerStart>().getPosition());
             newPlayer.GetComponent<PlayerController>().playerName = "player" + kvp.Key.ToString();
             newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color = kvp.Value.GetComponent<PlayerStart>().getColor();

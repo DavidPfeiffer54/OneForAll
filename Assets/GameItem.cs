@@ -35,6 +35,7 @@ public class GameItem : MonoBehaviour
 
             yield return null;
         }
+        transform.position = targetPosition;
     }
 
     public virtual Color getColor()

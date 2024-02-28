@@ -25,7 +25,7 @@ public class PlayerStart : GameItem
     public override void setPosition(Vector3 newPos)
     {
         pos = newPos;
-        transform.position = new Vector3(pos.x * 5 + 2.5f, pos.y * 5 + 2.5f, pos.z * 5);
+        transform.position = new Vector3(pos.x * 5, pos.y * 5, pos.z * 5);
 
     }
     public override Color getColor()

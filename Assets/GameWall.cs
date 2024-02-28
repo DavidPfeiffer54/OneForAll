@@ -18,7 +18,7 @@ public class GameWall : GameItem
         posX = (int)newPos.x;
         posY = (int)newPos.y;
         posZ = (int)newPos.z;
-        transform.position = new Vector3(posX * 5 + 2.5f, posY * 5 + 2.5f, posZ * 5 - 2.5f);
+        transform.position = new Vector3(posX * 5, posY * 5, posZ * 5);
 
     }
 
@@ -27,7 +27,7 @@ public class GameWall : GameItem
         posX = x;
         posY = y;
         posZ = z;
-        transform.position = new Vector3(x * 5 + 2.5f, y * 5 + 2.5f, z * 5 - 2.5f);
+        transform.position = new Vector3(x * 5, y * 5, z * 5);
     }
 
     public override Vector3 getPosition()

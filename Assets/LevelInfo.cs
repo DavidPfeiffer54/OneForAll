@@ -130,14 +130,14 @@ public class LevelInfo : MonoBehaviour
 
         foreach (Vector3 cell in ld.cells)
         {
-            cells[cell] = Instantiate(gridCellPrefab, cell * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+            cells[cell] = Instantiate(gridCellPrefab, cell * 5, Quaternion.identity);
             cells[cell].GetComponent<GridCell>().setPosition((int)cell.x, (int)cell.y, (int)cell.z);
             cells[cell].transform.parent = transform;
             cells[cell].gameObject.name = "Grid Space(" + cell.x.ToString() + " , " + cell.y.ToString() + " , " + cell.z.ToString() + " )";
         }
         foreach (Vector3 wall in ld.walls)
         {
-            walls[wall] = Instantiate(gridWallPrefab, wall * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
+            walls[wall] = Instantiate(gridWallPrefab, wall * 5, Quaternion.identity);
             walls[wall].GetComponent<GameWall>().setPosition((int)wall.x, (int)wall.y, (int)wall.z);
             walls[wall].transform.parent = transform;
             walls[wall].gameObject.name = "Grid Wall(" + wall.x.ToString() + " , " + wall.y.ToString() + " , " + wall.z.ToString() + " )";
