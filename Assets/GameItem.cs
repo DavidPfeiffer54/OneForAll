@@ -44,6 +44,7 @@ public class GameItem : MonoBehaviour
     }
     public virtual Vector3 getPosition()
     {
+        Debug.Log("shouldnt be called");
         return new Vector3(0, 0, 0);
     }
     public virtual void setPosition(Vector3 _loc)

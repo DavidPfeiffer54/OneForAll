@@ -77,6 +77,8 @@ public class PlayerController : GameItem
 
         isMoving = false;
         setMoveTo(new Vector3(-1, -1, -1));
+        //transform.Find("Cube").position = new Vector3(.5f, .5f, 0f);
+        transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0);
     }
     public IEnumerator movePlayerFall(Vector3 direction)
     {
@@ -108,6 +110,8 @@ public class PlayerController : GameItem
 
 
         transform.position = targetPos;
+        //transform.Find("Cube").position = new Vector3(.5f, .5f, 0f);
+        transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0);
     }
 
     public void startMovePlayer(Vector3 direction)
@@ -121,7 +125,7 @@ public class PlayerController : GameItem
 
         Vector3 origPos = transform.position;
         Vector3 targetPos = origPos + direction * 5;
-        var anchor = transform.position + new Vector3(0, 0, 0) + (Vector3.forward + direction) * 2.5f;
+        var anchor = transform.Find("Cube").position + (Vector3.forward + direction) * 2.5f;
         var axis = Vector3.Cross(Vector3.back, direction);
 
         for (var i = 0; i < 90 / 3; i++)
@@ -130,12 +134,21 @@ public class PlayerController : GameItem
             yield return new WaitForSeconds(0.01f);
         }
 
-        transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
+        // Reset position after rotation
+        transform.Find("Cube").localPosition = Vector3.zero;
 
+        // Assign final position
         transform.position = targetPos;
         myPosition = myPosition + direction;
 
+        // Reset position again
+        transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0f);
+
+        //transform.Find("Cube").position = new Vector3(.5f, .5f, 0f);
         isMoving = false;
+
+
+
     }
     public void startRockPlayer(Vector3 direction)
     {
@@ -166,8 +179,8 @@ public class PlayerController : GameItem
         yield return new WaitForSeconds(0.01f);
         transform.Find("Cube").RotateAround(anchor, axis, 3);
         yield return new WaitForSeconds(0.01f);
-        transform.Find("Cube").position = transform.position;//+new Vector3(0,0,-2.5f);
-
+        //transform.Find("Cube").position = new Vector3(.5f, .5f, 0f);//transform.position;//+new Vector3(0,0,-2.5f);
+        transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0);
         //transform.position = origPos;
         //myPosition=origPos;
 
@@ -180,9 +193,11 @@ public class PlayerController : GameItem
     public override void setPosition(Vector3 newPos)
     {
         myPosition = newPos;
-        transform.position = new Vector3(myPosition.x * 5 + 2.5f, myPosition.y * 5 + 2.5f, myPosition.z * 5);
-        transform.Find("Cube").position = transform.position;
-        transform.Find("Cube").rotation = Quaternion.identity;
+        transform.position = new Vector3(myPosition.x * 5, myPosition.y * 5, myPosition.z * 5);
+        transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0);
+
+        //transform.Find("Cube").position = transform.position;
+        // transform.Find("Cube").rotation = Quaternion.identity;
     }
     public Vector3 getMoveTo()
     {

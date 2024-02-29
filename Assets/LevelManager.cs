@@ -69,11 +69,10 @@ public class LevelManager : MonoBehaviour
     IEnumerator FlyIns(GameObject[] combinedArray)
     {
         List<Coroutine> runningCoroutines = new List<Coroutine>();
-
+        float flySpeed = 50f;
         // Disable user input during movement
         foreach (GameObject item in combinedArray)
         {
-            float flySpeed = 50f;
             GameItem itm = item.GetComponent<GameItem>();
             Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() * 5, flySpeed));
             runningCoroutines.Add(newCoroutine);
@@ -83,10 +82,24 @@ public class LevelManager : MonoBehaviour
         {
             yield return coroutine;
         }
-        Debug.Log("FINISHED THE FLIY THNG");
-        // Enable user input after all items have flown in
     }
-
+    public IEnumerator FlyOuts(GameObject[] combinedArray)
+    {
+        List<Coroutine> runningCoroutines = new List<Coroutine>();
+        float flySpeed = 50f;
+        // Disable user input during movement
+        foreach (GameObject item in combinedArray)
+        {
+            GameItem itm = item.GetComponent<GameItem>();
+            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() + new Vector3(0, 0, 150), flySpeed));
+            runningCoroutines.Add(newCoroutine);
+            yield return new WaitForSeconds(0.1f); // Delay between flying each item
+        }
+        foreach (Coroutine coroutine in runningCoroutines)
+        {
+            yield return coroutine;
+        }
+    }
     public void moveCell(GameObject cellToMove, Vector3 newLocation)
     {
         currentLevel.GetComponent<LevelInfo>().moveCell(cellToMove, newLocation);

@@ -41,7 +41,7 @@ public class PlayerManager : MonoBehaviour
             float flySpeed = 50f;
             GameItem playerItem = player.GetComponent<GameItem>();
             //playerItem.FlyIn(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed);
-            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed));
+            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5, flySpeed));
             runningCoroutines.Add(newCoroutine);
             yield return new WaitForSeconds(0.1f); // Delay between flying each button
         }

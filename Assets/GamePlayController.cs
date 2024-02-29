@@ -44,6 +44,7 @@ public class GamePlayController : MonoBehaviour
     public Coroutine moveCoroutine;
 
     public bool isMoving = false;
+    public bool isAnimating = false;
     public int currentLevel = 0;
     public int maxLevel = 3;
     public string mainMenu = "MainMenu";
@@ -52,13 +53,14 @@ public class GamePlayController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isAnimating = false;
         Debug.Log("HELLO");
         currentLevel = 0;
         currentLevel = LevelSelectItem.selectedLevel;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         loadlevel();
         Debug.Log("Flyin");
-        StartCoroutine(FlyInItemsAndPlayersCoroutine());
+        //StartCoroutine(FlyInItemsAndPlayersCoroutine());
         Debug.Log("Flyin done");
     }
     IEnumerator FlyInItemsAndPlayersCoroutine()
@@ -78,7 +80,7 @@ public class GamePlayController : MonoBehaviour
     {
         levelManager = Instantiate(levelManagerPrefab, new Vector3(0, 0), Quaternion.identity);
         playerManager = Instantiate(playerManagerPrefab, new Vector3(0, 0), Quaternion.identity);
-        loadlevel();
+        //loadlevel();
         //Debug.Log("Flyin");
         //levelManager.GetComponent<LevelManager>().flyInItems();
         Debug.Log("Fasdfaosdifjapsldkfje");
@@ -94,7 +96,8 @@ public class GamePlayController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (isAnimating)
+            return;
         if (Time.timeScale == 0)
             return;
 
@@ -118,8 +121,8 @@ public class GamePlayController : MonoBehaviour
     {
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
-
         isMoving = false;
+        StartCoroutine(FlyInItemsAndPlayersCoroutine());
     }
     public void goBack()
     {
@@ -437,6 +440,7 @@ public class GamePlayController : MonoBehaviour
 
     public IEnumerator levelComplete()
     {
+        isAnimating = true;
         int starsScored = 0;
 
         //score stars based on number of moves
@@ -459,6 +463,9 @@ public class GamePlayController : MonoBehaviour
 
         GameObject youwin = Instantiate(youWinPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel = nextLevel;
+        Debug.Log("MAX NEXT LEVEL");
+        Debug.Log(currentLevel);
+        Debug.Log(LevelSelector.maxLevels);
         if (nextLevel >= LevelSelector.maxLevels)
         {
             //you have finished all of the levels! return to the main menu
@@ -473,8 +480,12 @@ public class GamePlayController : MonoBehaviour
         }
         else
         {
+            Debug.Log("Flying out");
+            yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyOuts(levelManager.GetComponent<LevelManager>().getCells()));
+            Debug.Log("FlewOut");
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(2.0f);
+            Debug.Log("Wait over");
             Destroy(youwin);
 
             levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
@@ -483,7 +494,9 @@ public class GamePlayController : MonoBehaviour
             moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
             Time.timeScale = 1f;
+            StartCoroutine(FlyInItemsAndPlayersCoroutine());
         }
+        isAnimating = false;
     }
 
     private void resetLevel()
