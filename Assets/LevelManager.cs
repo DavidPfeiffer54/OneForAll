@@ -56,39 +56,35 @@ public class LevelManager : MonoBehaviour
                                     .Concat(getPlayerStarts())
                                     .Concat(getButtons())
                                    .ToArray();
-        foreach (GameObject button in combinedArray)
+        foreach (GameObject item in combinedArray)
         {
-            GameItem butt = button.GetComponent<GameItem>();
-            butt.transform.position = butt.transform.position + new Vector3(0, 0, -100);
+            GameItem itm = item.GetComponent<GameItem>();
+            itm.transform.position = itm.transform.position + new Vector3(0, 0, -100);
         }
 
-        // Start the FlyButtons coroutine
-        Coroutine flyButtonsCoroutine = StartCoroutine(FlyButtons(combinedArray));
-
-        // Wait for the coroutine to finish
-        yield return flyButtonsCoroutine;
+        Coroutine flyInCoroutine = StartCoroutine(FlyIns(combinedArray));
+        yield return flyInCoroutine;
     }
 
-    IEnumerator FlyButtons(GameObject[] combinedArray)
+    IEnumerator FlyIns(GameObject[] combinedArray)
     {
         List<Coroutine> runningCoroutines = new List<Coroutine>();
 
         // Disable user input during movement
-        foreach (GameObject button in combinedArray)
+        foreach (GameObject item in combinedArray)
         {
-
             float flySpeed = 50f;
-            GameItem butt = button.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(butt.FlyToTarget(butt.getPosition() * 5, flySpeed));
+            GameItem itm = item.GetComponent<GameItem>();
+            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() * 5, flySpeed));
             runningCoroutines.Add(newCoroutine);
-            yield return new WaitForSeconds(0.1f); // Delay between flying each button
+            yield return new WaitForSeconds(0.1f); // Delay between flying each item
         }
         foreach (Coroutine coroutine in runningCoroutines)
         {
             yield return coroutine;
         }
         Debug.Log("FINISHED THE FLIY THNG");
-        // Enable user input after all buttons have flown in
+        // Enable user input after all items have flown in
     }
 
     public void moveCell(GameObject cellToMove, Vector3 newLocation)
@@ -113,7 +109,7 @@ public class LevelManager : MonoBehaviour
         return currentLevel.GetComponent<LevelInfo>().walls.ContainsKey(loc);
     }
     public bool isPlayerAt(Vector3 loc)
-    {//???????????????????????????????????????????
+    {
         return false;
     }
     public bool isCellMoveTo(Vector3 loc)

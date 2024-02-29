@@ -26,11 +26,7 @@ public class PlayerManager : MonoBehaviour
         foreach (GameObject player in players)
         {
             GameItem playerItem = player.GetComponent<GameItem>();
-            Debug.Log("-");
-            Debug.Log(playerItem.transform.position);
             playerItem.transform.position = playerItem.transform.position + new Vector3(0, 0, -100);
-            Debug.Log("-");
-            Debug.Log(playerItem.transform.position);
         }
         Coroutine flyButtonsCoroutine = StartCoroutine(FlyPlayers());
         yield return flyButtonsCoroutine;
