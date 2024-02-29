@@ -21,26 +21,23 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    public IEnumerator flyInPlayers()
+    public void SetPlayersHigh()
     {
         foreach (GameObject player in players)
         {
             GameItem playerItem = player.GetComponent<GameItem>();
             playerItem.transform.position = playerItem.transform.position + new Vector3(0, 0, -100);
         }
-        Coroutine flyButtonsCoroutine = StartCoroutine(FlyPlayers());
-        yield return flyButtonsCoroutine;
     }
 
-    IEnumerator FlyPlayers()
+    public IEnumerator FlyInPlayers()
     {
         List<Coroutine> runningCoroutines = new List<Coroutine>();
-        // Disable user input during movement
+        float flySpeed = 50f;
+
         foreach (GameObject player in players)
         {
-            float flySpeed = 50f;
             GameItem playerItem = player.GetComponent<GameItem>();
-            //playerItem.FlyIn(playerItem.getPosition() * 5 + new Vector3(2.5f, 2.5f, 0f), flySpeed);
             Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5, flySpeed));
             runningCoroutines.Add(newCoroutine);
             yield return new WaitForSeconds(0.1f); // Delay between flying each button
@@ -49,7 +46,23 @@ public class PlayerManager : MonoBehaviour
         {
             yield return coroutine;
         }
-        // Enable user input after all buttons have flown in
+    }
+    public IEnumerator FlyOutPlayers()
+    {
+        List<Coroutine> runningCoroutines = new List<Coroutine>();
+        float flySpeed = 200f;
+
+        foreach (GameObject player in players)
+        {
+            GameItem playerItem = player.GetComponent<GameItem>();
+            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5 + new Vector3(0, 0, 150), flySpeed));
+            runningCoroutines.Add(newCoroutine);
+            yield return new WaitForSeconds(0.1f); // Delay between flying each button
+        }
+        foreach (Coroutine coroutine in runningCoroutines)
+        {
+            yield return coroutine;
+        }
     }
     public GameObject getPlayerAt(Vector3 loc)
     {

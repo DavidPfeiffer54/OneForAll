@@ -49,7 +49,7 @@ public class LevelManager : MonoBehaviour
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParserEdit.GetComponent<JsonParser>().levelData[0]);
     }
 
-    public IEnumerator flyInItems()
+    public IEnumerator FlyInItems()
     {
         GameObject[] combinedArray = getCells().Concat(getWalls())
                                     .Concat(getGoals())
@@ -83,15 +83,26 @@ public class LevelManager : MonoBehaviour
             yield return coroutine;
         }
     }
+    public IEnumerator FlyOutItems()
+    {
+        GameObject[] combinedArray = getCells().Concat(getWalls())
+                                    .Concat(getGoals())
+                                    .Concat(getPlayerStarts())
+                                    .Concat(getButtons())
+                                   .ToArray();
+        Coroutine flyInCoroutine = StartCoroutine(FlyOuts(combinedArray));
+        yield return flyInCoroutine;
+    }
     public IEnumerator FlyOuts(GameObject[] combinedArray)
     {
+
         List<Coroutine> runningCoroutines = new List<Coroutine>();
         float flySpeed = 50f;
         // Disable user input during movement
         foreach (GameObject item in combinedArray)
         {
             GameItem itm = item.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() + new Vector3(0, 0, 150), flySpeed));
+            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() * 5 + new Vector3(0, 0, 150), flySpeed));
             runningCoroutines.Add(newCoroutine);
             yield return new WaitForSeconds(0.1f); // Delay between flying each item
         }

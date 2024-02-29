@@ -67,12 +67,13 @@ public class GamePlayController : MonoBehaviour
     {
         isMoving = true;
         // Start the coroutine for flying in items
-        yield return StartCoroutine(levelManager.GetComponent<LevelManager>().flyInItems());
+        yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyInItems());
 
         // Once the coroutine for flying in items finishes, proceed with flying in players
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
-        yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().flyInPlayers());
+        playerManager.GetComponent<PlayerManager>().SetPlayersHigh();
+        yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().FlyInPlayers());
         isMoving = false;
 
     }
@@ -88,7 +89,7 @@ public class GamePlayController : MonoBehaviour
     void setUpLevel(LevelInfo levelInfo)
     {
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-        levelManager.GetComponent<LevelManager>().flyInItems();
+        levelManager.GetComponent<LevelManager>().FlyInItems();
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
         isMoving = false;
@@ -480,21 +481,24 @@ public class GamePlayController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Flying out");
-            yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyOuts(levelManager.GetComponent<LevelManager>().getCells()));
-            Debug.Log("FlewOut");
+
+            yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyOutItems());
+            yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().FlyOutPlayers());
+
             Time.timeScale = 0f;
             yield return new WaitForSecondsRealtime(2.0f);
-            Debug.Log("Wait over");
+
             Destroy(youwin);
 
             levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
             playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+
             players = playerManager.GetComponent<PlayerManager>().players;
             moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
             Time.timeScale = 1f;
-            StartCoroutine(FlyInItemsAndPlayersCoroutine());
+            playerManager.GetComponent<PlayerManager>().SetPlayersHigh();
+            yield return StartCoroutine(FlyInItemsAndPlayersCoroutine());
         }
         isAnimating = false;
     }
