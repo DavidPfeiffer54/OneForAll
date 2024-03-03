@@ -9,19 +9,10 @@ public class JsonParser : MonoBehaviour
     {
 
     }
-    public void readEditorFile()
-    {
-        TextAsset jsonFile = Resources.Load<TextAsset>("levelDescriptorEditor");
-        string jsonString = jsonFile.text;
-
-        // Parse the JSON file using JsonUtility class
-        LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
-        levelData = wrapper.levels;
-    }
-    public void readFile()
+    public void readFile(string filename)
     {
         // Load the JSON file from the Resources folder
-        TextAsset jsonFile = Resources.Load<TextAsset>("levelDescriptor");
+        TextAsset jsonFile = Resources.Load<TextAsset>(filename);
         string jsonString = jsonFile.text;
 
         // Parse the JSON file using JsonUtility class

@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     public GameObject[] levels;
     public int currentLevelID;
-    GameObject currentLevel;
+    public GameObject currentLevel;
 
 
     [SerializeField] private GameObject LevelPrefab;
@@ -31,85 +31,33 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
-        jsonParser.GetComponent<JsonParser>().readFile();
-        //SetUpLevel(1);
     }
-    public void setUpLevel(int _level_num)
+    public void setUpLevel(int _level_num, bool editMode)
     {
-        Destroy(currentLevel);
+        string filename = "levelDescriptor";
+        if (editMode)
+            filename = "levelDescriptorEditor";
+
+        //Destroy(currentLevel);
+        jsonParser.GetComponent<JsonParser>().readFile(filename);
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }
-    public void setUpEditorLevel()
-    {
-        Destroy(currentLevel);
-        GameObject jsonParserEdit = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
-        jsonParserEdit.GetComponent<JsonParser>().readEditorFile();
+
+    public void setUpLevel(int _level_num)
+    { //TODO REMOVE
+        //Destroy(currentLevel);
+        jsonParser.GetComponent<JsonParser>().readFile("levelDescriptor");
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
-        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParserEdit.GetComponent<JsonParser>().levelData[0]);
-    }
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
 
-    public IEnumerator FlyInItems()
-    {
-        GameObject[] combinedArray = getCells().Concat(getWalls())
-                                    .Concat(getGoals())
-                                    .Concat(getPlayerStarts())
-                                    .Concat(getButtons())
-                                   .ToArray();
-        foreach (GameObject item in combinedArray)
-        {
-            GameItem itm = item.GetComponent<GameItem>();
-            itm.transform.position = itm.transform.position + new Vector3(0, 0, -100);
-        }
-
-        Coroutine flyInCoroutine = StartCoroutine(FlyIns(combinedArray));
-        yield return flyInCoroutine;
     }
-
-    IEnumerator FlyIns(GameObject[] combinedArray)
+    public void setUpEditorLevel(int _level_num)
     {
-        List<Coroutine> runningCoroutines = new List<Coroutine>();
-        float flySpeed = 50f;
-        // Disable user input during movement
-        foreach (GameObject item in combinedArray)
-        {
-            GameItem itm = item.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() * 5, flySpeed));
-            runningCoroutines.Add(newCoroutine);
-            yield return new WaitForSeconds(0.1f); // Delay between flying each item
-        }
-        foreach (Coroutine coroutine in runningCoroutines)
-        {
-            yield return coroutine;
-        }
-    }
-    public IEnumerator FlyOutItems()
-    {
-        GameObject[] combinedArray = getCells().Concat(getWalls())
-                                    .Concat(getGoals())
-                                    .Concat(getPlayerStarts())
-                                    .Concat(getButtons())
-                                   .ToArray();
-        Coroutine flyInCoroutine = StartCoroutine(FlyOuts(combinedArray));
-        yield return flyInCoroutine;
-    }
-    public IEnumerator FlyOuts(GameObject[] combinedArray)
-    {
-
-        List<Coroutine> runningCoroutines = new List<Coroutine>();
-        float flySpeed = 50f;
-        // Disable user input during movement
-        foreach (GameObject item in combinedArray)
-        {
-            GameItem itm = item.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(itm.FlyToTarget(itm.getPosition() * 5 + new Vector3(0, 0, 150), flySpeed));
-            runningCoroutines.Add(newCoroutine);
-            yield return new WaitForSeconds(0.1f); // Delay between flying each item
-        }
-        foreach (Coroutine coroutine in runningCoroutines)
-        {
-            yield return coroutine;
-        }
+        //Destroy(currentLevel);
+        jsonParser.GetComponent<JsonParser>().readFile("levelDescriptorEditor");
+        currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }
     public void moveCell(GameObject cellToMove, Vector3 newLocation)
     {
@@ -118,14 +66,12 @@ public class LevelManager : MonoBehaviour
 
     public bool isCellAt(Vector3 loc)
     {
-        //return currentLevel.GetComponent<LevelInfo>().cells.ContainsKey(loc);
         return getCells().Any(c => c.GetComponent<GridCell>().getLoc() == loc);
 
     }
     public GameObject getCellAt(Vector3 loc)
     {
         if (!isCellAt(loc)) return null;
-        //return currentLevel.GetComponent<LevelInfo>().cells[loc];
         return getCells().FirstOrDefault(obj => obj.GetComponent<GridCell>().getLoc() == loc);
     }
     public bool isWallAt(Vector3 loc)

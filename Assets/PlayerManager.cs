@@ -20,50 +20,6 @@ public class PlayerManager : MonoBehaviour
     {
 
     }
-
-    public void SetPlayersHigh()
-    {
-        foreach (GameObject player in players)
-        {
-            GameItem playerItem = player.GetComponent<GameItem>();
-            playerItem.transform.position = playerItem.transform.position + new Vector3(0, 0, -100);
-        }
-    }
-
-    public IEnumerator FlyInPlayers()
-    {
-        List<Coroutine> runningCoroutines = new List<Coroutine>();
-        float flySpeed = 50f;
-
-        foreach (GameObject player in players)
-        {
-            GameItem playerItem = player.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5, flySpeed));
-            runningCoroutines.Add(newCoroutine);
-            yield return new WaitForSeconds(0.1f); // Delay between flying each button
-        }
-        foreach (Coroutine coroutine in runningCoroutines)
-        {
-            yield return coroutine;
-        }
-    }
-    public IEnumerator FlyOutPlayers()
-    {
-        List<Coroutine> runningCoroutines = new List<Coroutine>();
-        float flySpeed = 200f;
-
-        foreach (GameObject player in players)
-        {
-            GameItem playerItem = player.GetComponent<GameItem>();
-            Coroutine newCoroutine = StartCoroutine(playerItem.FlyToTarget(playerItem.getPosition() * 5 + new Vector3(0, 0, 150), flySpeed));
-            runningCoroutines.Add(newCoroutine);
-            yield return new WaitForSeconds(0.1f); // Delay between flying each button
-        }
-        foreach (Coroutine coroutine in runningCoroutines)
-        {
-            yield return coroutine;
-        }
-    }
     public GameObject getPlayerAt(Vector3 loc)
     {
         foreach (GameObject p in players)
@@ -106,18 +62,26 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    public void setUpPlayers(GameObject leveInfo)
+    public void resetPlayers()
     {
         foreach (GameObject obj in players)
         {
-            Destroy(obj);
+            PlayerController player = obj.GetComponent<PlayerController>();
+            player.resetPosition();
         }
+    }
+    public void setUpPlayers(GameObject leveInfo)
+    {
+        //foreach (GameObject obj in players)
+        //{
+        //    Destroy(obj);
+        // }
         List<GameObject> newPlayers = new List<GameObject>();
         Dictionary<Vector3, GameObject> playerStarts = leveInfo.GetComponent<LevelInfo>().playerStarts;
         foreach (KeyValuePair<Vector3, GameObject> kvp in playerStarts)
         {
             GameObject newPlayer = Instantiate(playerPrefab, kvp.Value.GetComponent<PlayerStart>().getPosition(), Quaternion.identity);
-            newPlayer.GetComponent<PlayerController>().setPosition(kvp.Value.GetComponent<PlayerStart>().getPosition());
+            newPlayer.GetComponent<PlayerController>().setStartingPosition(kvp.Value.GetComponent<PlayerStart>().getPosition());
             newPlayer.GetComponent<PlayerController>().playerName = "player" + kvp.Key.ToString();
             newPlayer.transform.Find("player").GetComponent<SpriteRenderer>().color = kvp.Value.GetComponent<PlayerStart>().getColor();
             MeshRenderer cubeRenderer = newPlayer.transform.Find("Cube").GetComponent<MeshRenderer>();
@@ -125,9 +89,9 @@ public class PlayerManager : MonoBehaviour
             newMaterial.color = kvp.Value.GetComponent<PlayerStart>().getColor();
             cubeRenderer.material = newMaterial;
             newPlayer.GetComponent<PlayerController>().setCol(kvp.Value.GetComponent<PlayerStart>().getColor());
+            newPlayer.GetComponent<PlayerController>().setStartingColor(kvp.Value.GetComponent<PlayerStart>().getColor());
+
             newPlayers.Add(newPlayer);
-            Debug.Log("---");
-            Debug.Log(newPlayer.transform.position);
         }
         players = newPlayers.ToArray();
 

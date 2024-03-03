@@ -130,7 +130,7 @@ public class LevelEditor : MonoBehaviour
         players = new GameObject[2];
         walls = new GameObject[13];
         goals = new GameObject[2];
-        levelManager.GetComponent<LevelManager>().setUpEditorLevel();
+        levelManager.GetComponent<LevelManager>().setUpLevel(0, true);
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
     }

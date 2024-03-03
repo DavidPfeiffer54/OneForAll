@@ -67,6 +67,7 @@
     <Compile Include="Assets/PlayerController.cs" />
     <Compile Include="Assets/ColorChange.cs" />
     <Compile Include="Assets/PauseMenu.cs" />
+    <Compile Include="Assets/LevelEndMenu.cs" />
     <Compile Include="Assets/LevelSelector.cs" />
     <Compile Include="Assets/LevelManager.cs" />
     <Compile Include="Assets/GridCell.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Assets/GameWall.cs" />
     <Compile Include="Assets/GameGoal.cs" />
     <Compile Include="Assets/Ghost.cs" />
+    <Compile Include="Assets/MovementController.cs" />
     <Compile Include="Assets/GameManager.cs" />
     <Compile Include="Assets/LevelSelectItem.cs" />
     <Compile Include="Assets/MainMenu.cs" />

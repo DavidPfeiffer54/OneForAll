@@ -38,7 +38,6 @@ public class LevelSelectItem : MonoBehaviour
         numStars = _numStars;
         isLocked = numStars < 0;
 
-        Debug.Log(levelID);
         transform.GetComponentInChildren<Button>().GetComponentInChildren<TextMeshProUGUI>().text = "Level " + levelID.ToString();
 
         if (isLocked)
@@ -88,6 +87,7 @@ public class LevelSelectItem : MonoBehaviour
 
     public void SelectLevel()
     {
+        Debug.Log("===============++++++++++++");
         selectedLevel = levelID;
         SceneManager.LoadScene("Gameplay");
     }

@@ -13,6 +13,7 @@ public class PlayerController : GameItem
 
     public Vector3 myPosition;
     public Vector3 moveTo;
+    public Color startingColor;
 
     // Start is called before the first frame update
     void Start()
@@ -23,14 +24,18 @@ public class PlayerController : GameItem
     void Update()
     {
     }
-    public void startPlayerChangeColor(GameObject colorChange)
+    public void setStartingColor(Color col)
     {
-        StartCoroutine(playerChangeColor(colorChange));
+        startingColor = col;
     }
-    public IEnumerator playerChangeColor(GameObject colorChange)
+    public void startPlayerChangeColor(Color col)
+    {
+        StartCoroutine(playerChangeColor(col));
+    }
+    public IEnumerator playerChangeColor(Color col)
     {
         Color origCol = getCol();
-        Color targetCol = colorChange.GetComponent<ColorChange>().getCol();
+        Color targetCol = col;
         float elapsedTime = 0;
         while (elapsedTime < moveSpeed)
         {
@@ -195,9 +200,6 @@ public class PlayerController : GameItem
         myPosition = newPos;
         transform.position = new Vector3(myPosition.x * 5, myPosition.y * 5, myPosition.z * 5);
         transform.Find("Cube").localPosition = new Vector3(.5f, .5f, 0);
-
-        //transform.Find("Cube").position = transform.position;
-        // transform.Find("Cube").rotation = Quaternion.identity;
     }
     public Vector3 getMoveTo()
     {
@@ -219,5 +221,10 @@ public class PlayerController : GameItem
         newMaterial.color = col;
         cubeRenderer.material = newMaterial;
     }
-
+    public override void resetPosition()
+    {
+        setPosition(startingLoc);
+        Debug.Log(startingColor);
+        startPlayerChangeColor(startingColor);
+    }
 }

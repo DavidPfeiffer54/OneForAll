@@ -14,14 +14,9 @@ public class LevelSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-
-
         GameObject jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
-        jsonParser.GetComponent<JsonParser>().readFile();
+        jsonParser.GetComponent<JsonParser>().readFile("levelDescriptor");
         maxLevels = jsonParser.GetComponent<JsonParser>().levelData.Count;
-        Debug.Log("+==++++=+++=++=+=");
-        Debug.Log(maxLevels);
 
         GridLayoutGroup gridLayoutGroup = GetComponent<GridLayoutGroup>();
         for (int i = 0; i < maxLevels; i++)

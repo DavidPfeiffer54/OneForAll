@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameItem : MonoBehaviour
 {
+    public Vector3 startingLoc;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,8 +51,22 @@ public class GameItem : MonoBehaviour
     public virtual void setPosition(Vector3 _loc)
     {
         Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
+        Debug.Log("Shouldnt be called");
     }
-
+    public virtual void setStartingPosition(Vector3 loc)
+    {
+        startingLoc = loc;
+        setPosition(loc);
+    }
+    public virtual void resetPosition()
+    {
+        setPosition(startingLoc);
+    }
     public void editMove(Vector3 dir)
     {
         StartCoroutine(moveItem(dir));

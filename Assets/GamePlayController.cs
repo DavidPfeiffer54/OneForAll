@@ -40,63 +40,55 @@ public class GamePlayController : MonoBehaviour
 
     public GameObject levelManager;
     public GameObject playerManager;
+    public GameObject levelEndMenu;
 
     public Coroutine moveCoroutine;
 
+    public bool updateDisabled = true;
     public bool isMoving = false;
     public bool isAnimating = false;
     public int currentLevel = 0;
     public int maxLevel = 3;
     public string mainMenu = "MainMenu";
-    List<Dictionary<GameObject, MoveHistory>> moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+    public List<Dictionary<GameObject, MoveHistory>> moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
     // Start is called before the first frame update
     void Start()
     {
         isAnimating = false;
-        Debug.Log("HELLO");
         currentLevel = 0;
         currentLevel = LevelSelectItem.selectedLevel;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
         loadlevel();
-        Debug.Log("Flyin");
-        //StartCoroutine(FlyInItemsAndPlayersCoroutine());
-        Debug.Log("Flyin done");
-    }
-    IEnumerator FlyInItemsAndPlayersCoroutine()
-    {
-        isMoving = true;
-        // Start the coroutine for flying in items
-        yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyInItems());
-
-        // Once the coroutine for flying in items finishes, proceed with flying in players
-        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
-        players = playerManager.GetComponent<PlayerManager>().players;
-        playerManager.GetComponent<PlayerManager>().SetPlayersHigh();
-        yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().FlyInPlayers());
-        isMoving = false;
-
     }
     void Awake()
     {
-        levelManager = Instantiate(levelManagerPrefab, new Vector3(0, 0), Quaternion.identity);
-        playerManager = Instantiate(playerManagerPrefab, new Vector3(0, 0), Quaternion.identity);
-        //loadlevel();
-        //Debug.Log("Flyin");
-        //levelManager.GetComponent<LevelManager>().flyInItems();
-        Debug.Log("Fasdfaosdifjapsldkfje");
+
     }
     void setUpLevel(LevelInfo levelInfo)
     {
+        Debug.Log("GamePlayController setUpLevel");
+
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-        levelManager.GetComponent<LevelManager>().FlyInItems();
-        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+        //levelManager.GetComponent<LevelManager>().FlyInItems();
+        //playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
         isMoving = false;
     }
     // Update is called once per frame
     void Update()
     {
+        /*
+        Debug.Log("Update");
+        Debug.Log(MovementController.isAnimating);
+        Debug.Log(LevelEndMenu.isLevelEndMenuActive);
+        Debug.Log(isAnimating);
+        Debug.Log(Time.timeScale);
+        Debug.Log(isMoving);
+        */
+
+        if (MovementController.isAnimating | LevelEndMenu.isLevelEndMenuActive | updateDisabled)
+            return;
         if (isAnimating)
             return;
         if (Time.timeScale == 0)
@@ -121,9 +113,9 @@ public class GamePlayController : MonoBehaviour
     public void loadlevel()
     {
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
-        levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
-        isMoving = false;
-        StartCoroutine(FlyInItemsAndPlayersCoroutine());
+        //levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
+        //isMoving = false;
+        //StartCoroutine(FlyInItemsAndPlayersCoroutine());
     }
     public void goBack()
     {
@@ -144,6 +136,7 @@ public class GamePlayController : MonoBehaviour
     }
     public IEnumerator canMove(Vector3 dir)
     {
+        Debug.Log("CAN MOVE");
         isMoving = true;
 
         players = playerManager.GetComponent<PlayerManager>().SortPlayersByDirection(new Vector2Int((int)dir.x, (int)dir.y));
@@ -159,7 +152,6 @@ public class GamePlayController : MonoBehaviour
         for (int d = 0; d < 5; d++)
         {
             GameObject[] PlayersAtDepth = playerManager.GetComponent<PlayerManager>().GetPlayersAtDepth(d);
-
             for (int i = 0; i < PlayersAtDepth.Length; i++)
             {
                 PlayerController p = PlayersAtDepth[i].GetComponent<PlayerController>();
@@ -228,7 +220,7 @@ public class GamePlayController : MonoBehaviour
             GameObject colorChange = levelManager.GetComponent<LevelManager>().getColorChangeAt(p.GetComponent<PlayerController>().getPosition());
             if (colorChange && p.GetComponent<PlayerController>().getCol() != colorChange.GetComponent<ColorChange>().getCol())
             {
-                p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange);
+                p.GetComponent<PlayerController>().startPlayerChangeColor(colorChange.GetComponent<ColorChange>().getCol());
             }
         }
     }
@@ -442,6 +434,7 @@ public class GamePlayController : MonoBehaviour
     public IEnumerator levelComplete()
     {
         isAnimating = true;
+        /*
         int starsScored = 0;
 
         //score stars based on number of moves
@@ -467,6 +460,7 @@ public class GamePlayController : MonoBehaviour
         Debug.Log("MAX NEXT LEVEL");
         Debug.Log(currentLevel);
         Debug.Log(LevelSelector.maxLevels);
+        
         if (nextLevel >= LevelSelector.maxLevels)
         {
             //you have finished all of the levels! return to the main menu
@@ -482,31 +476,39 @@ public class GamePlayController : MonoBehaviour
         else
         {
 
-            yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyOutItems());
-            yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().FlyOutPlayers());
+            //TODO24yield return StartCoroutine(levelManager.GetComponent<LevelManager>().FlyOutItems());
+            //TODO24yield return StartCoroutine(playerManager.GetComponent<PlayerManager>().FlyOutPlayers());
 
-            Time.timeScale = 0f;
+            //////Time.timeScale = 0f;
+
+            GameManager.instance.finishedLevel();
             yield return new WaitForSecondsRealtime(2.0f);
 
             Destroy(youwin);
 
-            levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
-            playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+            ////levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
+            ////playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
 
-            players = playerManager.GetComponent<PlayerManager>().players;
+            /////players = playerManager.GetComponent<PlayerManager>().players;
             moveLists = new List<Dictionary<GameObject, MoveHistory>>();
 
-            Time.timeScale = 1f;
-            playerManager.GetComponent<PlayerManager>().SetPlayersHigh();
-            yield return StartCoroutine(FlyInItemsAndPlayersCoroutine());
+            //////Time.timeScale = 1f;
+            //TODO24playerManager.GetComponent<PlayerManager>().SetPlayersHigh();
+            ////yield return StartCoroutine(FlyInItemsAndPlayersCoroutine());
         }
+        */
+        yield return new WaitForSecondsRealtime(2.0f);
+        moveLists = new List<Dictionary<GameObject, MoveHistory>>();
+
+        GameManager.instance.finishedLevel();
         isAnimating = false;
     }
 
     private void resetLevel()
     {
-        playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
-        levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
+        playerManager.GetComponent<PlayerManager>().resetPlayers();
+        //playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
+        //levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);
         players = playerManager.GetComponent<PlayerManager>().players;
         moveLists = new List<Dictionary<GameObject, MoveHistory>>();
     }
