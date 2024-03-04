@@ -29,41 +29,51 @@ public class LevelEditor : MonoBehaviour
     public GameObject createItemType;
     public Color createItemColor;
 
-    public GameObject levelManager;
+    public LevelManager levelManager;
     public GameObject playerManager;
 
     public GameObject nextItem;
 
+    public bool isEditorActive;
+
     // Start is called before the first frame update
     void Start()
     {
+        /*
         createItemColor = Color.red;
         Vector3 wall = new Vector3(0, 0, 3);
-        loadlevel();
+        //loadlevel();
         changeNextItem(wallPrefab, wall);
         changeNextItemColor(Color.blue);
-
-
-
-
-
         //nextItem.transform.position = new Vector3(0, 0, 4) * 5;
         //nextItem = Instantiate(wallPrefab, new Vector3(nextItem.x, nextItem.y, nextItem.z) * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
-
+        */
+    }
+    public void setupEditor()
+    {
+        isEditorActive = true;
+        createItemColor = Color.red;
+        Vector3 wall = new Vector3(0, 0, 3);
+        //loadlevel();
+        changeNextItem(wallPrefab, wall);
+        changeNextItemColor(Color.blue);
+    }
+    public void deactivateEditor()
+    {
+        isEditorActive = false;
+        Destroy(nextItem);
     }
     void Awake()
     {
-        levelManager = Instantiate(levelManagerPrefab, new Vector3(0, 0), Quaternion.identity);
-        playerManager = Instantiate(playerManagerPrefab, new Vector3(0, 0), Quaternion.identity);
-        loadlevel();
-
-
-
+        //levelManager = Instantiate(levelManagerPrefab, new Vector3(0, 0), Quaternion.identity);
+        //playerManager = Instantiate(playerManagerPrefab, new Vector3(0, 0), Quaternion.identity);
+        //loadlevel();
     }
     // Update is called once per frame
     void Update()
     {
-
+        if (!isEditorActive)
+            return;
 
         var outline = nextItem.GetComponent<GameItem>().GetComponent<Outline>();
         if (canPlacePiece(nextItem.GetComponent<GameItem>()))
@@ -96,8 +106,9 @@ public class LevelEditor : MonoBehaviour
 
         else if (Input.GetKeyDown(KeyCode.Z))
         {
-            LevelSelectItem.selectedLevel = 0;
-            SceneManager.LoadScene("Gameplay");
+            //LevelSelectItem.selectedLevel = 0;
+            //  SceneManager.LoadScene("Gameplay");
+            GameManager.instance.startLevel();
         }
 
     }
@@ -115,6 +126,8 @@ public class LevelEditor : MonoBehaviour
         nextItem.GetComponent<GameItem>().setColor(createItemColor);
         nextItem.transform.parent = transform;
 
+        Debug.Log("OUTOUTOURLINE");
+
         var outline = nextItem.gameObject.AddComponent<Outline>();
         outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
         outline.OutlineColor = Color.yellow;
@@ -124,6 +137,7 @@ public class LevelEditor : MonoBehaviour
     {
         nextItem.GetComponent<GameItem>().editMove(dir);
     }
+    /*
     public void loadlevel()
     {
         //moveLists = new List<Dictionary<GameObject, MoveHistory>>();
@@ -133,14 +147,14 @@ public class LevelEditor : MonoBehaviour
         levelManager.GetComponent<LevelManager>().setUpLevel(0, true);
         playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         players = playerManager.GetComponent<PlayerManager>().players;
-    }
+    }*/
 
     public void addNewItem()
     {
         if (canPlacePiece(nextItem.GetComponent<GameItem>()))
         {
             //Vector3 location = nextItem.GetComponent<GameItem>().getPosition();
-            levelManager.GetComponent<LevelManager>().addNewItem(nextItem.GetComponent<GameItem>());
+            levelManager.addNewItem(nextItem.GetComponent<GameItem>());
             if (nextItem.GetComponent<GameItem>() is GameButton)
             {
                 changeNextItem(wallPrefab, nextItem.GetComponent<GameItem>().getPosition());
@@ -161,7 +175,7 @@ public class LevelEditor : MonoBehaviour
     }
     public bool canPlaceWall(GameWall wall)
     {
-        return !levelManager.GetComponent<LevelManager>().isAnythingThere(wall.getPosition());
+        return !levelManager.isAnythingThere(wall.getPosition());
 
         //LevelManager lman = levelManager.GetComponent<LevelManager>();
         //
@@ -175,33 +189,27 @@ public class LevelEditor : MonoBehaviour
     }
     public bool canPlaceGoal(GameGoal goal)
     {
-        LevelManager lman = levelManager.GetComponent<LevelManager>();
-
-        if (lman.isAnythingThere(goal.getPosition()))
+        if (levelManager.isAnythingThere(goal.getPosition()))
             return false;
 
         Vector3 below = goal.getPosition() + new Vector3(0, 0, 1);
-        return (lman.isWallAt(below) || lman.isCellAt(below));
+        return (levelManager.isWallAt(below) || levelManager.isCellAt(below));
     }
     public bool canPlacePlayerStart(PlayerStart playerStart)
     {
-        LevelManager lman = levelManager.GetComponent<LevelManager>();
-
-        if (lman.isAnythingThere(playerStart.getPosition()))
+        if (levelManager.isAnythingThere(playerStart.getPosition()))
             return false;
 
         Vector3 below = playerStart.getPosition() + new Vector3(0, 0, 1);
-        return (lman.isWallAt(below) || lman.isCellAt(below));
+        return (levelManager.isWallAt(below) || levelManager.isCellAt(below));
     }
     public bool canPlaceGameButton(GameButton button)
     {
-        LevelManager lman = levelManager.GetComponent<LevelManager>();
-
-        if (lman.isAnythingThere(button.getPosition()))
+        if (levelManager.isAnythingThere(button.getPosition()))
             return false;
 
         Vector3 below = button.getPosition() + new Vector3(0, 0, 1);
-        return (lman.isWallAt(below) || lman.isCellAt(below));
+        return (levelManager.isWallAt(below) || levelManager.isCellAt(below));
     }
 
 

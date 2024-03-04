@@ -43,6 +43,11 @@ public class LevelManager : MonoBehaviour
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
         currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
     }
+    public void resetLevel()
+    {
+        currentLevel.GetComponent<LevelInfo>().resetLevel();
+        setPlayersOnGoals(new GameObject[0]);
+    }
 
     public void setUpLevel(int _level_num)
     { //TODO REMOVE

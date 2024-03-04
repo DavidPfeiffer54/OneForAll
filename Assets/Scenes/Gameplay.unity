@@ -291,10 +291,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenu: MainMenu
   youWinPrefab: {fileID: 3244635163330205051, guid: 22da149d66e614b47b31edad04f71421, type: 3}
+  levelEditorPrefab: {fileID: 733055690073796930, guid: 9ef7641e891944cfc9a2ead3a7e2de26, type: 3}
   levelManagerPrefab: {fileID: 7370948316464163404, guid: 280b78e70e3194077bad4ea39db5d122, type: 3}
   playerManagerPrefab: {fileID: 1787162878360525107, guid: b6e59bb11465941b695d88acdc42125d, type: 3}
   gamePlayControllerPrefab: {fileID: 4140564527447455457, guid: ac695625180604d0f91d3bf73b62c95b, type: 3}
   playerManager: {fileID: 0}
+  levelEditor: {fileID: 0}
   levelManager: {fileID: 0}
   movementController: {fileID: 0}
   levelInfo: {fileID: 0}

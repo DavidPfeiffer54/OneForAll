@@ -136,7 +136,6 @@ public class GamePlayController : MonoBehaviour
     }
     public IEnumerator canMove(Vector3 dir)
     {
-        Debug.Log("CAN MOVE");
         isMoving = true;
 
         players = playerManager.GetComponent<PlayerManager>().SortPlayersByDirection(new Vector2Int((int)dir.x, (int)dir.y));
@@ -381,9 +380,6 @@ public class GamePlayController : MonoBehaviour
         if (isCellAt(destLocation))
         {
             GridCell cellAtDest = getCellAt(destLocation);
-            Debug.Log("THERE IS SOMETHING THERE!");
-            Debug.Log(cellAtDest);
-            Debug.Log("-----------------------");
             if (cellAtDest.getIsMoving() && cellAtDest.getMoveTo() != destLocation + dir)
                 return false;
             if (!cellsToMove.ContainsKey(cellAtDest) || cellsToMove[cellAtDest] != dir)
@@ -506,6 +502,7 @@ public class GamePlayController : MonoBehaviour
 
     private void resetLevel()
     {
+        levelManager.GetComponent<LevelManager>().resetLevel();
         playerManager.GetComponent<PlayerManager>().resetPlayers();
         //playerManager.GetComponent<PlayerManager>().setUpPlayers(levelManager.GetComponent<LevelManager>().getCurrentLevel());
         //levelManager.GetComponent<LevelManager>().setUpLevel(currentLevel);

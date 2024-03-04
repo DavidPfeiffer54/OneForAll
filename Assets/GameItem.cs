@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameItem : MonoBehaviour
 {
     public Vector3 startingLoc;
+    public Color startingColor;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,6 +63,10 @@ public class GameItem : MonoBehaviour
     {
         startingLoc = loc;
         setPosition(loc);
+    }
+    public void setStartingColor(Color col)
+    {
+        startingColor = col;
     }
     public virtual void resetPosition()
     {

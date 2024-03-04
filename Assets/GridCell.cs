@@ -55,8 +55,12 @@ public class GridCell : GameItem
         posX = x;
         posY = y;
         posZ = z;
+        transform.position = new Vector3(posX * 5, posY * 5, posZ * 5);
     }
-
+    public override void setPosition(Vector3 _pos)
+    {
+        setPosition((int)_pos.x, (int)_pos.y, (int)_pos.z);
+    }
     public override Vector3 getPosition()
     {
         return new Vector3(posX, posY, posZ);

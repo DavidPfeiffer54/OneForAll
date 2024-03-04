@@ -11,23 +11,27 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void StartGame()
     {
+        GameManager.CurrentMode = GameMode.Gameplay;
+
         SceneManager.LoadScene("LevelSelectScene");
     }
 
     public void OpenOptions()
     {
+        GameManager.CurrentMode = GameMode.LevelEdit;
 
+        SceneManager.LoadScene("LevelSelectScene");
     }
 
     public void CloseOptions()

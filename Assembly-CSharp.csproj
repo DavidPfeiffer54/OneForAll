@@ -73,6 +73,7 @@
     <Compile Include="Assets/GridCell.cs" />
     <Compile Include="Assets/GamePlayController.cs" />
     <Compile Include="Assets/JsonParser.cs" />
+    <Compile Include="Assets/GameMode.cs" />
     <Compile Include="Assets/QuickOutline/Scripts/Outline.cs" />
     <Compile Include="Assets/GameGrid.cs" />
     <Compile Include="Assets/PlayerManager.cs" />

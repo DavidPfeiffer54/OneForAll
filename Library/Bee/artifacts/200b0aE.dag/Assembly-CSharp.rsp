@@ -362,6 +362,7 @@
 "Assets/GameGrid.cs"
 "Assets/GameItem.cs"
 "Assets/GameManager.cs"
+"Assets/GameMode.cs"
 "Assets/GamePlayController.cs"
 "Assets/GameWall.cs"
 "Assets/Ghost.cs"

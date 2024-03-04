@@ -13,7 +13,7 @@ public class PlayerController : GameItem
 
     public Vector3 myPosition;
     public Vector3 moveTo;
-    public Color startingColor;
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,10 +24,7 @@ public class PlayerController : GameItem
     void Update()
     {
     }
-    public void setStartingColor(Color col)
-    {
-        startingColor = col;
-    }
+
     public void startPlayerChangeColor(Color col)
     {
         StartCoroutine(playerChangeColor(col));
@@ -224,7 +221,6 @@ public class PlayerController : GameItem
     public override void resetPosition()
     {
         setPosition(startingLoc);
-        Debug.Log(startingColor);
         startPlayerChangeColor(startingColor);
     }
 }

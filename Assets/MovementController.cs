@@ -81,7 +81,7 @@ public class MovementController : MonoBehaviour
         yield return flyInCoroutine;
 
 
-
+        Debug.Log("Destroying lrvel");
         Destroy(previousLevel);
         foreach (GameObject obj in previousPlayers)
         {
