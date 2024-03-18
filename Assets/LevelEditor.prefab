@@ -51,8 +51,10 @@ MonoBehaviour:
   gameGridPrefab: {fileID: 3823575603204906149, guid: c25aca6fcd76749fb96b7b80edad9e8e, type: 3}
   ghostPrefab: {fileID: 0}
   gameButtonPrefab: {fileID: 2595956000457423280, guid: c21cc91f37fff418e82a01681317297a, type: 3}
+  destoyerPrefab: {fileID: 7582230930481061124, guid: 2ee2ad303560c4f99a0c9fc7e48686f2, type: 3}
   levelManagerPrefab: {fileID: 7370948316464163404, guid: 280b78e70e3194077bad4ea39db5d122, type: 3}
   playerManagerPrefab: {fileID: 1787162878360525107, guid: b6e59bb11465941b695d88acdc42125d, type: 3}
+  transMat: {fileID: 2100000, guid: e218a7aeabb01492cbd5da0187d85720, type: 2}
   players: []
   cells: []
   walls: []

@@ -14,17 +14,19 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private GameObject gameGridPrefab;
     [SerializeField] private GameObject ghostPrefab;
     [SerializeField] private GameObject gameButtonPrefab;
+    [SerializeField] private GameObject destoyerPrefab;
 
     [SerializeField] private GameObject levelManagerPrefab;
     [SerializeField] private GameObject playerManagerPrefab;
+
+    [SerializeField] private Material transMat;
+
 
     public GameObject[] players;
     public GameObject[] cells;
     public GameObject[] walls;
     public GameObject[] goals;
     public GameObject grid;
-
-
 
     public GameObject createItemType;
     public Color createItemColor;
@@ -75,16 +77,17 @@ public class LevelEditor : MonoBehaviour
         if (!isEditorActive)
             return;
 
-        var outline = nextItem.GetComponent<GameItem>().GetComponent<Outline>();
-        if (canPlacePiece(nextItem.GetComponent<GameItem>()))
-        {
-            outline.OutlineColor = Color.yellow;
-        }
-        else
+
+        var outline = nextItem.GetComponent<Outline>();
+
+        if (!canPlacePiece(nextItem.GetComponent<GameItem>()))
         {
             outline.OutlineColor = Color.red;
         }
-
+        else
+        {
+            outline.OutlineColor = Color.yellow;
+        }
 
         if (Input.GetKeyDown(KeyCode.UpArrow)) canMove(Vector3.up);
         else if (Input.GetKeyDown(KeyCode.LeftArrow)) canMove(Vector3.left);
@@ -99,28 +102,61 @@ public class LevelEditor : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.W)) changeNextItem(goalPrefab, nextItem.GetComponent<GameItem>().getPosition());
         else if (Input.GetKeyDown(KeyCode.E)) changeNextItem(playerStartPrefab, nextItem.GetComponent<GameItem>().getPosition());
         else if (Input.GetKeyDown(KeyCode.R)) changeNextItem(gameButtonPrefab, nextItem.GetComponent<GameItem>().getPosition());
+        else if (Input.GetKeyDown(KeyCode.X)) createDestoryer(nextItem.GetComponent<GameItem>().getPosition());
 
 
         else if (Input.GetKeyDown(KeyCode.A)) changeNextItemColor(Color.red);
         else if (Input.GetKeyDown(KeyCode.S)) changeNextItemColor(Color.blue);
 
-        else if (Input.GetKeyDown(KeyCode.Z))
-        {
-            //LevelSelectItem.selectedLevel = 0;
-            //  SceneManager.LoadScene("Gameplay");
-            GameManager.instance.startLevel();
-        }
+        else if (Input.GetKeyDown(KeyCode.Z)) GameManager.instance.startLevel();
+    }
+
+    public void createDestoryer(Vector3 pos)
+    {
+        Destroy(nextItem);
+
+        // Create a cube GameObject
+        nextItem = Instantiate(destoyerPrefab, pos * 5 + new Vector3(2.5f, 2.5f, 0f), Quaternion.identity); ;
+
+
+        // Set the position, rotation, and scale of the cube as needed
+        nextItem.GetComponent<GameItem>().setPosition(pos);
+
+        nextItem.transform.rotation = Quaternion.identity; // No rotation
+        nextItem.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f); // Unity's default cube size
+
+        // Instantiate the transparent material
+        Material newMaterial2 = Instantiate(transMat); // Assuming transMat is the transparent material
+
+        // Assign the transparent material to the cube's renderer
+
+        //nextItem.GetComponent<MeshRenderer>().material = newMaterial2;
+        nextItem.gameObject.transform.Find("Cube").GetComponent<MeshRenderer>().material = newMaterial2;
+
+        nextItem.transform.parent = transform;
+
+        Debug.Log("createDestoryer");
+
+
+
+        var outline = nextItem.AddComponent<Outline>();
+        outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
+        outline.OutlineColor = Color.red;
+        outline.OutlineWidth = 5f;
 
     }
+
     public void changeNextItemColor(Color c)
     {
         createItemColor = c;
         nextItem.GetComponent<GameItem>().setColor(c);
+
     }
     public void changeNextItem(GameObject nextItemType, Vector3 newLocation)
     {
         //Vector3 newLocation = nextItem.GetComponent<GameItem>().getPosition();
         Destroy(nextItem);
+
         nextItem = Instantiate(nextItemType, newLocation * 5, Quaternion.identity);
         nextItem.GetComponent<GameItem>().setPosition(newLocation);
         nextItem.GetComponent<GameItem>().setColor(createItemColor);
@@ -128,7 +164,7 @@ public class LevelEditor : MonoBehaviour
 
         Debug.Log("OUTOUTOURLINE");
 
-        var outline = nextItem.gameObject.AddComponent<Outline>();
+        var outline = nextItem.AddComponent<Outline>();
         outline.OutlineMode = Outline.Mode.OutlineAndSilhouette;
         outline.OutlineColor = Color.yellow;
         outline.OutlineWidth = 5f;
@@ -151,10 +187,22 @@ public class LevelEditor : MonoBehaviour
 
     public void addNewItem()
     {
-        if (canPlacePiece(nextItem.GetComponent<GameItem>()))
+        Debug.Log("=======");
+        Debug.Log(nextItem is EditDestoryer);
+        Debug.Log(nextItem);
+        if (nextItem.GetComponent<EditDestoryer>() != null)
         {
+            Debug.Log(nextItem);
+            levelManager.destoryItemAt(nextItem.GetComponent<GameItem>().getPosition());
+        }
+        else if (canPlacePiece(nextItem.GetComponent<GameItem>()))
+        {
+            Debug.Log("addNewItem----");
+
             //Vector3 location = nextItem.GetComponent<GameItem>().getPosition();
             levelManager.addNewItem(nextItem.GetComponent<GameItem>());
+
+            //TODO24 place button
             if (nextItem.GetComponent<GameItem>() is GameButton)
             {
                 changeNextItem(wallPrefab, nextItem.GetComponent<GameItem>().getPosition());
@@ -167,6 +215,7 @@ public class LevelEditor : MonoBehaviour
         else if (item is GameGoal) return canPlaceGoal(item as GameGoal);
         else if (item is PlayerStart) return canPlacePlayerStart(item as PlayerStart);
         else if (item is GameButton) return canPlaceGameButton(item as GameButton);
+        else if (item is EditDestoryer) return canDestoryItem(item as EditDestoryer);
         else
         {
             Debug.LogError("Unknown type of GameItem!");
@@ -205,12 +254,26 @@ public class LevelEditor : MonoBehaviour
     }
     public bool canPlaceGameButton(GameButton button)
     {
+        /*
+                    { 
+                      "buttonLoc" : {"x": 1.0, "y": 1.0, "z": 3.0},
+                      "buttonMoveToStart" : {"x": 1.0, "y": 2.0, "z": 3.0},
+                      "buttonMoveToEnd" : {"x": 2.0, "y": 2.0, "z": 3.0},
+                      "col":"red"
+                    }
+        */
         if (levelManager.isAnythingThere(button.getPosition()))
             return false;
 
         Vector3 below = button.getPosition() + new Vector3(0, 0, 1);
         return (levelManager.isWallAt(below) || levelManager.isCellAt(below));
     }
+    public bool canDestoryItem(EditDestoryer destoryer)
+    {
+        if (levelManager.isAnythingThere(destoryer.getPosition()))
+            return false;
 
+        return true;
+    }
 
 }

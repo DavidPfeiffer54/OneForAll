@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.IO;
+
 using System.Collections.Generic;
 
 public class JsonParser : MonoBehaviour
@@ -19,7 +21,27 @@ public class JsonParser : MonoBehaviour
         LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
         levelData = wrapper.levels;
     }
+    public void SaveFile(string filename, LevelData newLevel)
+    {
+        levelData = new List<LevelData>();
+        levelData.Add(newLevel);
+        // Create a wrapper to hold the list of levels
+        LevelWrapper wrapper = new LevelWrapper();
+        wrapper.levels = levelData;
+
+        // Serialize the wrapper object to JSON format
+        string jsonString = JsonUtility.ToJson(wrapper);
+
+        // Define the path where the file will be saved
+        string filePath = Path.Combine(Application.persistentDataPath, filename);
+
+        // Write the JSON string to the file
+        File.WriteAllText(filePath, jsonString);
+
+        Debug.Log("Level data saved to: " + filePath);
+    }
 }
+
 
 [System.Serializable]
 public class LevelData

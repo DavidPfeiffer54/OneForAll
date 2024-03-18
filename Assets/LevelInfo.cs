@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class LevelInfo : MonoBehaviour
 {
@@ -49,6 +51,25 @@ public class LevelInfo : MonoBehaviour
     {
         cells.Remove(cellToMove.GetComponent<GridCell>().getPosition());
         cells[newLocation] = cellToMove;
+    }
+    private void removeKeyFromDict(Dictionary<Vector3, GameObject> dict, Vector3 pos)
+    {
+        if (dict.ContainsKey(pos))
+        {
+            GameObject gameObjectToDestroy = dict[pos];
+            Destroy(gameObjectToDestroy);
+            dict.Remove(pos);
+        }
+    }
+    public void destoryItemAt(Vector3 pos)
+    {
+
+        removeKeyFromDict(cells, pos);
+        removeKeyFromDict(walls, pos);
+        removeKeyFromDict(goals, pos);
+        removeKeyFromDict(playerStarts, pos);
+        //removeKeyFromDict(colorChange, pos)
+        removeKeyFromDict(buttons, pos);
     }
     public void resetLevel()
     {
@@ -260,4 +281,39 @@ public class LevelInfo : MonoBehaviour
         || colorChanges.ContainsKey(location)
         || buttons.ContainsKey(location);
     }
+    public void saveLevel()
+    {
+        LevelData ld = new LevelData();
+        ld.twoStarThreshold = 1;
+        ld.threeStarThreshold = 10;
+
+        ld.cells = cells.Values.Select(go => go.GetComponent<GameItem>()?.getPosition() ?? Vector3.zero).ToArray();
+        ld.walls = walls.Values.Select(go => go.GetComponent<GameItem>()?.getPosition() ?? Vector3.zero).ToArray();
+        ld.goals = goals.Select(kvp => convertToLocColorData(kvp.Value.GetComponent<GameItem>())).ToArray();
+
+        //ld.playerStarts = playerStarts.Select(kvp => convertToLocColorData(kvp)).ToArray();
+        //ld.buttons = buttons.Select(kvp => convertButtonPressedData(kvp)).ToArray();
+        //ld.colorChange = colorChange.Select(kvp => convertToLocColorData(kvp)).ToArray();
+    }
+    public LocColorData convertToLocColorData(GameItem itm)
+    {
+        LocColorData lcd = new LocColorData();
+        lcd.loc = itm.getPosition();
+        //lcd.col = itm.getColor();
+
+        return lcd;
+    }
+
+    public ButtonPressedData convertButtonPressedData(GameButton butt)
+    {
+        ButtonPressedData bpd = new ButtonPressedData();
+        bpd.buttonLoc = butt.getPosition();
+        bpd.buttonMoveToStart = butt.getToMoveStart();
+        bpd.buttonMoveToEnd = butt.getToMoveEnd();
+        //bpd.col = butt.getColor();
+
+        return bpd;
+    }
 }
+
+

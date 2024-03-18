@@ -191,4 +191,8 @@ public class LevelManager : MonoBehaviour
     {
         return currentLevel.GetComponent<LevelInfo>().isAnythingThere(location);
     }
+    public void destoryItemAt(Vector3 pos)
+    {
+        currentLevel.GetComponent<LevelInfo>().destoryItemAt(pos);
+    }
 }
