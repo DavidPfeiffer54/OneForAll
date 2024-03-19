@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbe1f3b5f7b2a430682975a781281631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jsonParserPrefab: {fileID: 214147192582965385, guid: ce98cdaab81e54335bb810fb167001be, type: 3}
   playerPrefab: {fileID: 2424297671439845723, guid: 77e6f4a4e043f4a229242e0b52aabf2b, type: 3}
   playerStartPrefab: {fileID: 6135498625609829482, guid: 37eca103d93c24ec684327730b6208c0, type: 3}
   wallPrefab: {fileID: 6156382544977937219, guid: 7de1ed17134754a4295d0fac22170e78, type: 3}
@@ -65,4 +66,5 @@ MonoBehaviour:
   levelManager: {fileID: 0}
   playerManager: {fileID: 0}
   nextItem: {fileID: 0}
+  jsonParser: {fileID: 0}
   isEditorActive: 0

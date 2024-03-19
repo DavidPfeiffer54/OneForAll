@@ -148,6 +148,10 @@ public class LevelManager : MonoBehaviour
     }
 
 
+    public LevelData getLevelData()
+    {
+        return currentLevel.GetComponent<LevelInfo>().getLevelData();
+    }
     public GameObject[] getCells()
     {
         return currentLevel.GetComponent<LevelInfo>().cells.Values.ToArray();

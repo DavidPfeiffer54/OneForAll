@@ -281,7 +281,7 @@ public class LevelInfo : MonoBehaviour
         || colorChanges.ContainsKey(location)
         || buttons.ContainsKey(location);
     }
-    public void saveLevel()
+    public LevelData getLevelData()
     {
         LevelData ld = new LevelData();
         ld.twoStarThreshold = 1;
@@ -291,14 +291,17 @@ public class LevelInfo : MonoBehaviour
         ld.walls = walls.Values.Select(go => go.GetComponent<GameItem>()?.getPosition() ?? Vector3.zero).ToArray();
         ld.goals = goals.Select(kvp => convertToLocColorData(kvp.Value.GetComponent<GameItem>())).ToArray();
 
-        //ld.playerStarts = playerStarts.Select(kvp => convertToLocColorData(kvp)).ToArray();
-        //ld.buttons = buttons.Select(kvp => convertButtonPressedData(kvp)).ToArray();
-        //ld.colorChange = colorChange.Select(kvp => convertToLocColorData(kvp)).ToArray();
+        ld.playerStarts = playerStarts.Select(kvp => convertToLocColorData(kvp.Value.GetComponent<GameItem>())).ToArray();
+        ld.buttons = buttons.Select(kvp => convertButtonPressedData(kvp.Value.GetComponent<GameButton>())).ToArray();
+        ld.colorChange = colorChanges.Select(kvp => convertToLocColorData(kvp.Value.GetComponent<GameItem>())).ToArray();
+        return ld;
     }
     public LocColorData convertToLocColorData(GameItem itm)
     {
         LocColorData lcd = new LocColorData();
         lcd.loc = itm.getPosition();
+
+        //lcd.col = next(key for key, value in colors.items() if value == itm.getColor()) ;
         //lcd.col = itm.getColor();
 
         return lcd;
@@ -310,6 +313,8 @@ public class LevelInfo : MonoBehaviour
         bpd.buttonLoc = butt.getPosition();
         bpd.buttonMoveToStart = butt.getToMoveStart();
         bpd.buttonMoveToEnd = butt.getToMoveEnd();
+
+        //bpd.col = next(key for key, value in colors.items() if value == butt.getColor()) ;
         //bpd.col = butt.getColor();
 
         return bpd;

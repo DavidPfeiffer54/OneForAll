@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelEditor : MonoBehaviour
 {
+    [SerializeField] private GameObject jsonParserPrefab;
 
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject playerStartPrefab;
@@ -35,6 +36,7 @@ public class LevelEditor : MonoBehaviour
     public GameObject playerManager;
 
     public GameObject nextItem;
+    public GameObject jsonParser;
 
     public bool isEditorActive;
 
@@ -53,6 +55,8 @@ public class LevelEditor : MonoBehaviour
     }
     public void setupEditor()
     {
+        jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
+
         isEditorActive = true;
         createItemColor = Color.red;
         Vector3 wall = new Vector3(0, 0, 3);
@@ -109,6 +113,13 @@ public class LevelEditor : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.S)) changeNextItemColor(Color.blue);
 
         else if (Input.GetKeyDown(KeyCode.Z)) GameManager.instance.startLevel();
+
+
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            LevelData ld = levelManager.GetComponent<LevelManager>().getLevelData();
+            jsonParser.GetComponent<JsonParser>().saveFile("test_save_level.json", ld);
+        }
     }
 
     public void createDestoryer(Vector3 pos)

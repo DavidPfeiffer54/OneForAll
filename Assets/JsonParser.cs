@@ -21,7 +21,7 @@ public class JsonParser : MonoBehaviour
         LevelWrapper wrapper = JsonUtility.FromJson<LevelWrapper>(jsonString);
         levelData = wrapper.levels;
     }
-    public void SaveFile(string filename, LevelData newLevel)
+    public void saveFile(string filename, LevelData newLevel)
     {
         levelData = new List<LevelData>();
         levelData.Add(newLevel);
@@ -30,10 +30,10 @@ public class JsonParser : MonoBehaviour
         wrapper.levels = levelData;
 
         // Serialize the wrapper object to JSON format
-        string jsonString = JsonUtility.ToJson(wrapper);
+        string jsonString = JsonUtility.ToJson(wrapper, true);
 
-        // Define the path where the file will be saved
-        string filePath = Path.Combine(Application.persistentDataPath, filename);
+        string directoryPath = Path.Combine(Application.dataPath, "LevelDataFiles");
+        string filePath = Path.Combine(directoryPath, filename);
 
         // Write the JSON string to the file
         File.WriteAllText(filePath, jsonString);
