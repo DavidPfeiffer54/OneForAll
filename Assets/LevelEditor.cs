@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class LevelEditor : MonoBehaviour
 {
-    [SerializeField] private GameObject jsonParserPrefab;
-
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject playerStartPrefab;
     [SerializeField] private GameObject wallPrefab;
@@ -21,6 +19,8 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private GameObject playerManagerPrefab;
 
     [SerializeField] private Material transMat;
+    [SerializeField] private GameObject popupPrefab;
+    private GameObject popup;
 
 
     public GameObject[] players;
@@ -36,7 +36,6 @@ public class LevelEditor : MonoBehaviour
     public GameObject playerManager;
 
     public GameObject nextItem;
-    public GameObject jsonParser;
 
     public bool isEditorActive;
 
@@ -52,10 +51,11 @@ public class LevelEditor : MonoBehaviour
         //nextItem.transform.position = new Vector3(0, 0, 4) * 5;
         //nextItem = Instantiate(wallPrefab, new Vector3(nextItem.x, nextItem.y, nextItem.z) * 5 + new Vector3(0, 0, -2.5f), Quaternion.identity);
         */
+        popup = Instantiate(popupPrefab, Vector3.zero, Quaternion.identity);
+        popup.SetActive(false);
     }
     public void setupEditor()
     {
-        jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
 
         isEditorActive = true;
         createItemColor = Color.red;
@@ -78,8 +78,8 @@ public class LevelEditor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isEditorActive)
-            return;
+        if (popup.activeSelf) return;
+        if (!isEditorActive) return;
 
 
         var outline = nextItem.GetComponent<Outline>();
@@ -114,11 +114,16 @@ public class LevelEditor : MonoBehaviour
 
         else if (Input.GetKeyDown(KeyCode.Z)) GameManager.instance.startLevel();
 
+        else if (Input.GetKeyDown(KeyCode.N))
+        {
+            popup.GetComponent<SavePopup>().setLevelData(levelManager.GetComponent<LevelManager>().getLevelData());
+            popup.SetActive(true);
+        }
 
         else if (Input.GetKeyDown(KeyCode.M))
         {
             LevelData ld = levelManager.GetComponent<LevelManager>().getLevelData();
-            jsonParser.GetComponent<JsonParser>().saveFile("test_save_level.json", ld);
+            JsonParser.Instance.saveFile("test_save_level.json", ld);
         }
     }
 

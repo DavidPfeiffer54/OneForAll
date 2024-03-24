@@ -13,8 +13,6 @@ public class LevelManager : MonoBehaviour
 
 
     [SerializeField] private GameObject LevelPrefab;
-    [SerializeField] private GameObject jsonParserPrefab;
-
 
     private Dictionary<string, int> cells;
     private Dictionary<string, int> walls;
@@ -22,15 +20,13 @@ public class LevelManager : MonoBehaviour
     private Dictionary<string, int> buttons;
     private Dictionary<string, int> players;
 
-    private GameObject jsonParser;
-
     void Start()
     {
 
     }
     void Awake()
     {
-        jsonParser = Instantiate(jsonParserPrefab, new Vector3(0, 0), Quaternion.identity);
+
     }
     public void setUpLevel(int _level_num, bool editMode)
     {
@@ -39,9 +35,9 @@ public class LevelManager : MonoBehaviour
             filename = "levelDescriptorEditor";
 
         //Destroy(currentLevel);
-        jsonParser.GetComponent<JsonParser>().readFile(filename);
+        JsonParser.Instance.readFile(filename);
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
-        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, JsonParser.Instance.levelData[_level_num]);
     }
     public void resetLevel()
     {
@@ -52,17 +48,17 @@ public class LevelManager : MonoBehaviour
     public void setUpLevel(int _level_num)
     { //TODO REMOVE
         //Destroy(currentLevel);
-        jsonParser.GetComponent<JsonParser>().readFile("levelDescriptor");
+        JsonParser.Instance.readFile("levelDescriptor");
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
-        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, JsonParser.Instance.levelData[_level_num]);
 
     }
     public void setUpEditorLevel(int _level_num)
     {
         //Destroy(currentLevel);
-        jsonParser.GetComponent<JsonParser>().readFile("levelDescriptorEditor");
+        JsonParser.Instance.readFile("levelDescriptorEditor");
         currentLevel = Instantiate(LevelPrefab, new Vector3(0, 0), Quaternion.identity);
-        currentLevel.GetComponent<LevelInfo>().setLevel(0, jsonParser.GetComponent<JsonParser>().levelData[_level_num]);
+        currentLevel.GetComponent<LevelInfo>().setLevel(0, JsonParser.Instance.levelData[_level_num]);
     }
     public void moveCell(GameObject cellToMove, Vector3 newLocation)
     {
